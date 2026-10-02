@@ -1,0 +1,1794 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Stop-Loss Trading Lab</title>
+    <style>
+      :root{
+        color-scheme: light dark;
+        --bg:#f5f2ec;
+        --bg-soft:#efe9dd;
+        --panel:#fffdf8;
+        --panel-2:#f3eee2;
+        --ink:#17233c;
+        --ink-soft:#4a5872;
+        --ink-faint:#71809b;
+        --line:#ddd3bf;
+        --navy:#17233c;
+        --navy-2:#22345a;
+        --accent:#d97e21;
+        --accent-strong:#b9610d;
+        --accent-soft:#fbeed6;
+        --green:#2e8b62;
+        --green-soft:#e2f2e8;
+        --red:#c8453c;
+        --red-soft:#fbe7e4;
+        --blue:#2f6fb2;
+        --blue-soft:#e3eef8;
+        --shadow:0 10px 30px rgba(23,35,60,.10);
+        --radius:18px;
+        --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+        --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0b1322;
+          --bg-soft:#0e1830;
+          --panel:#14223d;
+          --panel-2:#1a2c4c;
+          --ink:#f2ecdd;
+          --ink-soft:#c3cadd;
+          --ink-faint:#93a0ba;
+          --line:#2b3d61;
+          --navy:#0b1322;
+          --navy-2:#182a4b;
+          --accent:#f0a84e;
+          --accent-strong:#f5bd72;
+          --accent-soft:#3a2c15;
+          --green:#5cc492;
+          --green-soft:#173629;
+          --red:#f08a80;
+          --red-soft:#3b211f;
+          --blue:#7db3e8;
+          --blue-soft:#1c2f4d;
+          --shadow:0 10px 30px rgba(0,0,0,.35);
+        }
+      }
+      *{box-sizing:border-box;}
+      html{-webkit-text-size-adjust:100%;}
+      body{
+        margin:0;font-family:var(--font);background:var(--bg);color:var(--ink);
+        font-size:17px;line-height:1.55;padding-bottom:96px;
+      }
+      a{color:var(--blue);}
+      button{font-family:inherit;}
+      h1,h2,h3{line-height:1.2;margin:0;}
+      .wrap{max-width:1100px;margin:0 auto;padding:0 18px;}
+
+      /* ---------- top bar ---------- */
+      .topbar{
+        position:sticky;top:0;z-index:40;
+        background:var(--navy);color:#f6efdd;
+        border-bottom:3px solid var(--accent);
+      }
+      .topbar-in{max-width:1100px;margin:0 auto;padding:14px 18px 12px;display:flex;align-items:center;gap:14px;}
+      .brandmark{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;background:var(--navy-2);border:1px solid rgba(246,239,221,.25);}
+      .brand h1{font-size:1.28rem;letter-spacing:.2px;color:#fdf8ec;}
+      .brand p{margin:2px 0 0;font-size:.86rem;color:#cdbd96;}
+      .topbar .spacer{flex:1;}
+      .pill-progress{display:none;font-size:.82rem;color:#f6efdd;background:var(--navy-2);border:1px solid rgba(246,239,221,.25);border-radius:999px;padding:6px 12px;white-space:nowrap;}
+      @media (min-width:760px){.pill-progress{display:block;}}
+      .lang-toggle{display:flex;flex:0 0 auto;background:var(--navy-2);border:1px solid rgba(246,239,221,.35);border-radius:999px;padding:3px;gap:3px;}
+      .lang-toggle button{border:0;background:transparent;color:#cdbd96;font-weight:800;font-size:.88rem;padding:8px 15px;border-radius:999px;cursor:pointer;min-height:38px;letter-spacing:.03em;}
+      .lang-toggle button.active{background:var(--accent);color:#23160a;}
+      .lang-toggle button:focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+
+      /* ---------- tabs ---------- */
+      .tabs{
+        position:fixed;left:0;right:0;bottom:0;z-index:50;
+        background:var(--panel);border-top:1px solid var(--line);
+        padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+        box-shadow:0 -6px 24px rgba(23,35,60,.08);
+      }
+      .tabs-in{display:flex;width:100%;}
+      .tab{
+        flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+        background:none;border:0;color:var(--ink-faint);cursor:pointer;
+        font-size:.72rem;font-weight:700;padding:8px 2px;border-radius:12px;min-height:56px;justify-content:center;
+      }
+      .tab svg{width:24px;height:24px;}
+      .tab.active{color:var(--accent-strong);}
+      .tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+      @media (min-width:760px){
+        body{padding-bottom:0;}
+        .tabs{position:sticky;top:66px;bottom:auto;box-shadow:none;border-top:0;border-bottom:1px solid var(--line);justify-content:flex-start;gap:6px;padding:8px 0;}
+        .tabs-in{max-width:1100px;margin:0 auto;padding:0 18px;display:flex;gap:6px;width:100%;}
+        .tab{flex:0 0 auto;flex-direction:row;gap:8px;font-size:.95rem;padding:10px 16px;min-height:44px;}
+      }
+
+      /* ---------- generic ---------- */
+      main{padding:26px 0 40px;}
+      .view{display:none;}
+      .view.active{display:block;}
+      .kicker{font-size:.8rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-strong);}
+      .lead{font-size:1.06rem;color:var(--ink-soft);max-width:62ch;}
+      .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+      .btn{
+        display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        background:var(--accent);color:#23160a;border:0;border-radius:14px;
+        font-size:1rem;font-weight:800;padding:14px 22px;cursor:pointer;min-height:52px;
+        text-decoration:none;
+      }
+      .btn:hover{background:var(--accent-strong);color:#fff8ec;}
+      .btn.secondary{background:var(--panel-2);color:var(--ink);border:1px solid var(--line);}
+      .btn.secondary:hover{border-color:var(--accent);color:var(--accent-strong);}
+      .btn.ghost{background:transparent;color:var(--accent-strong);border:2px solid var(--accent);}
+      .btn:disabled{opacity:.45;cursor:not-allowed;}
+      .btn:focus-visible,.opt:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+      .num{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+      .muted{color:var(--ink-soft);}
+      .small{font-size:.88rem;}
+      .backlink{background:none;border:0;color:var(--blue);font-size:1rem;font-weight:700;cursor:pointer;padding:8px 0;display:inline-flex;gap:6px;align-items:center;}
+
+      /* ---------- home ---------- */
+      .hero{padding:8px 0 4px;}
+      .hero h2{font-size:2rem;font-weight:900;letter-spacing:-.01em;max-width:16ch;}
+      .hero h2 span{color:var(--accent-strong);}
+      .howitworks{display:grid;gap:12px;margin:22px 0 30px;}
+      .how{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;}
+      .how .stepno{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.05rem;}
+      .how h3{font-size:1.02rem;margin-bottom:2px;}
+      .how p{margin:0;color:var(--ink-soft);font-size:.94rem;}
+      @media (min-width:760px){.howitworks{grid-template-columns:repeat(3,1fr);}}
+      .roadmap{display:grid;gap:16px;}
+      @media (min-width:760px){.roadmap{grid-template-columns:repeat(3,1fr);}}
+      .levelcard{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px;}
+      .levelcard .lvl-badge{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-strong);}
+      .levelcard h3{font-size:1.25rem;}
+      .levelcard p{margin:0;color:var(--ink-soft);font-size:.95rem;}
+      .levelcard .meta{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+      .progress-track{height:8px;background:var(--panel-2);border-radius:99px;overflow:hidden;border:1px solid var(--line);}
+      .progress-fill{height:100%;background:var(--accent);border-radius:99px;}
+      .locknote{display:flex;gap:8px;align-items:center;color:var(--ink-faint);font-size:.88rem;font-weight:700;}
+      .levelcard.locked{opacity:.75;}
+      .status-chip{font-size:.78rem;font-weight:800;border-radius:999px;padding:4px 10px;}
+      .chip-done{background:var(--green-soft);color:var(--green);}
+      .chip-open{background:var(--accent-soft);color:var(--accent-strong);}
+      .chip-lock{background:var(--panel-2);color:var(--ink-faint);}
+
+      /* ---------- learn ---------- */
+      .levelblock{margin-bottom:34px;}
+      .level-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-bottom:6px;}
+      .level-head h2{font-size:1.45rem;}
+      .level-head .tag{color:var(--ink-soft);font-size:.98rem;}
+      .lessonlist{display:grid;gap:10px;margin:14px 0;}
+      .lessonrow{
+        display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+        background:var(--panel);border:1px solid var(--line);border-radius:16px;
+        padding:16px;cursor:pointer;color:var(--ink);
+      }
+      .lessonrow:hover{border-color:var(--accent);}
+      .lessonrow .n{flex:0 0 auto;width:38px;height:38px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ink-soft);}
+      .lessonrow.done .n{background:var(--green);border-color:var(--green);color:#fff;}
+      .lessonrow h3{font-size:1.02rem;}
+      .lessonrow p{margin:2px 0 0;color:var(--ink-soft);font-size:.88rem;}
+      .lessonrow .chev{margin-left:auto;color:var(--ink-faint);font-size:1.2rem;flex:0 0 auto;}
+      .lockedbox{background:var(--panel-2);border:1px dashed var(--line);border-radius:16px;padding:18px;color:var(--ink-soft);}
+
+      /* ---------- lesson page ---------- */
+      .lesson-hero h2{font-size:1.7rem;margin:6px 0 4px;}
+      .lesson-hero .tagline{font-size:1.05rem;color:var(--ink-soft);}
+      .playerbox{margin:20px 0;background:var(--navy);border-radius:var(--radius);padding:18px;color:#f6efdd;}
+      .playerbox .plabel{display:flex;align-items:center;gap:10px;font-weight:800;font-size:.95rem;margin-bottom:10px;color:#f6efdd;}
+      .playerbox audio{width:100%;}
+      .playerbox .soon{color:#cdbd96;font-size:.9rem;}
+      details.transcript{margin-top:12px;}
+      details.transcript summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:.92rem;}
+      details.transcript p{color:#e8e0cc;font-size:.95rem;line-height:1.65;margin:10px 0 0;}
+      .oneliner{
+        background:var(--accent-soft);border-left:6px solid var(--accent);
+        border-radius:12px;padding:16px 18px;font-size:1.05rem;font-weight:600;margin:22px 0;
+      }
+      .lesson-body h3{font-size:1.18rem;margin:26px 0 8px;}
+      .lesson-body p{margin:0 0 12px;max-width:68ch;}
+      .formula{
+        background:var(--navy);color:#fdf6e3;border-radius:14px;padding:18px;
+        font-family:var(--mono);font-size:1.02rem;text-align:center;margin:22px 0;overflow-wrap:anywhere;
+      }
+      .worked{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:22px 0;box-shadow:var(--shadow);}
+      .worked h3{margin-top:0;font-size:1.1rem;}
+      .worked .setup{font-weight:700;}
+      .worked ol{margin:10px 0;padding-left:22px;}
+      .worked li{margin:6px 0;}
+      .worked .answer{background:var(--green-soft);border-radius:10px;padding:12px 14px;font-weight:700;color:var(--ink);}
+      .tryit{background:var(--blue-soft);border-radius:14px;padding:16px 18px;margin:22px 0;}
+      .tryit .t-label{font-weight:800;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:6px;}
+      .diagram{margin:22px 0;}
+      .diagram img{width:100%;height:auto;border-radius:var(--radius);border:1px solid var(--line);display:block;background:var(--panel);}
+      .diagram .placeholder{
+        border:1px dashed var(--line);border-radius:var(--radius);background:var(--panel-2);
+        padding:34px 20px;text-align:center;color:var(--ink-faint);font-weight:700;
+      }
+      .lesson-nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+      .lesson-nav .btn{flex:1;min-width:150px;}
+      .donecheck{display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:12px;padding:14px 16px;font-weight:700;margin:22px 0;}
+
+      /* ---------- video ---------- */
+      .videobox{margin:16px 0;}
+      .videobox video{width:100%;border-radius:var(--radius);border:1px solid var(--line);background:#000;display:block;}
+      .videobox .placeholder{border:1px dashed var(--line);border-radius:var(--radius);background:var(--panel-2);padding:30px 20px;text-align:center;color:var(--ink-faint);font-weight:700;}
+
+      /* ---------- quiz ---------- */
+      .quizbar{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--ink-soft);font-weight:700;margin-bottom:14px;}
+      .qcard h2{font-size:1.3rem;margin-bottom:18px;}
+      .opts{display:grid;gap:10px;}
+      .opt{
+        text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:14px;
+        padding:16px;font-size:1.02rem;font-weight:600;cursor:pointer;color:var(--ink);min-height:56px;
+      }
+      .opt:hover{border-color:var(--accent);}
+      .opt.correct{border-color:var(--green);background:var(--green-soft);}
+      .opt.wrong{border-color:var(--red);background:var(--red-soft);}
+      .opt:disabled{cursor:default;opacity:.9;}
+      .explain{margin-top:16px;border-radius:12px;padding:14px 16px;font-size:.97rem;display:none;}
+      .explain.show{display:block;}
+      .explain.good{background:var(--green-soft);}
+      .explain.bad{background:var(--red-soft);}
+      .quiz-actions{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;}
+      .scorebig{font-size:2.4rem;font-weight:900;line-height:1;}
+      .passbanner{background:var(--green-soft);border-radius:14px;padding:16px 18px;font-weight:700;margin:16px 0;}
+      .failbanner{background:var(--accent-soft);border-radius:14px;padding:16px 18px;font-weight:700;margin:16px 0;}
+
+      /* ---------- calculators ---------- */
+      .calc-grid{display:grid;gap:18px;}
+      @media (min-width:900px){.calc-grid{grid-template-columns:1fr 1fr;}.calc-grid .wide{grid-column:1/-1;}}
+      .field{margin-bottom:14px;}
+      .field label{display:block;font-weight:700;font-size:.92rem;margin-bottom:6px;}
+      .field .hint{font-size:.82rem;color:var(--ink-faint);font-weight:400;}
+      .field input,.field select{
+        width:100%;font-size:1.05rem;padding:12px 14px;border-radius:12px;
+        border:2px solid var(--line);background:var(--panel);color:var(--ink);min-height:52px;font-family:inherit;
+      }
+      .field input[type=range]{padding:0;min-height:44px;accent-color:var(--accent);}
+      .resultbox{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:6px;}
+      .resultbox .big{font-size:1.5rem;font-weight:900;}
+      .resultbox .sentence{margin-top:8px;font-size:1.0rem;}
+      .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px;}
+      .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;}
+      .stat .v{font-size:1.25rem;font-weight:900;font-family:var(--mono);}
+      .stat .k{font-size:.78rem;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+
+      /* ---------- practice desk ---------- */
+      .sim-layout{display:grid;gap:18px;}
+      @media (min-width:900px){.sim-layout{grid-template-columns:1.5fr 1fr;align-items:start;}}
+      .chartwrap{background:var(--navy);border-radius:var(--radius);padding:12px;border:1px solid var(--line);}
+      canvas#simchart{width:100%;height:320px;display:block;border-radius:10px;touch-action:none;cursor:crosshair;}
+      .chart-hint{color:#cdbd96;font-size:.85rem;margin-top:8px;}
+      .feedback{border-radius:12px;padding:14px 16px;font-weight:600;margin:14px 0;display:none;}
+      .feedback.show{display:block;}
+      .feedback.info{background:var(--blue-soft);}
+      .feedback.win{background:var(--green-soft);}
+      .feedback.lose{background:var(--red-soft);}
+      .journal{display:grid;gap:10px;margin-top:14px;}
+      .jrow{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.92rem;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;}
+      .jrow .r-win{color:var(--green);font-weight:900;}
+      .jrow .r-lose{color:var(--red);font-weight:900;}
+
+      /* ---------- guide ---------- */
+      .gstep{display:flex;gap:16px;margin-bottom:16px;}
+      .gstep .gn{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:var(--navy);color:#f6efdd;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;}
+      .gstep h3{font-size:1.08rem;margin-bottom:4px;}
+      .gstep p{margin:0;color:var(--ink-soft);max-width:64ch;}
+
+      @media (prefers-reduced-motion: reduce){
+        *{transition:none !important;animation:none !important;}
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-in">
+        <div class="brandmark" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="8" width="5" height="10" rx="1" fill="#5cc492"/><rect x="6.2" y="4" width="1" height="18" fill="#5cc492"/><rect x="12" y="5" width="5" height="13" rx="1" fill="#f0a84e"/><rect x="14.2" y="2" width="1" height="20" fill="#f0a84e"/><rect x="20" y="11" width="5" height="9" rx="1" fill="#f08a80"/><rect x="22.2" y="7" width="1" height="17" fill="#f08a80"/></svg>
+        </div>
+        <div class="brand">
+          <h1>Stop-Loss Trading Lab</h1>
+          <p id="brand-tagline">Learn to protect your money first. Trade second.</p>
+        </div>
+        <div class="spacer"></div>
+        <div class="lang-toggle" role="group" aria-label="Language / Sprache">
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="de" class="active">DE</button>
+        </div>
+        <div class="pill-progress" id="topprogress">0 of 12 lessons done</div>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Main">
+      <div class="tabs-in">
+        <button class="tab active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span class="tab-label">Home</span></button>
+        <button class="tab" data-view="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg><span class="tab-label">Learn</span></button>
+        <button class="tab" data-view="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 6.5h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 15h.01M12 15h.01M15.5 15h.01M8.5 19h.01M12 19h.01M15.5 19h.01"/></svg><span class="tab-label">Tools</span></button>
+        <button class="tab" data-view="sim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg><span class="tab-label">Practice</span></button>
+        <button class="tab" data-view="guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13 13l-4.5 2.5L11 11z"/></svg><span class="tab-label">Guide</span></button>
+        <button class="tab" data-view="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span class="tab-label">Progress</span></button>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <section class="view active" id="view-home"></section>
+      <section class="view" id="view-learn"></section>
+      <section class="view" id="view-lesson"></section>
+      <section class="view" id="view-quiz"></section>
+      <section class="view" id="view-calc"></section>
+      <section class="view" id="view-sim"></section>
+      <section class="view" id="view-guide"></section>
+      <section class="view" id="view-progress"></section>
+    </main>
+
+    <script>
+    "use strict";
+    /* ================================================================
+       DATA — lesson text, quizzes, and guide are verbatim from
+       curriculum.json (Stop-Loss Trading Lab).
+       ================================================================ */
+    var LEVELS = [
+      {"id":"novice","name":"Level 1 · First Steps","tagline":"What a stop loss is, and the one rule that keeps you alive.","videoTopic":"What is a stop loss, explained with a driving analogy","video":"video-stop-loss.mp4"},
+      {"id":"builder","name":"Level 2 · Size It Right","tagline":"Calculate exact lot size, and count every fee before you click.","videoTopic":"How to calculate lot size in three steps","video":"video-lot-size.mp4"},
+      {"id":"pro","name":"Level 3 · Expert Novice","tagline":"Stronger beginner foundations: trailing stops, portfolio risk, expectancy, and TradingView essentials.","videoTopic":"Risk-to-reward and why fees decide who wins","video":"video-risk-reward.mp4"}
+    ];
+    var LESSONS = [
+      {"id":"l01","level":"novice","title":"Your emergency brake: what a stop loss is","tagline":"The one tool that turns a scary trade into a planned, small loss.","oneLiner":"A stop loss is an automatic exit that closes your trade at a price you pick in advance, so a bad trade can only cost you a small, planned amount.","formula":"Max loss = (entry price − stop price) × size","diagram":"diagram-stop-loss.webp",
+       "sections":[
+         {"h":"Imagine driving with no brakes","p":["You would never drive a car with no brakes. But most beginners trade exactly like that: they buy something, the price falls, and they just sit there hoping it comes back. Hope is not a plan.","A stop loss is your brake pedal. Before you enter a trade, you decide: if the price falls to this level, I am out. Your broker closes the trade for you automatically, even while you sleep."]},
+         {"h":"What it actually is","p":["A stop loss is an order you place with your broker at the same time as your trade. Example: you buy a stock at 50 dollars. You set your stop loss at 48 dollars. If the price drops to 48, your shares are sold automatically.","Your worst case is decided before the trade starts: (50 minus 48) times the number of shares. With 10 shares, the most you can lose is 20 dollars, plus tiny fees. No surprises."]},
+         {"h":"Why it matters more than picking winners","p":["Every trader, even professionals, loses about half their trades. The difference between beginners who blow up their accounts and traders who survive is simple: survivors decide their maximum loss in advance.","One rule to remember: no single trade should ever be able to seriously hurt your account. The stop loss is how you enforce that."]},
+         {"h":"One honest warning: slippage","p":["In very fast markets, your exit might fill a little below your stop price. That is called slippage. It is usually small, and it does not change the big idea: a stop loss still protects you from disaster."]}
+       ],
+       "workedExample":{"setup":"You buy 10 shares of a stock at $50. Stop loss at $48.","steps":["Stop distance = 50 − 48 = $2 per share.","Max loss = $2 × 10 shares = $20."],"answer":"The most this trade can cost you is $20 (plus small fees)."},
+       "tryIt":"You buy at $100 and your stop is at $95. How much do you lose per share if stopped out? ($5)",
+       "script":"Welcome to lesson one. Let's talk about the most important tool in trading. It is called a stop loss. Think of driving a car. You would never drive with no brakes, right? But most beginners trade exactly like that. They buy something, the price falls, and they just sit there, hoping it comes back up. Hope is not a plan. A stop loss is your brake pedal. Before you enter a trade, you pick a price and say, if it falls to here, I am out. Your broker closes the trade for you automatically, even while you sleep. Here is a simple example. You buy ten shares of a stock at fifty dollars. You set your stop loss at forty eight dollars. If the price drops to forty eight, your shares sell automatically. Your worst case was decided before the trade started. Fifty minus forty eight is two dollars per share, times ten shares, so the most you can lose is twenty dollars, plus tiny fees. No surprises. Remember this. Every trader loses about half their trades, even the pros. Survivors are the ones who decide their maximum loss in advance. One honest warning. In very fast markets, your exit can fill a little below your stop. That is called slippage. It is usually small, and it does not change the big idea. A stop loss protects you from disaster."},
+      {"id":"l02","level":"novice","title":"The 1% rule: how much to risk","tagline":"The tiny rule that lets you survive ten losses in a row.","oneLiner":"Never risk more than about one percent of your account on a single trade.","formula":"Risk per trade = account balance × 0.01","diagram":"diagram-one-percent.webp",
+       "sections":[
+         {"h":"Risk is a budget, not a feeling","p":["Before you ask how much you could make, ask how much you can afford to lose. Professional traders answer with a number: about 1% of the account per trade.","On a 1,000 dollar account, 1% is 10 dollars. That means every trade you take is planned so the worst case costs you about 10 dollars. On a 5,000 dollar account, it is 50 dollars."]},
+         {"h":"Why 1% saves you","p":["Losing streaks happen to everyone. Imagine you lose 10 trades in a row. Risking 1% each time, your account drops about 9.6%. You are annoyed, but you are still in the game.","Now imagine risking 10% per trade. Ten losses in a row wipes out about 65% of your account. You would need to nearly triple your money just to get back to zero. Almost nobody recovers from that."]},
+         {"h":"The comfortable range","p":["Beginners should stay between half of one percent and two percent per trade. One percent is the classic starting point. If a trade needs more risk than that to make sense, the trade is too big, not too good."]}
+       ],
+       "workedExample":{"setup":"Your account has $2,000. You use the 1% rule.","steps":["Risk amount = 2,000 × 0.01 = $20."],"answer":"Every trade is planned so the worst case costs about $20."},
+       "tryIt":"Your account has $3,500. At 1% risk, what is your max loss per trade? ($35)",
+       "script":"Lesson two. The one percent rule. Before you ask how much you could make on a trade, ask how much you can afford to lose. Professional traders answer with a number. About one percent of the account, per trade. On a one thousand dollar account, one percent is ten dollars. Every trade is planned so the worst case costs about ten dollars. On a five thousand dollar account, it is fifty dollars. Why does this matter so much? Because losing streaks happen to everyone. Imagine you lose ten trades in a row. Risking one percent each time, your account drops about nine point six percent. You are annoyed, but you are still in the game. Now imagine risking ten percent per trade. Ten losses in a row wipes out about sixty five percent of your account. You would need to nearly triple your money just to get back to zero. Almost nobody recovers from that. As a beginner, stay between half a percent and two percent per trade. One percent is the classic starting point. And here is a filter you can use forever. If a trade needs more risk than that to make sense, the trade is too big, not too good."},
+      {"id":"l03","level":"novice","title":"Measuring the distance: entry to stop","tagline":"Before you can size a trade, you must measure the gap.","oneLiner":"Stop distance is simply how far your stop sits from your entry price, measured in pips, dollars, or points.","formula":"Stop distance = |entry price − stop price|",
+       "sections":[
+         {"h":"It is just a gap","p":["Your entry is where you buy. Your stop is where you exit if you are wrong. The distance between them is the stop distance.","In forex, distance is measured in pips. If you buy euro dollar at 1.0850 and your stop is at 1.0830, the distance is 20 pips. In stocks, it is dollars per share: buy at 72, stop at 69, distance is 3 dollars."]},
+         {"h":"Wild markets need wider stops","p":["Prices jump around more on some days than others. If your stop is too close in a wild market, normal wiggling will knock you out before the real move happens.","Traders measure typical wiggle with a tool called average true range, or A T R. You do not need the math yet. Just remember: calmer market, closer stop. Wilder market, wider stop, and therefore a smaller position size."]},
+         {"h":"Distance decides your size","p":["Here is the key link: a wider stop means each unit you buy risks more dollars, so you must buy fewer units to keep the same 1% risk. Distance and size always move in opposite directions."]}
+       ],
+       "workedExample":{"setup":"You buy EUR/USD at 1.0850. Stop loss at 1.0830.","steps":["Distance = 1.0850 − 1.0830 = 0.0020 = 20 pips."],"answer":"Your stop distance is 20 pips."},
+       "tryIt":"You buy a stock at $72, stop at $69. What is the stop distance? ($3 per share)",
+       "script":"Lesson three. Measuring the distance. Your entry is where you buy. Your stop is where you exit if you are wrong. The gap between them is the stop distance, and everything in position sizing starts here. In forex, distance is measured in pips. If you buy euro dollar at one point zero eight five zero, and your stop is at one point zero eight three zero, the distance is twenty pips. In stocks, it is dollars per share. Buy at seventy two, stop at sixty nine, distance is three dollars. Now, wild markets need wider stops. Prices jump around more on some days. If your stop is too close on a wild day, normal wiggling knocks you out before the real move happens. Traders measure typical wiggle with a tool called average true range. You do not need the math yet. Just remember, calmer market, closer stop. Wilder market, wider stop, and therefore a smaller position size. Here is the key link for the next lesson. A wider stop means each unit you buy risks more dollars, so you must buy fewer units to keep the same one percent risk. Distance and size always move in opposite directions."},
+      {"id":"l04","level":"novice","title":"Your first lot-size calculation","tagline":"Put risk and distance together and get your exact trade size.","oneLiner":"Lot size = risk dollars ÷ (stop distance × value per unit). It tells you exactly how much to buy.","formula":"Lots = risk $ ÷ (stop distance in pips × $ value per pip per lot)","diagram":"diagram-lot-size.webp",
+       "sections":[
+         {"h":"The only formula that matters at first","p":["You know your risk in dollars from the 1% rule. You know your stop distance from lesson 3. Lot size just connects them.","Lot size = risk dollars ÷ (stop distance × value per unit). In plain words: divide what you can afford to lose by what one unit would lose if the stop is hit."]},
+         {"h":"A forex example, slowly","p":["Account: 1,000 dollars. Risk at 1%: 10 dollars. Stop distance: 20 pips. One standard lot moves about 10 dollars per pip.","Size = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 lots. That is 5,000 units, also called 5 micro lots. If the stop is hit, you lose about 10 dollars. The math guarantees it."]},
+         {"h":"Trust the math, not your gut","p":["Beginners guess their size. Guessing is how accounts die. From now on, every trade starts with three numbers: account, risk percent, stop distance. The calculator gives you the size. No feelings involved."]}
+       ],
+       "workedExample":{"setup":"$1,000 account, 1% risk = $10. Stop distance 20 pips. Standard lot = $10/pip.","steps":["Denominator = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 lots. If stopped out, you lose about $10."},
+       "tryIt":"$2,000 account, 1% risk ($20), 25-pip stop. Size = 20 ÷ (25 × 10) = 0.08 lots.",
+       "script":"Lesson four. Your first lot size calculation. You know your risk in dollars from the one percent rule. You know your stop distance from lesson three. Lot size just connects them. The formula is, lot size equals risk dollars, divided by stop distance times value per unit. In plain words, divide what you can afford to lose by what one unit would lose if the stop is hit. Let's do a forex example, slowly. Account, one thousand dollars. Risk at one percent, ten dollars. Stop distance, twenty pips. One standard lot moves about ten dollars per pip. Size equals ten, divided by twenty times ten. That is ten divided by two hundred, which is zero point zero five lots. That is five thousand units. If the stop is hit, you lose about ten dollars. The math guarantees it. Here is the habit to build. Beginners guess their size, and guessing is how accounts die. From now on, every trade starts with three numbers. Account, risk percent, stop distance. The calculator gives you the size. No feelings involved."}
+    ];
+    LESSONS.push(
+      {"id":"l05","level":"builder","title":"The lot-size formula, step by step","tagline":"The universal sizing formula for stocks, forex, crypto, and futures.","oneLiner":"The universal rule: position size = risk dollars ÷ stop distance. It works for stocks, forex, crypto, and futures.","formula":"Shares = risk $ ÷ stop distance per share","diagram":"diagram-lot-size.webp",
+       "sections":[
+         {"h":"One formula, every market","p":["The universal rule: position size = risk dollars ÷ stop distance.","For stocks and crypto, one share or coin moves 1 dollar per 1 dollar of price, so: shares = risk dollars ÷ stop distance in dollars. For forex: lots = risk dollars ÷ (stop distance in pips × dollars per pip per lot). For futures: replace dollars per pip with the contract's tick value."]},
+         {"h":"A stock example","p":["Account: 5,000 dollars. Risk at 1%: 50 dollars. Buy at 40, stop at 38. Stop distance = 2 dollars.","Shares = 50 ÷ 2 = 25 shares. If the stop is hit, you lose about 50 dollars. Guaranteed by the math, not by luck."]},
+         {"h":"Three steps, every time","p":["Step 1: risk dollars, from your account and risk percent. Step 2: stop distance, from your chart. Step 3: divide. Bigger account, bigger size. Wider stop, smaller size. That is the whole game."]}
+       ],
+       "workedExample":{"setup":"$5,000 account, 1% risk = $50. Buy at $40, stop at $38.","steps":["Stop distance = 40 − 38 = $2.","Shares = 50 ÷ 2 = 25."],"answer":"Buy 25 shares. If stopped out, you lose about $50."},
+       "tryIt":"$1,500 account, 2% risk ($30). Buy $60, stop $57 ($3 distance). Shares = 30 ÷ 3 = 10.",
+       "script":"Lesson five. The lot size formula, step by step, for every market. Last lesson you learned the forex version. Now here is the universal rule that works everywhere. Position size equals risk dollars, divided by stop distance. For stocks and crypto, one share or one coin moves one dollar per dollar of price. So shares equals risk dollars divided by stop distance in dollars. Example. Account, five thousand dollars. Risk at one percent, fifty dollars. Buy at forty, stop at thirty eight. Stop distance is two dollars. Fifty divided by two is twenty five shares. If the stop is hit, you lose about fifty dollars. Guaranteed by math. For forex, you add the pip value step. Lots equals risk dollars divided by stop distance in pips, times dollars per pip per lot. For futures, replace dollars per pip with the tick value. The shape is always the same. Step one, risk dollars from your account and risk percent. Step two, stop distance from your chart. Step three, divide. Change any input and the size changes the right way automatically. Bigger account, bigger size. Wider stop, smaller size. That is the whole game."},
+      {"id":"l06","level":"builder","title":"Pips, points, ticks, and contracts","tagline":"Translate every market's jargon into dollars per move.","oneLiner":"A pip is the smallest standard price step in forex; lot names just describe how many units you control.","formula":"1 standard lot = 100,000 units · 1 mini = 10,000 · 1 micro = 1,000",
+       "sections":[
+         {"h":"Every market has its own ruler","p":["Forex: the classic step is the pip. For most pairs a pip is 0.0001. If EUR/USD moves from 1.0850 to 1.0860, that is 10 pips. For yen pairs, a pip is 0.01. Some brokers also quote a point or pipette, which is one tenth of a pip.","Stocks: one share gains or loses 1 dollar per 1 dollar move. Crypto: one coin works the same way per coin. Futures: the smallest step is called a tick, and each contract has a fixed dollar value per tick."]},
+         {"h":"Lot names, decoded","p":["In forex, a standard lot is 100,000 units. A mini lot is 10,000. A micro lot is 1,000.","So 0.10 lots is 10,000 units, about 1 dollar per pip. And 0.01 lots is 1,000 units, about 10 cents per pip."]},
+         {"h":"Think in dollars per pip","p":["Your broker's buttons say lots, but your brain should think dollars per pip. Always translate: how many dollars do I gain or lose per pip at this size? Then the stop loss math is easy."]}
+       ],
+       "workedExample":{"setup":"You want each pip to be worth about $1.","steps":["Standard lot (1.00) ≈ $10/pip.","0.10 lots ≈ $1/pip."],"answer":"0.10 lots ≈ $1 per pip."},
+       "tryIt":"You trade 0.01 lots (micro). About how much is one pip worth? ($0.10)",
+       "script":"Lesson six. Pips, points, ticks, and contracts. Every market measures small moves differently. In forex, the classic step is the pip. For most pairs, a pip is zero point zero zero zero one. If euro dollar moves from one point zero eight five zero to one point zero eight six zero, that is ten pips. For yen pairs, a pip is zero point zero one. Some brokers also quote a point or pipette, which is one tenth of a pip. In stocks, one share gains or loses one dollar per one dollar move. Simple. In crypto, one coin works the same way per coin. In futures, the smallest step is called a tick, and each contract has a fixed dollar value per tick. Now lot names. In forex, a standard lot is one hundred thousand units. A mini lot is ten thousand. A micro lot is one thousand. So zero point one zero lots is ten thousand units, about one dollar per pip. Zero point zero one lots is one thousand units, about ten cents per pip. Why does this matter? Because your broker's buttons say lots, but your brain should think dollars per pip. Always translate. How many dollars do I gain or lose per pip at this size? Then the stop loss math is easy."},
+      {"id":"l07","level":"builder","title":"Fees: the costs nobody shows you","tagline":"Count the hidden costs before every trade.","oneLiner":"Every trade starts slightly in the red: spread, commission, overnight fees, and slippage all come out of your profit.","formula":"Round-trip cost ≈ spread cost + (commission × 2)","diagram":"diagram-fees.webp",
+       "sections":[
+         {"h":"Every trade starts in the red","p":["Before price moves in your favor, you must first earn back your costs. There are four costs to know.","The spread is the gap between the buy price and the sell price. You always buy a little higher and sell a little lower. The spread is the broker's cut."]},
+         {"h":"The other three costs","p":["Commission: some brokers charge a flat fee per trade, often both when you open and when you close.","Overnight fee, called swap: if you hold a forex or CFD trade overnight, you pay or earn a small daily interest amount.","Slippage: from lesson 1, your fills can be slightly worse than expected in fast markets."]},
+         {"h":"Do the math before you click","p":["Example: you trade 0.05 lots of EUR/USD. The spread is 1.2 pips. One standard lot is about 10 dollars per pip. Spread cost = 1.2 × 10 × 0.05 = 0.60 dollars. Small on one trade, but fifty trades adds up.","The habit: before every trade, ask what the round-trip cost is, and whether the profit target covers it several times over. If fees eat more than about 10% of your target profit, the trade is probably not worth taking."]}
+       ],
+       "workedExample":{"setup":"0.05 lots EUR/USD. Spread 1.2 pips. Standard lot ≈ $10/pip.","steps":["Cost = 1.2 × 10 × 0.05 = $0.60."],"answer":"The spread costs you about $0.60 on this trade."},
+       "tryIt":"Spread 2 pips, 0.10 lots. Cost = 2 × 10 × 0.10 = $2 per round trip.",
+       "script":"Lesson seven. Fees, the costs nobody shows you. Every trade starts slightly in the red. Before price moves in your favor, you must first earn back your costs. There are four costs to know. First, the spread. That is the gap between the buy price and the sell price. You always buy a little higher and sell a little lower. The spread is the broker's cut. Second, commission. Some brokers charge a flat fee per trade, often both when you open and when you close. Third, the overnight fee, called swap. If you hold a forex or C F D trade overnight, you pay or earn a small daily interest amount. Fourth, slippage, from lesson one. Your fills can be slightly worse than expected in fast markets. Let's do the math. You trade zero point zero five lots of euro dollar. The spread is one point two pips. One standard lot is about ten dollars per pip. Spread cost equals one point two times ten times zero point zero five. That is sixty cents. Small on one trade, but do fifty trades and it adds up. Here is the habit. Before every trade, ask, what is my round trip cost, and is my profit target big enough to cover it several times over? If fees eat more than about ten percent of your target profit, the trade is probably not worth taking."},
+      {"id":"l08","level":"builder","title":"Risk-to-reward: is the trade worth it?","tagline":"The ratio that lets you lose 6 out of 10 trades and still profit.","oneLiner":"Risk-to-reward tells you if a trade is worth taking: aim for at least 1:2, so you can be wrong most of the time and still win.","formula":"R:R = reward distance ÷ risk distance · Breakeven win rate = 1 ÷ (1 + R)","diagram":"diagram-risk-reward.webp",
+       "sections":[
+         {"h":"Is this trade even worth it?","p":["Risk-to-reward answers one question: for every dollar I risk, how many dollars could I make?","Reward distance ÷ risk distance. Buy EUR/USD at 1.0850, stop at 1.0830 (20 pips of risk), target at 1.0890 (40 pips of reward). 40 ÷ 20 = 2. That is a 1 to 2 risk-to-reward."]},
+         {"h":"The magic: you can be wrong most of the time","p":["With a 1 to 2 ratio, you only need to win about 33% of your trades to break even. The math: breakeven win rate = 1 ÷ (1 + R). So 1 ÷ 3 = 33%.","Win 4 out of 10 trades at 1 to 2, and you are profitable. That is why professionals obsess over this number. It frees you from needing to be right all the time."]},
+         {"h":"The rule of thumb","p":["Never take a trade below 1 to 1.5, and prefer 1 to 2 or better. A trade with a great setup but a 1 to 1 ratio is a coin flip with fees. Skip it."]}
+       ],
+       "workedExample":{"setup":"Risk 20 pips (1.0850 → 1.0830). Target 40 pips (→ 1.0890).","steps":["R:R = 40 ÷ 20 = 2.","Breakeven win rate = 1 ÷ (1+2) = 33%."],"answer":"A 1:2 trade. You can win just 4 of 10 and still profit."},
+       "tryIt":"Risk $3/share, target $9 above entry. R:R = 9 ÷ 3 = 1:3. Take it!",
+       "script":"Lesson eight. Risk to reward. Not every trade is worth taking, even with a perfect stop loss. Risk to reward answers one question. For every dollar I risk, how many dollars could I make? You find it by dividing. Reward distance divided by risk distance. Example. You buy euro dollar at one point zero eight five zero. Stop at one point zero eight three zero. That is twenty pips of risk. Your target is one point zero eight nine zero. That is forty pips of reward. Forty divided by twenty is two. A one to two risk reward. Now the magic. With a one to two ratio, you only need to win about thirty three percent of your trades to break even. The math: break even win rate equals one divided by one plus R. One divided by three is thirty three percent. Win four out of ten trades at one to two, and you are profitable. That is why professionals obsess over this number. It frees you from needing to be right all the time. The rule of thumb. Never take a trade below one to one point five, and prefer one to two or better. A trade with a great setup but a one to one ratio is a coin flip with fees. Skip it."}
+    );
+    LESSONS.push(
+      {"id":"l09","level":"pro","title":"Trailing stops and moving to break-even","tagline":"Lock in profit while the trade is still running.","oneLiner":"Once a trade is winning, move your stop so the worst case becomes breaking even.","formula":"Break-even stop: move stop to entry once trade is +1R in profit","diagram":"diagram-trailing-stop.webp",
+       "sections":[
+         {"h":"Turn winners into free trades","p":["Your trade moves in your favor by 1 R, meaning it has gained as much as you risked. Now move your stop loss to your entry price.","The worst case is now zero, a scratch trade, instead of a full loss. Your risk just disappeared, but your upside is still open."]},
+         {"h":"A worked example","p":["You buy a stock at 50 dollars, stop at 48. Price climbs to 54. That is 2 R of profit. You move your stop from 48 to 50.","If the price reverses, you exit at 50 with no loss. If it keeps climbing, you ride it."]},
+         {"h":"Trailing stops automate it","p":["A trailing stop follows the price at a fixed distance. Price goes up, the stop creeps up behind it. Price falls, the stop stays put, and eventually price touches it and you exit with profit locked in.","Example: buy at 50, trailing stop of 2 dollars. Price reaches 56, so your stop is now at 54. Price dips to 54, you are out, with 4 dollars per share locked in."]},
+         {"h":"The golden rule of moving stops","p":["Never move your stop further away when a trade goes against you. That turns a planned small loss into hope. Stops only move toward profit, never away from it."]}
+       ],
+       "workedExample":{"setup":"Buy at $50, trailing stop $2. Price climbs to $56, then dips.","steps":["Stop trails to 56 − 2 = $54.","Price touches $54 → exit. Profit = 54 − 50 = $4/share."],"answer":"You exit at $54 with $4 per share locked in."},
+       "tryIt":"Buy $50, stop $48. Price hits $53 (+1.5R). Move stop to $50: worst case is now $0.",
+       "script":"Lesson nine. Trailing stops and moving to break even. A stop loss protects you from big losses. But it can also protect your winners. Here is the classic move. Your trade goes in your favor by one R. That means it has gained as much as you risked. Now move your stop loss to your entry price. The worst case is now zero, a scratch trade, instead of a full loss. Your risk just disappeared. Example. You buy a stock at fifty dollars, stop at forty eight. Price climbs to fifty four. That is two R of profit. You move your stop from forty eight to fifty. If the price reverses, you exit at fifty, no loss. If it keeps climbing, you ride it. A trailing stop automates this idea. It is a stop that follows the price at a fixed distance. Price goes up, the stop creeps up behind it. Price falls, the stop stays put, and eventually price touches it and you exit with profit locked in. Example. You buy at fifty, trailing stop of two dollars. Price reaches fifty six. Your stop is now at fifty four. Price dips to fifty four, you are out, with four dollars per share locked in. One caution. Do not move your stop further away when a trade goes against you. That turns a planned small loss into hope. Stops only move toward profit, never away from it."},
+      {"id":"l10","level":"pro","title":"Don't bet the farm twice: correlated risk","tagline":"Five 1% trades can secretly be one 5% gamble.","oneLiner":"Correlated trades multiply your risk. Count total open risk, not just per-trade risk.","formula":"Total heat = sum of risk % across all open trades (keep ≤ 3–6%)",
+       "sections":[
+         {"h":"Five safe trades can be one dangerous bet","p":["The 1% rule protects each trade. But with five trades open at once, your total open risk is called heat, and it can burn you.","The trap is correlation. Two trades can be secretly the same bet. Long EUR/USD and long GBP/USD is basically betting the dollar falls, twice. If the dollar surges, both stops get hit the same day. That is not two separate 1% risks. It is one 2% risk wearing a disguise."]},
+         {"h":"The fix: add it up","p":["Add up the risk of every open trade. That total is your heat. Keep it under about 3 to 6% of your account.","Example: three trades each risking 1.5%. Total heat is 4.5%. If all three are dollar trades, that is too hot. Close one, or shrink the sizes."]},
+         {"h":"The two questions before every trade","p":["What is my total heat right now? And does this trade bet on the same thing as something I already own? If yes, size it as one combined trade, not two separate ones."]}
+       ],
+       "workedExample":{"setup":"Three trades, each risking 1.5%, all long against the USD.","steps":["Total heat = 1.5 + 1.5 + 1.5 = 4.5%.","All three depend on the dollar falling → one combined bet."],"answer":"4.5% total heat on one theme — too hot. Reduce size or drop a trade."},
+       "tryIt":"4 trades × 1% risk, all on USD pairs. Total heat = 4% on one theme — too hot. Trim to 2–3%.",
+       "script":"Lesson ten. Do not bet the farm twice. The one percent rule protects each trade. But what if you have five trades open at once? Your total open risk is called heat, and it can burn you even when every trade follows the one percent rule. The trap is correlation. Two trades can be secretly the same bet. If you are long euro dollar and long pound dollar, you are basically betting the dollar falls, twice. If the dollar surges, both stops get hit on the same day. That is not two separate one percent risks. That is one two percent risk wearing a disguise. The fix is simple. Add up the risk of every open trade. That total is your heat. Keep it under about three to six percent of your account. Example. You have three trades, each risking one point five percent. Total heat is four point five percent. If all three are dollar trades, that is too hot. Close one, or shrink the sizes. Here is the habit. Before opening a new trade, ask two questions. What is my total heat right now? And does this trade bet on the same thing as something I already own? If yes to the second, size it as one combined trade, not two separate ones."},
+      {"id":"l11","level":"pro","title":"Expectancy: are you actually winning?","tagline":"One number that separates skill from luck.","oneLiner":"Expectancy tells you, in plain math, whether your strategy actually makes money over many trades.","formula":"Expectancy = (win rate × avg win) − (loss rate × avg loss)",
+       "sections":[
+         {"h":"Luck or skill? One number answers","p":["Expectancy = (win rate × average win) − (loss rate × average loss). Measure wins and losses in R, from lesson 8.","It tells you what each trade earns you on average. Positive means the strategy makes money over time. Negative means it loses money, no matter how good individual trades feel."]},
+         {"h":"A worked example","p":["You win 40% of trades. Average win is +2 R. Average loss is −1 R.","Expectancy = (0.40 × 2) − (0.60 × 1) = 0.8 − 0.6 = +0.2 R per trade. With 1% risk per trade, that is +0.2% per trade. Over 100 trades, expect roughly +20%."]},
+         {"h":"Two rules for trusting it","p":["You need at least 30 trades, ideally 50, before the number means anything. Ten trades is noise.","Track every trade in a journal: entry, stop, target, size, and the R result. Your journal is the raw material. Without it, expectancy is a guess, and guesses are expensive."]}
+       ],
+       "workedExample":{"setup":"40% win rate. Avg win +2 R, avg loss −1 R.","steps":["Wins: 0.40 × 2 = 0.8.","Losses: 0.60 × 1 = 0.6.","Expectancy = 0.8 − 0.6 = +0.2 R."],"answer":"+0.2 R per trade. The strategy is profitable."},
+       "tryIt":"50% wins, avg win +1.5R, avg loss −1R. Expectancy = (0.5×1.5) − (0.5×1) = +0.25R. Profitable!",
+       "script":"Lesson eleven. Expectancy. The question every trader must answer. Am I actually good at this, or just lucky lately? Expectancy gives you the honest answer in one number. The formula: expectancy equals win rate times average win, minus loss rate times average loss. Measure wins and losses in R, from lesson eight. Example. You win forty percent of your trades. Your average win is plus two R. Your average loss is minus one R. Expectancy equals zero point four times two, minus zero point six times one. That is zero point eight minus zero point six, which is plus zero point two R. Every trade you take earns you, on average, zero point two R. With one percent risk per trade, that is zero point two percent per trade. Take one hundred trades, expect about twenty percent growth. If expectancy is negative, no mindset trick will save the strategy. Fix the strategy or stop trading it. Two rules. First, you need at least thirty trades, ideally fifty, before the number means anything. Ten trades is noise. Second, track every trade in a journal. Entry, stop, target, size, and the R result. Your journal is the raw material. Without it, expectancy is a guess, and guesses are expensive."},
+      {"id":"l12","level":"pro","title":"TradingView essentials","tagline":"Draw the trade, read the ratio, set the alert, practice with paper money.","oneLiner":"TradingView's position tool draws your risk and reward on the chart and does the ratio math for you.","formula":"Use the Long/Short Position tool to visualize risk, reward, and R:R before entering",
+       "sections":[
+         {"h":"Draw your trade before you take it","p":["On the left toolbar, find the Long Position tool (Alt+L on Windows, Option+L on Mac). The Short Position tool is next to it.","Click your entry price, then drag down to your stop. A red box appears: your risk zone. Drag upward to your target. A blue box appears: your reward zone."]},
+         {"h":"Read the label, trust the math","p":["The tool's label shows the stop distance, the target distance, and the risk-reward ratio automatically. If it says 1 to 1, drag the target further or find a better trade.","Read the stop distance from the tool, open the lot-size calculator from Level 2, and get your exact size. No guessing."]},
+         {"h":"Two power features","p":["Alerts: right-click your stop line, choose Add Alert, and set it to trigger when price crosses the line. Your phone tells you the moment a trade closes.","Practice with paper money: open a paper trading account in TradingView, and use Bar Replay from the bottom toolbar to rewind any chart and trade it candle by candle, exactly like the simulator in this app, but with real history."]}
+       ],
+       "workedExample":{"setup":"Entry 1.0850, stop 1.0830, target 1.0890 on EUR/USD.","steps":["Drag entry → stop: red box, 20 pips.","Drag → target: blue box, 40 pips. Label reads 1:2."],"answer":"The tool shows 20 pips risk, 40 pips reward, ratio 1:2 — a valid trade."},
+       "tryIt":"Open TradingView, draw a Long Position on any chart, and read the ratio in the label. Aim for 1:2+.",
+       "script":"Lesson twelve. TradingView essentials. You have learned the math. Now let us make TradingView do the drawing for you. Open any chart. On the left toolbar, find the Long Position tool, or press Alt plus L on Windows, Option plus L on Mac. There is a Short Position tool next to it. Click your entry price, then drag down to your stop. A red box appears. That is your risk zone. Now drag upward to your target. A blue box appears. That is your reward zone. Look at the label on the box. TradingView shows you the stop distance, the target distance, and the risk reward ratio, automatically. If it says one to one, drag the target further or find a better trade. Next, read the stop distance from the tool, open the lot size calculator from level two, and get your exact size. No guessing. Two power features. First, alerts. Right click your stop line, choose Add Alert, and set it to trigger when price crosses the line. Your phone tells you the moment a trade closes. Second, practice with paper money. Open a paper trading account in TradingView, and use Bar Replay from the bottom toolbar to rewind any chart and trade it candle by candle, exactly like the simulator in this app, but with real history. Congratulations. You now know what most traders never learn. Protect the downside with stops, size with math, count the fees, and let winners run. Keep practicing, and the market will pay for your education in small, affordable lessons."}
+    );
+
+    var QUIZZES = {
+      "novice":[
+        {"q":"What does a stop loss do?","options":["It automatically closes your trade at a preset price","It guarantees you never lose money","It doubles your position when price falls","It is a type of profit target"],"a":0,"explain":"A stop loss is an automatic order that closes your trade at a preset price."},
+        {"q":"With a $4,000 account and the 1% rule, what is your max risk per trade?","options":["$400","$4","$40","$100"],"a":2,"explain":"$4,000 x 0.01 = $40 max risk per trade."},
+        {"q":"You buy at $80 and your stop is at $76. What is the stop distance?","options":["$2","$4","$6","$8"],"a":1,"explain":"$80 - $76 = $4 per share of stop distance."},
+        {"q":"$1,000 account, 1% risk ($10), 20-pip stop, $10/pip per lot. What size?","options":["0.5 lots","0.05 lots","0.005 lots","5 lots"],"a":1,"explain":"$10 / (20 x $10) = 0.05 lots."},
+        {"q":"Why do traders use the 1% rule?","options":["To get rich faster","So a losing streak cannot wipe out the account","Because brokers require it","To avoid paying taxes"],"a":1,"explain":"At 1% risk, even 10 losses in a row only costs about 9.6% of the account."}
+      ],
+      "builder":[
+        {"q":"You risk $50 on a stock with a $2.50 stop distance. How many shares?","options":["10 shares","15 shares","25 shares","20 shares"],"a":3,"explain":"$50 / $2.50 = 20 shares. If stopped out you lose about $50."},
+        {"q":"A pip in EUR/USD is:","options":["0.01 for all pairs","0.0001 for most pairs","One full dollar","One tenth of a cent"],"a":1,"explain":"For most pairs a pip is 0.0001; for yen pairs it is 0.01."},
+        {"q":"Spread is 2 pips and you trade 0.10 lots. Rough round-trip spread cost?","options":["$0.20","$2","$20","$0.02"],"a":1,"explain":"2 pips x $10/pip/lot x 0.10 lots = $2."},
+        {"q":"You risk $30 to make $90. What is the risk-to-reward?","options":["1:1","1:2","1:3","3:1"],"a":2,"explain":"$90 / $30 = 3, a 1:3 risk-to-reward."},
+        {"q":"At a 1:2 risk-reward, what win rate breaks even?","options":["50%","33%","66%","25%"],"a":1,"explain":"Breakeven win rate = 1 / (1 + 2) = 33%."}
+      ],
+      "pro":[
+        {"q":"Price rises and you move your stop to your entry price. This is called:","options":["A trailing loss","A break-even stop","A margin call","Hedging"],"a":1,"explain":"Worst case becomes zero - a scratch trade instead of a loss."},
+        {"q":"You are long EUR/USD and long GBP/USD at the same time. This means:","options":["Your risk is perfectly balanced","Roughly double risk on the US dollar falling","You cannot lose","Your fees are cut in half"],"a":1,"explain":"Both trades bet the dollar falls - one 2% risk wearing a disguise."},
+        {"q":"40% win rate, average win +2R, average loss -1R. Expectancy?","options":["+0.8R","-0.2R","+0.2R","0R"],"a":2,"explain":"(0.40 x 2) - (0.60 x 1) = 0.8 - 0.6 = +0.2R per trade."},
+        {"q":"Which TradingView tool draws your risk and reward boxes on the chart?","options":["The magnet tool","The Long/Short Position tool","The Fibonacci tool","The measure tool"],"a":1,"explain":"Drag from entry to stop to target; the label shows distance and ratio."},
+        {"q":"What is the guideline for TOTAL risk across all open trades?","options":["Up to 50% of the account","There is no limit","Keep it under about 3-6%","Risk 1% per trade is enough, totals do not matter"],"a":2,"explain":"Per-trade risk is not enough - add up every open trade and keep heat under 3-6%."}
+      ]
+    };
+
+    var GUIDE = [
+      {"t":"Draw your trade first","d":"On the left toolbar pick the Long Position tool (Alt+L on Windows, Option+L on Mac) or the Short Position tool. Click your entry, drag down to your stop (red risk box), then drag up to your target (blue reward box)."},
+      {"t":"Read the label","d":"The box label shows stop distance, target distance, and the risk-reward ratio automatically. If it reads below 1:1.5, drag the target further or skip the trade."},
+      {"t":"Size it with math","d":"Take the stop distance from the tool, plug it into the lot-size calculator (Level 2), and trade exactly that size. No guessing."},
+      {"t":"Set a stop alert","d":"Right-click the stop line, choose Add Alert, and set it to trigger when price crosses the line. Your phone tells you the moment the trade closes."},
+      {"t":"Practice with paper money","d":"Open a TradingView paper trading account and use Bar Replay (bottom toolbar) to rewind any chart and trade it candle by candle - just like the Practice Desk in this app, but with real history."}
+    ];
+
+    /* ================================================================
+       I18N — Austrian German (de) translations for every UI string,
+       level, quiz, and guide step. Lesson text lives in LESSONS_DE.
+       Numbers, prices, and math are identical in both languages.
+       ================================================================ */
+    var STRINGS = {
+      en: {
+        tagline: "Learn to protect your money first. Trade second.",
+        tabHome: "Home", tabLearn: "Learn", tabTools: "Tools", tabPractice: "Practice", tabGuide: "Guide", tabProgress: "Progress",
+        topProgress: function(d){ return d + " of 12 lessons done"; },
+        homeKicker: "A beginner practice app",
+        homeTitleHtml: "First protect your money. <span>Then trade.</span>",
+        homeLead: "Trading is not about guessing the future. It is about deciding, before every trade, how much you are willing to lose — and letting a stop loss keep you close to that plan. (In very fast markets the price can slip a little past your stop; lesson 1 explains that honestly.) These 12 short lessons teach you the whole system, one small step at a time.",
+        how1t: "Learn", how1p: "Short lessons you can read or listen to, with simple pictures and worked examples.",
+        how2t: "Prove it", how2p: "Pass a 5-question quiz (4 out of 5) to unlock the next level.",
+        how3t: "Practice", how3p: "Trade on a pretend chart with fake money before you ever risk a real dollar.",
+        roadmapKicker: "Your roadmap",
+        lessonsOfTotal: function(d, t){ return d + " of " + t + " lessons"; },
+        chipLocked: "Locked", chipPassed: "Quiz passed", chipOpen: "Open",
+        startLearning: "Start learning",
+        lockNote: function(prev){ return "Pass the " + prev + " quiz to unlock"; },
+        tvCardTitle: "Built to use with TradingView",
+        tvCardText: "TradingView is a charting platform with a free plan that many traders use. The Guide tab shows you, step by step, how to draw your stop loss and profit target right on its charts — the same skill you practice here.",
+        tvCardBtn: "Open the TradingView guide",
+        learnKicker: "Learn", learnTitle: "Three levels, twelve lessons",
+        learnLead: "Read the lessons, listen to the audio, watch one short video per level, then pass the quiz to move on.",
+        lockedBox: function(prev){ return "This level is locked. Pass the quiz at the end of <strong>" + prev + "</strong> (score 4 out of 5) to open it."; },
+        watchKicker: "Watch",
+        videoPlaceholder: "Video coming soon — the lessons below cover this topic in words and pictures.",
+        quizKicker: "Level quiz", quizPassedLabel: "Passed", quizToPass: "5 questions · score 4 of 5 to pass",
+        quizBest: function(b){ return "Your best score so far: " + b + " of 5. "; },
+        quizExplainNote: "You will see the explanation after every answer.",
+        retakeQuiz: "Retake the quiz", takeQuiz: "Take the quiz",
+        lessonBack: "‹ All lessons",
+        listenLabel: "Listen to this lesson",
+        audioSoon: "The audio version is on its way. For now, read the lesson below — or open the transcript and read it out loud.",
+        transcriptSummary: "Read the narration (transcript)",
+        diagramAlt: function(t){ return "Diagram for: " + t; },
+        diagramPlaceholder: "Diagram coming soon — the words below walk you through the same idea step by step.",
+        workedExample: "Worked example", tryItLabel: "Try it yourself",
+        lessonDoneNote: "✓ You finished this lesson. Nice work — you can revisit it any time.",
+        markDone: "Mark this lesson done",
+        prevLesson: "‹ Previous lesson", nextLesson: "Next lesson ›",
+        nextLocked: "Next lesson is in the next level",
+        goPractice: "Go practice on the Practice Desk ›",
+        quizBack: "‹ Back to lessons",
+        quizBarLevel: function(n){ return n + " quiz"; },
+        questionOf: function(i, n, s){ return "Question " + i + " of " + n + " · Score: " + s; },
+        nextQuestion: "Next question", seeResult: "See my result",
+        correct: "Correct.", notQuite: "Not quite.",
+        needToPass: "You need 4 out of 5 to pass.",
+        passedFinal: "You finished the final level — amazing work.",
+        passedUnlock: function(n){ return "<strong>" + n + "</strong> is now unlocked."; },
+        passedWord: "You passed! ",
+        goToLevel: function(n){ return "Go to " + n; },
+        failBanner: "So close. Read the lessons once more — especially the ones with the formulas — then try again. Every expert novice started exactly here.",
+        backToLessons: "Back to lessons",
+        calcKicker: "Tools", calcTitle: "The three calculators",
+        calcLead: "These do the math from the lessons, so you can check any trade in seconds.",
+        lotCalcTitle: "1 · Lot-size calculator",
+        lotCalcSub: "How much should you buy? (Lessons 4 and 5)",
+        acctBalance: "Account balance ($)",
+        riskPerTradePct: "Risk per trade (%)",
+        riskHintBeginners: "— beginners: 0.5% to 2%",
+        tradingWhat: "What are you trading?",
+        optForex: "EUR/USD (forex)", optStock: "Stock", optCrypto: "Crypto", optFutures: "Futures",
+        entryPrice: "Entry price", stopPrice: "Stop-loss price",
+        pipValLabel: "Value per pip / tick, per 1 lot or contract ($)",
+        pipValHint: "For a standard EUR/USD lot this is $10. For stocks and crypto it is $1 per share or coin.",
+        lotEmpty: "Enter an entry price and a different stop price to see your size.",
+        unitsWord: "units",
+        lotAbout: function(u, p){ return "That is about " + u + " units · stop distance " + p + " pips"; },
+        stopDistPer: function(m, u){ return "Stop distance " + m + " per " + u; },
+        unitStock: "shares", unitStockOne: "share", unitCrypto: "coins", unitCryptoOne: "coin", unitFutures: "contracts", unitFuturesOne: "contract", unitLots: "lots",
+        youRisk: "You risk", stopPipsK: "Stop (pips)", stopDistanceK: "Stop distance",
+        lotSentence: function(m, p){ return "If your stop is hit, you lose about <strong>" + m + "</strong> — that is " + p + "% of your account, exactly as planned."; },
+        riskVizTitle: "2 · Risk visualizer",
+        riskVizSub: "What would a bad week actually cost? (Lesson 2)",
+        riskPerTradeLabel: "Risk per trade:",
+        riskPerTradeK: "Risk per trade", losses10K: "10 losses in a row", acctLeftK: "Account left",
+        riskSentenceLow: "Annoying, but you are still in the game.",
+        riskSentenceHigh: "That is a deep hole — most traders never climb out. Try sliding back toward 1%.",
+        riskSentence: function(p, d, low){ return "Lose 10 trades in a row at " + p + "% risk and you are down " + d + "%. " + (low ? "Annoying, but you are still in the game." : "That is a deep hole — most traders never climb out. Try sliding back toward 1%."); },
+        feeTitle: "3 · Fee estimator",
+        feeSub: "Every trade starts a little in the red. See by how much. (Lesson 7)",
+        fSpread: "Spread (pips or $ per unit)", fPipVal: "$ value of 1 pip per lot",
+        fComm: "Commission per side ($)", fSize: "Position size (lots)", fTarget: "Your profit target ($)",
+        spreadCostK: "Spread cost", commK: "Commission (in + out)", roundTripK: "Round-trip total",
+        feeSentenceHigh: "Fees eating more than 10% of the target usually means the trade is not worth taking.",
+        feeSentenceLow: "Under about 10% of the target — healthy.",
+        feeSentence: function(t, p, tg, high){ return "This trade costs about <strong>" + t + "</strong> before price moves at all. That is <strong>" + p + "%</strong> of your " + tg + " profit target. " + (high ? "Fees eating more than 10% of the target usually means the trade is not worth taking." : "Under about 10% of the target — healthy."); },
+        simKicker: "Practice Desk", simTitle: "Trade with pretend money",
+        simLead: "This is a practice chart — the prices are made up, the lessons are real. Set your entry, stop, and target, and the app sizes the trade for you, exactly like the lessons taught.",
+        instrument: "Instrument",
+        chartHint: "Tap the chart to set your entry at the latest price. Then drag the red stop line and the green target line where you want them.",
+        runTrade: "Run trade", runningTrade: "Trade running…", newChart: "New chart",
+        planTitle: "Your trade plan", acctLabel: "Account ($)",
+        trackTitle: "Your track record",
+        journalTitle: "Trade journal",
+        journalSub: "Every finished trade is written down here, like lesson 11 says. R means \"how many times your risk you made or lost\".",
+        planEmpty: "Tap the chart to set your entry first.",
+        tradeSizeK: "Trade size", ifStopK: "If stop is hit", ifTargetK: "If target is hit",
+        riskRewardK: "Risk : reward", feeEstK: "Fee estimate",
+        planSentence: function(a, b){ return "If your stop is hit, you lose about <strong>" + a + "</strong> including fees. If your target is hit, you make about <strong>" + b + "</strong> after fees. That is the whole plan — decided before the trade starts."; },
+        fbFresh: "Fresh chart loaded. Tap the chart to set your entry, drag the red and green lines, then press Run trade.",
+        fbEntrySet: function(p){ return "Entry set at " + p + ". Drag the red stop line and green target line, then press Run trade."; },
+        fbTapFirst: "Tap the chart to set your entry first.",
+        fbCheckPlan: "Check your account and risk numbers in the trade plan.",
+        fbLive: "Trade is live. Watch: if price touches the red stop line, you are out with the planned loss. If it touches the green target, you win.",
+        fbWin: function(m, r){ return "Target hit! You made about " + m + " after fees (" + r + "R). That is the plan working: small planned risk, bigger reward. Set up the next one."; },
+        fbLose: function(m, r){ return "Stop hit — and that is okay. You lost about " + m + " (" + r + "R), almost exactly what you planned before the trade. No disaster, no hoping. That is what the brake pedal is for."; },
+        fbTimeout: function(m, r){ return "Time ran out, so the trade closed at the market price for " + m + " (" + r + "R). In real trading you would decide: hold longer, or close it yourself."; },
+        journalEmpty: "No trades yet. Run your first pretend trade above.",
+        jEntry: "Entry", jStop: "Stop", jTarget: "Target", jSize: "Size", jClosedAt: "Closed at",
+        jTargetHit: "target hit", jStoppedOut: "stopped out", jTimeOut: "time out",
+        statTrades: "Trades", statWinRate: "Win rate", statAvgR: "Avg R / expectancy", statJournal: "Journal entries",
+        lineEntry: "Entry", lineStop: "Stop", lineTarget: "Target",
+        guideKicker: "TradingView Guide", guideTitle: "Use TradingView like a trader",
+        guideLead: "TradingView is a charting platform with a free plan that many traders use. Here is the exact routine from lesson 12, step by step.",
+        openTV: "Open TradingView",
+        guideTip: "Tip: practice in this app's Practice Desk first, then repeat the same steps in TradingView's paper trading with real charts.",
+        progressKicker: "Progress", progressTitle: "How you are doing",
+        lessonsCardT: "Lessons", ofLessonsWord: "lessons finished",
+        perLevelLine: function(n, d, t){ return n + ": " + d + " of " + t; },
+        quizzesCardT: "Quizzes", ofQuizzesWord: "level quizzes passed",
+        quizLineNone: "not taken yet",
+        quizLine: function(b, p){ return "best score " + b + " of 5" + (p ? " · passed" : ""); },
+        practiceRecordT: "Practice Desk record",
+        progressNote: "Remember lesson 11: give it at least 30 trades before you judge the numbers.",
+        startOverT: "Start over",
+        startOverText: "This erases lesson checkmarks, quiz scores, and your whole practice journal on this device.",
+        resetBtn: "Reset progress", resetConfirmBtn: "Tap again to confirm reset",
+        resetUndoNote: "This cannot be undone.", resetDoneNote: "Done — everything is back to the beginning."
+      },
+      de: {
+        tagline: "Lerne zuerst, dein Geld zu schützen. Trade danach.",
+        tabHome: "Start", tabLearn: "Lernen", tabTools: "Werkzeuge", tabPractice: "Üben", tabGuide: "Anleitung", tabProgress: "Fortschritt",
+        topProgress: function(d){ return d + " von 12 Lektionen geschafft"; },
+        homeKicker: "Eine Übungs-App für Anfängerinnen",
+        homeTitleHtml: "Schütze zuerst dein Geld. <span>Trade danach.</span>",
+        homeLead: "Beim Trading geht es nicht darum, die Zukunft zu erraten. Es geht darum, vor jedem Trade zu entscheiden, wie viel du zu verlieren bereit bist – und einen Stop-Loss zu nutzen, der dich nahe an diesem Plan hält. (In sehr schnellen Märkten kann der Preis ein wenig über deinen Stopp hinausrutschen; Lektion 1 erklärt das ehrlich.) Diese 12 kurzen Lektionen bringen dir das ganze System bei, einen kleinen Schritt nach dem anderen.",
+        how1t: "Lernen", how1p: "Kurze Lektionen zum Lesen oder Anhören, mit einfachen Bildern und durchgerechneten Beispielen.",
+        how2t: "Beweise es", how2p: "Bestehe ein Quiz mit 5 Fragen (4 von 5), um die nächste Stufe freizuschalten.",
+        how3t: "Üben", how3p: "Trade auf einem Übungs-Chart mit Spielgeld, bevor du je einen echten Dollar riskierst.",
+        roadmapKicker: "Dein Fahrplan",
+        lessonsOfTotal: function(d, t){ return d + " von " + t + " Lektionen"; },
+        chipLocked: "Gesperrt", chipPassed: "Quiz bestanden", chipOpen: "Offen",
+        startLearning: "Jetzt lernen",
+        lockNote: function(prev){ return "Bestehe das " + prev + "-Quiz, um diese Stufe freizuschalten"; },
+        tvCardTitle: "Gebaut für die Arbeit mit TradingView",
+        tvCardText: "TradingView ist eine Chart-Plattform mit einem kostenlosen Tarif, die viele Trader nutzen. Der Reiter „Anleitung“ zeigt dir Schritt für Schritt, wie du deinen Stop-Loss und dein Gewinnziel direkt in die Charts zeichnest – genau die Fähigkeit, die du hier übst.",
+        tvCardBtn: "TradingView-Anleitung öffnen",
+        learnKicker: "Lernen", learnTitle: "Drei Stufen, zwölf Lektionen",
+        learnLead: "Lies die Lektionen, höre dir das Audio an, schau dir ein kurzes Video pro Stufe an und bestehe dann das Quiz, um weiterzukommen.",
+        lockedBox: function(prev){ return "Diese Stufe ist gesperrt. Bestehe das Quiz am Ende von <strong>" + prev + "</strong> (4 von 5 Punkten), um sie zu öffnen."; },
+        watchKicker: "Anschauen",
+        videoPlaceholder: "Video folgt in Kürze – die Lektionen unten behandeln dieses Thema in Worten und Bildern.",
+        quizKicker: "Stufen-Quiz", quizPassedLabel: "Bestanden", quizToPass: "5 Fragen · 4 von 5 zum Bestehen",
+        quizBest: function(b){ return "Dein bestes Ergebnis bisher: " + b + " von 5. "; },
+        quizExplainNote: "Nach jeder Antwort siehst du die Erklärung.",
+        retakeQuiz: "Quiz wiederholen", takeQuiz: "Quiz starten",
+        lessonBack: "‹ Alle Lektionen",
+        listenLabel: "Diese Lektion anhören",
+        audioSoon: "Die Audio-Version ist unterwegs. Lies vorerst die Lektion unten – oder öffne das Transkript und lies es laut vor.",
+        transcriptSummary: "Erzählung lesen (Transkript)",
+        diagramAlt: function(t){ return "Diagramm zu: " + t; },
+        diagramPlaceholder: "Diagramm folgt in Kürze – die Worte unten führen dich Schritt für Schritt durch dieselbe Idee.",
+        workedExample: "Durchgerechnetes Beispiel", tryItLabel: "Probier es selbst",
+        lessonDoneNote: "✓ Du hast diese Lektion geschafft. Gut gemacht – du kannst sie jederzeit wieder ansehen.",
+        markDone: "Lektion als erledigt markieren",
+        prevLesson: "‹ Vorherige Lektion", nextLesson: "Nächste Lektion ›",
+        nextLocked: "Die nächste Lektion ist in der nächsten Stufe",
+        goPractice: "Zum Üben in den Übungsbereich ›",
+        quizBack: "‹ Zurück zu den Lektionen",
+        quizBarLevel: function(n){ return n + "-Quiz"; },
+        questionOf: function(i, n, s){ return "Frage " + i + " von " + n + " · Punkte: " + s; },
+        nextQuestion: "Nächste Frage", seeResult: "Mein Ergebnis ansehen",
+        correct: "Richtig.", notQuite: "Nicht ganz.",
+        needToPass: "Du brauchst 4 von 5 zum Bestehen.",
+        passedFinal: "Du hast die letzte Stufe geschafft – starke Arbeit!",
+        passedUnlock: function(n){ return "<strong>" + n + "</strong> ist jetzt freigeschaltet."; },
+        passedWord: "Bestanden! ",
+        goToLevel: function(n){ return "Zu " + n; },
+        failBanner: "Knapp daneben. Lies die Lektionen noch einmal – besonders die mit den Formeln – und versuch es dann erneut. Jede erfahrene Anfängerin hat genau hier angefangen.",
+        backToLessons: "Zurück zu den Lektionen",
+        calcKicker: "Werkzeuge", calcTitle: "Die drei Rechner",
+        calcLead: "Sie übernehmen die Mathematik aus den Lektionen, damit du jeden Trade in Sekunden prüfen kannst.",
+        lotCalcTitle: "1 · Lot-Größen-Rechner",
+        lotCalcSub: "Wie viel solltest du kaufen? (Lektionen 4 und 5)",
+        acctBalance: "Kontostand ($)",
+        riskPerTradePct: "Risiko pro Trade (%)",
+        riskHintBeginners: "— Anfängerinnen: 0.5% bis 2%",
+        tradingWhat: "Was tradest du?",
+        optForex: "EUR/USD (Forex)", optStock: "Aktie", optCrypto: "Krypto", optFutures: "Futures",
+        entryPrice: "Einstiegspreis", stopPrice: "Stop-Loss-Preis",
+        pipValLabel: "Wert pro Pip / Tick, pro 1 Lot oder Kontrakt ($)",
+        pipValHint: "Bei einem Standard-Lot EUR/USD sind das $10. Bei Aktien und Krypto ist es $1 pro Aktie oder Coin.",
+        lotEmpty: "Gib einen Einstiegspreis und einen anderen Stopppreis ein, um deine Größe zu sehen.",
+        unitsWord: "Einheiten",
+        lotAbout: function(u, p){ return "Das sind etwa " + u + " Einheiten · Stoppabstand " + p + " Pips"; },
+        stopDistPer: function(m, u){ return "Stoppabstand " + m + " pro " + u; },
+        unitStock: "Aktien", unitStockOne: "Aktie", unitCrypto: "Coins", unitCryptoOne: "Coin", unitFutures: "Kontrakte", unitFuturesOne: "Kontrakt", unitLots: "Lots",
+        youRisk: "Du riskierst", stopPipsK: "Stopp (Pips)", stopDistanceK: "Stoppabstand",
+        lotSentence: function(m, p){ return "Wird dein Stopp getroffen, verlierst du etwa <strong>" + m + "</strong> – das sind " + p + "% deines Kontos, genau wie geplant."; },
+        riskVizTitle: "2 · Risiko-Anzeige",
+        riskVizSub: "Was würde eine schlechte Woche wirklich kosten? (Lektion 2)",
+        riskPerTradeLabel: "Risiko pro Trade:",
+        riskPerTradeK: "Risiko pro Trade", losses10K: "10 Verluste hintereinander", acctLeftK: "Konto übrig",
+        riskSentenceLow: "Ärgerlich, aber du bist noch im Spiel.",
+        riskSentenceHigh: "Das ist ein tiefes Loch – die meisten Trader klettern da nie wieder heraus. Schiebe den Regler zurück Richtung 1%.",
+        riskSentence: function(p, d, low){ return "Verliere 10 Trades hintereinander bei " + p + "% Risiko, und du bist " + d + "% im Minus. " + (low ? "Ärgerlich, aber du bist noch im Spiel." : "Das ist ein tiefes Loch – die meisten Trader klettern da nie wieder heraus. Schiebe den Regler zurück Richtung 1%."); },
+        feeTitle: "3 · Gebühren-Schätzer",
+        feeSub: "Jeder Trade startet leicht im Minus. Sieh dir an, um wie viel. (Lektion 7)",
+        fSpread: "Spread (Pips oder $ pro Einheit)", fPipVal: "$-Wert von 1 Pip pro Lot",
+        fComm: "Kommission pro Seite ($)", fSize: "Positionsgröße (Lots)", fTarget: "Dein Gewinnziel ($)",
+        spreadCostK: "Spread-Kosten", commK: "Kommission (rein + raus)", roundTripK: "Gesamt hin und zurück",
+        feeSentenceHigh: "Fressen Gebühren mehr als 10% des Ziels, lohnt sich der Trade meist nicht.",
+        feeSentenceLow: "Unter etwa 10% des Ziels – gesund.",
+        feeSentence: function(t, p, tg, high){ return "Dieser Trade kostet etwa <strong>" + t + "</strong>, bevor sich der Preis überhaupt bewegt. Das sind <strong>" + p + "%</strong> deines Gewinnziels von " + tg + ". " + (high ? "Fressen Gebühren mehr als 10% des Ziels, lohnt sich der Trade meist nicht." : "Unter etwa 10% des Ziels – gesund."); },
+        simKicker: "Übungsbereich", simTitle: "Trade mit Spielgeld",
+        simLead: "Das ist ein Übungs-Chart – die Preise sind erfunden, die Lektionen sind echt. Setze Einstieg, Stopp und Ziel, und die App dimensioniert den Trade für dich, genau wie es die Lektionen gezeigt haben.",
+        instrument: "Instrument",
+        chartHint: "Tippe auf den Chart, um deinen Einstieg beim letzten Preis zu setzen. Ziehe dann die rote Stopplinie und die grüne Ziellinie dorthin, wo du sie haben willst.",
+        runTrade: "Trade starten", runningTrade: "Trade läuft…", newChart: "Neuer Chart",
+        planTitle: "Dein Trade-Plan", acctLabel: "Konto ($)",
+        trackTitle: "Deine Bilanz",
+        journalTitle: "Trade-Tagebuch",
+        journalSub: "Jeder abgeschlossene Trade wird hier aufgeschrieben, wie Lektion 11 sagt. R heißt: „Das Wievielfache deines Risikos hast du gewonnen oder verloren.“",
+        planEmpty: "Tippe auf den Chart, um zuerst deinen Einstieg zu setzen.",
+        tradeSizeK: "Handelsgröße", ifStopK: "Wenn der Stopp trifft", ifTargetK: "Wenn das Ziel trifft",
+        riskRewardK: "Chance : Risiko", feeEstK: "Gebühren-Schätzung",
+        planSentence: function(a, b){ return "Trifft dein Stopp, verlierst du etwa <strong>" + a + "</strong> inklusive Gebühren. Trifft dein Ziel, verdienst du etwa <strong>" + b + "</strong> nach Gebühren. Das ist der ganze Plan – entschieden, bevor der Trade startet."; },
+        fbFresh: "Neuer Chart geladen. Tippe auf den Chart, um deinen Einstieg zu setzen, ziehe die rote und die grüne Linie und drücke dann „Trade starten“.",
+        fbEntrySet: function(p){ return "Einstieg bei " + p + " gesetzt. Ziehe die rote Stopplinie und die grüne Ziellinie und drücke dann „Trade starten“."; },
+        fbTapFirst: "Tippe zuerst auf den Chart, um deinen Einstieg zu setzen.",
+        fbCheckPlan: "Prüfe deine Konto- und Risiko-Zahlen im Trade-Plan.",
+        fbLive: "Der Trade läuft. Schau zu: Berührt der Preis die rote Stopplinie, bist du mit dem geplanten Verlust raus. Berührt er das grüne Ziel, gewinnst du.",
+        fbWin: function(m, r){ return "Ziel getroffen! Du hast etwa " + m + " nach Gebühren verdient (" + r + "R). So funktioniert der Plan: kleines geplantes Risiko, größere Belohnung. Richte den nächsten ein."; },
+        fbLose: function(m, r){ return "Stopp getroffen – und das ist okay. Du hast etwa " + m + " verloren (" + r + "R), fast genau das, was du vor dem Trade geplant hast. Keine Katastrophe, kein Hoffen. Dafür ist das Bremspedal da."; },
+        fbTimeout: function(m, r){ return "Die Zeit ist um, also wurde der Trade zum Marktpreis für " + m + " geschlossen (" + r + "R). Im echten Trading würdest du entscheiden: länger halten oder selbst schließen."; },
+        journalEmpty: "Noch keine Trades. Starte oben deinen ersten Übungstrade.",
+        jEntry: "Einstieg", jStop: "Stopp", jTarget: "Ziel", jSize: "Größe", jClosedAt: "Geschlossen bei",
+        jTargetHit: "Ziel getroffen", jStoppedOut: "ausgestoppt", jTimeOut: "Zeit um",
+        statTrades: "Trades", statWinRate: "Trefferquote", statAvgR: "Ø R / Erwartungswert", statJournal: "Tagebuch-Einträge",
+        lineEntry: "Einstieg", lineStop: "Stopp", lineTarget: "Ziel",
+        guideKicker: "TradingView-Anleitung", guideTitle: "Nutze TradingView wie eine Traderin",
+        guideLead: "TradingView ist eine Chart-Plattform mit einem kostenlosen Tarif, die viele Trader nutzen. Hier ist die genaue Routine aus Lektion 12, Schritt für Schritt.",
+        openTV: "TradingView öffnen",
+        guideTip: "Tipp: Übe zuerst im Übungsbereich dieser App und wiederhole dann dieselben Schritte im Paper Trading von TradingView mit echten Charts.",
+        progressKicker: "Fortschritt", progressTitle: "So läuft es bei dir",
+        lessonsCardT: "Lektionen", ofLessonsWord: "Lektionen geschafft",
+        perLevelLine: function(n, d, t){ return n + ": " + d + " von " + t; },
+        quizzesCardT: "Quizze", ofQuizzesWord: "Stufen-Quizze bestanden",
+        quizLineNone: "noch nicht gemacht",
+        quizLine: function(b, p){ return "bestes Ergebnis " + b + " von 5" + (p ? " · bestanden" : ""); },
+        practiceRecordT: "Bilanz des Übungsbereichs",
+        progressNote: "Denk an Lektion 11: Gib den Zahlen mindestens 30 Trades, bevor du sie beurteilst.",
+        startOverT: "Von vorne beginnen",
+        startOverText: "Das löscht Lektions-Häkchen, Quiz-Ergebnisse und dein ganzes Übungstagebuch auf diesem Gerät.",
+        resetBtn: "Fortschritt zurücksetzen", resetConfirmBtn: "Tippe noch einmal, um das Zurücksetzen zu bestätigen",
+        resetUndoNote: "Das kann nicht rückgängig gemacht werden.", resetDoneNote: "Fertig – alles ist wieder am Anfang."
+      }
+    };
+    function T(){ return STRINGS[LANG]; }
+
+    var LEVELS_DE = {
+      "novice": {"name":"Stufe 1 · Erste Schritte","tagline":"Was ein Stop-Loss ist – und die eine Regel, die dich im Spiel hält.","videoTopic":"Was ist ein Stop-Loss? Erklärt mit einem Auto-Vergleich"},
+      "builder": {"name":"Stufe 2 · Die richtige Größe","tagline":"Berechne deine genaue Lot-Größe und zähle alle Gebühren, bevor du klickst.","videoTopic":"So berechnest du deine Lot-Größe in drei Schritten"},
+      "pro": {"name":"Stufe 3 · Erfahrene Anfängerin","tagline":"Stärkere Grundlagen für Anfängerinnen: Trailing-Stops, Portfolio-Risiko, Erwartungswert und TradingView-Basics.","videoTopic":"Chance-Risiko-Verhältnis – und warum Gebühren entscheiden, wer gewinnt"}
+    };
+
+    var QUIZZES_DE = {
+      "novice":[
+        {"q":"Was macht ein Stop-Loss?","options":["Er schließt deinen Trade automatisch zu einem vorher festgelegten Preis","Er garantiert, dass du nie Geld verlierst","Er verdoppelt deine Position, wenn der Preis fällt","Er ist eine Art Gewinnziel"],"a":0,"explain":"Ein Stop-Loss ist ein automatischer Auftrag, der deinen Trade zu einem vorher festgelegten Preis schließt."},
+        {"q":"Bei einem Konto mit $4,000 und der 1-%-Regel: Wie hoch ist dein maximales Risiko pro Trade?","options":["$400","$4","$40","$100"],"a":2,"explain":"$4,000 × 0.01 = $40 maximales Risiko pro Trade."},
+        {"q":"Du kaufst für $80 und dein Stopp liegt bei $76. Wie groß ist der Stoppabstand?","options":["$2","$4","$6","$8"],"a":1,"explain":"$80 − $76 = $4 Stoppabstand pro Aktie."},
+        {"q":"Konto mit $1,000, 1% Risiko ($10), Stopp über 20 Pips, $10 pro Pip und Lot. Welche Größe?","options":["0.5 Lots","0.05 Lots","0.005 Lots","5 Lots"],"a":1,"explain":"$10 ÷ (20 × $10) = 0.05 Lots."},
+        {"q":"Warum nutzen Trader die 1-%-Regel?","options":["Um schneller reich zu werden","Damit eine Verlustserie das Konto nicht auslöschen kann","Weil Broker es verlangen","Um Steuern zu vermeiden"],"a":1,"explain":"Bei 1% Risiko kosten selbst 10 Verluste hintereinander nur etwa 9.6% des Kontos."}
+      ],
+      "builder":[
+        {"q":"Du riskierst $50 bei einer Aktie mit $2.50 Stoppabstand. Wie viele Aktien?","options":["10 Aktien","15 Aktien","25 Aktien","20 Aktien"],"a":3,"explain":"$50 ÷ $2.50 = 20 Aktien. Wirst du ausgestoppt, verlierst du etwa $50."},
+        {"q":"Ein Pip bei EUR/USD ist:","options":["0.01 bei allen Paaren","0.0001 bei den meisten Paaren","Ein ganzer Dollar","Ein Zehntel Cent"],"a":1,"explain":"Bei den meisten Paaren ist ein Pip 0.0001; bei Yen-Paaren 0.01."},
+        {"q":"Spread 2 Pips und du tradest 0.10 Lots. Ungefähre Spread-Kosten hin und zurück?","options":["$0.20","$2","$20","$0.02"],"a":1,"explain":"2 Pips × $10 pro Pip und Lot × 0.10 Lots = $2."},
+        {"q":"Du riskierst $30, um $90 zu verdienen. Wie ist das Chance-Risiko-Verhältnis?","options":["1:1","1:2","1:3","3:1"],"a":2,"explain":"$90 ÷ $30 = 3, ein Chance-Risiko-Verhältnis von 1:3."},
+        {"q":"Bei einem Chance-Risiko-Verhältnis von 1:2: Welche Trefferquote bringt dich auf null?","options":["50%","33%","66%","25%"],"a":1,"explain":"Break-even-Trefferquote = 1 ÷ (1 + 2) = 33%."}
+      ],
+      "pro":[
+        {"q":"Der Preis steigt und du verschiebst deinen Stopp auf deinen Einstiegspreis. Das nennt man:","options":["Einen nachlaufenden Verlust","Einen Break-even-Stopp","Einen Margin Call","Hedging"],"a":1,"explain":"Der schlimmste Fall wird null – ein Null-Trade statt eines Verlusts."},
+        {"q":"Du bist gleichzeitig long EUR/USD und long GBP/USD. Das bedeutet:","options":["Dein Risiko ist perfekt ausgeglichen","Etwa doppeltes Risiko darauf, dass der US-Dollar fällt","Du kannst nicht verlieren","Deine Gebühren halbieren sich"],"a":1,"explain":"Beide Trades wetten darauf, dass der Dollar fällt – ein 2-%-Risiko in Verkleidung."},
+        {"q":"40% Trefferquote, Ø Gewinn +2R, Ø Verlust −1R. Erwartungswert?","options":["+0.8R","-0.2R","+0.2R","0R"],"a":2,"explain":"(0.40 × 2) − (0.60 × 1) = 0.8 − 0.6 = +0.2R pro Trade."},
+        {"q":"Welches TradingView-Werkzeug zeichnet deine Risiko- und Gewinnfelder in den Chart?","options":["Das Magnet-Werkzeug","Das Long-/Short-Positions-Werkzeug","Das Fibonacci-Werkzeug","Das Mess-Werkzeug"],"a":1,"explain":"Ziehe vom Einstieg zum Stopp und zum Ziel; das Etikett zeigt Abstand und Verhältnis."},
+        {"q":"Was ist die Richtlinie für das GESAMTE Risiko aller offenen Trades?","options":["Bis zu 50% des Kontos","Es gibt kein Limit","Halte es unter etwa 3-6%","1% pro Trade reicht, Summen sind egal"],"a":2,"explain":"Risiko pro Trade reicht nicht – addiere jeden offenen Trade und halte die Hitze unter 3-6%."}
+      ]
+    };
+
+    var GUIDE_DE = [
+      {"t":"Zeichne zuerst deinen Trade","d":"Wähle in der linken Werkzeugleiste das Werkzeug „Long-Position“ (Alt+L unter Windows, Option+L am Mac) oder das Werkzeug „Short-Position“. Klicke auf deinen Einstieg, ziehe nach unten zu deinem Stopp (rotes Risikofeld) und dann nach oben zu deinem Ziel (blaues Gewinnfeld)."},
+      {"t":"Lies das Etikett","d":"Das Etikett am Feld zeigt automatisch Stoppabstand, Zielabstand und das Chance-Risiko-Verhältnis. Steht dort weniger als 1:1.5, ziehe das Ziel weiter weg oder lass den Trade aus."},
+      {"t":"Dimensioniere mit Mathematik","d":"Nimm den Stoppabstand aus dem Werkzeug, setze ihn in den Lot-Größen-Rechner (Stufe 2) ein und trade genau diese Größe. Kein Raten."},
+      {"t":"Setze einen Stopp-Alarm","d":"Klicke mit der rechten Maustaste auf die Stopplinie, wähle „Alarm hinzufügen“ und stelle ihn so ein, dass er auslöst, wenn der Preis die Linie kreuzt. Dein Handy sagt dir Bescheid, sobald der Trade geschlossen wird."},
+      {"t":"Übe mit Spielgeld","d":"Eröffne ein Paper-Trading-Konto bei TradingView und nutze die Balken-Wiedergabe (untere Werkzeugleiste), um jeden Chart zurückzuspulen und Kerze für Kerze zu traden – genau wie der Übungsbereich in dieser App, aber mit echter Historie."}
+    ];
+
+    var LESSONS_DE = {
+      "l01": {"title":"Deine Notbremse: Was ein Stop-Loss ist","tagline":"Das eine Werkzeug, das aus einem beängstigenden Trade einen geplanten, kleinen Verlust macht.","oneLiner":"Ein Stop-Loss ist ein automatischer Ausstieg, der deinen Trade zu einem Preis schließt, den du vorher festlegst. So kann ein schlechter Trade nur einen kleinen, geplanten Betrag kosten.","formula":"Max. Verlust = (Einstiegspreis − Stopppreis) × Größe",
+       "sections":[
+         {"h":"Stell dir Fahren ohne Bremsen vor","p":["Du würdest nie ein Auto ohne Bremsen fahren. Aber genau so traden die meisten Anfänger: Sie kaufen etwas, der Preis fällt, und sie sitzen einfach da und hoffen, dass er wieder steigt. Hoffnung ist kein Plan.","Ein Stop-Loss ist dein Bremspedal. Bevor du einen Trade eröffnest, entscheidest du: Wenn der Preis bis hierher fällt, bin ich raus. Dein Broker schließt den Trade automatisch für dich – sogar während du schläfst."]},
+         {"h":"Was es wirklich ist","p":["Ein Stop-Loss ist ein Auftrag, den du bei deinem Broker gleichzeitig mit deinem Trade aufgibst. Beispiel: Du kaufst eine Aktie für 50 Dollar. Du setzt deinen Stop-Loss bei 48 Dollar. Fällt der Preis auf 48, werden deine Aktien automatisch verkauft.","Dein schlimmster Fall steht fest, bevor der Trade beginnt: (50 minus 48) mal die Anzahl der Aktien. Bei 10 Aktien kannst du höchstens 20 Dollar verlieren, plus kleine Gebühren. Keine Überraschungen."]},
+         {"h":"Warum es wichtiger ist als Gewinner zu finden","p":["Jede Traderin und jeder Trader – sogar Profis – verliert etwa die Hälfte aller Trades. Der Unterschied zwischen Anfängern, deren Konto platzt, und Tradern, die überleben, ist einfach: Die Überlebenden legen ihren maximalen Verlust vorher fest.","Eine Regel zum Merken: Kein einziger Trade darf dein Konto ernsthaft verletzen können. Der Stop-Loss ist das Werkzeug, mit dem du diese Regel durchsetzt."]},
+         {"h":"Eine ehrliche Warnung: Slippage","p":["In sehr schnellen Märkten kann dein Ausstieg etwas unter deinem Stopppreis ausgeführt werden. Das nennt man Slippage. Sie ist meist klein und ändert nichts an der großen Idee: Ein Stop-Loss schützt dich trotzdem vor einer Katastrophe."]}
+       ],
+       "workedExample":{"setup":"Du kaufst 10 Stück einer Aktie für $50. Stop-Loss bei $48.","steps":["Stoppabstand = 50 − 48 = $2 pro Aktie.","Max. Verlust = $2 × 10 Aktien = $20."],"answer":"Dieser Trade kann dich höchstens $20 kosten (plus kleine Gebühren)."},
+       "tryIt":"Du kaufst für $100 und dein Stopp liegt bei $95. Wie viel verlierst du pro Aktie, wenn du ausgestoppt wirst? ($5)",
+       "script":"Willkommen bei Lektion eins. Sprechen wir über das wichtigste Werkzeug beim Trading. Es heißt Stop-Loss. Stell dir vor, du fährst Auto. Du würdest nie ohne Bremsen fahren, oder? Aber genau so traden die meisten Anfänger. Sie kaufen etwas, der Preis fällt, und sie sitzen einfach da und hoffen, dass er wieder steigt. Hoffnung ist kein Plan. Ein Stop-Loss ist dein Bremspedal. Bevor du einen Trade eröffnest, wählst du einen Preis und sagst: Wenn es bis hierher fällt, bin ich raus. Dein Broker schließt den Trade automatisch für dich, sogar während du schläfst. Hier ist ein einfaches Beispiel. Du kaufst zehn Aktien für fünfzig Dollar. Du setzt deinen Stop-Loss bei achtundvierzig Dollar. Fällt der Preis auf achtundvierzig, verkaufen sich deine Aktien automatisch. Dein schlimmster Fall stand fest, bevor der Trade begonnen hat. Fünfzig minus achtundvierzig sind zwei Dollar pro Aktie, mal zehn Aktien – also kannst du höchstens zwanzig Dollar verlieren, plus kleine Gebühren. Keine Überraschungen. Merke dir das: Jede Traderin und jeder Trader verliert etwa die Hälfte der Trades, sogar die Profis. Wer überlebt, legt den maximalen Verlust vorher fest. Eine ehrliche Warnung: In sehr schnellen Märkten kann dein Ausstieg etwas unter deinem Stopp ausgeführt werden. Das nennt man Slippage. Sie ist meist klein und ändert nichts an der großen Idee. Ein Stop-Loss schützt dich vor einer Katastrophe."},
+      "l02": {"title":"Die 1-%-Regel: Wie viel du riskieren darfst","tagline":"Die winzige Regel, mit der du zehn Verluste hintereinander überlebst.","oneLiner":"Riskiere bei einem einzelnen Trade nie mehr als etwa ein Prozent deines Kontos.","formula":"Risiko pro Trade = Kontostand × 0.01",
+       "sections":[
+         {"h":"Risiko ist ein Budget, kein Gefühl","p":["Bevor du fragst, wie viel du verdienen kannst, frag dich, wie viel du verlieren darfst. Profi-Trader antworten mit einer Zahl: etwa 1% des Kontos pro Trade.","Bei einem Konto mit 1,000 Dollar ist 1% gleich 10 Dollar. Das heißt: Jeder Trade wird so geplant, dass der schlimmste Fall etwa 10 Dollar kostet. Bei einem Konto mit 5,000 Dollar sind es 50 Dollar."]},
+         {"h":"Warum dich 1% rettet","p":["Verlustserien passieren jeder und jedem. Stell dir vor, du verlierst 10 Trades hintereinander. Riskierst du jedes Mal 1%, sinkt dein Konto um etwa 9.6%. Du bist genervt, aber noch im Spiel.","Stell dir jetzt vor, du riskierst 10% pro Trade. Zehn Verluste hintereinander löschen etwa 65% deines Kontos aus. Du müsstest dein Geld fast verdreifachen, nur um wieder bei null zu sein. Davon erholt sich fast niemand."]},
+         {"h":"Der angenehme Bereich","p":["Anfängerinnen und Anfänger sollten zwischen einem halben Prozent und zwei Prozent pro Trade bleiben. Ein Prozent ist der klassische Startpunkt. Wenn ein Trade mehr Risiko braucht, um Sinn zu ergeben, ist der Trade zu groß – nicht zu gut."]}
+       ],
+       "workedExample":{"setup":"Dein Konto hat $2,000. Du nutzt die 1-%-Regel.","steps":["Risikobetrag = 2,000 × 0.01 = $20."],"answer":"Jeder Trade wird so geplant, dass der schlimmste Fall etwa $20 kostet."},
+       "tryIt":"Dein Konto hat $3,500. Wie hoch ist dein maximaler Verlust pro Trade bei 1% Risiko? ($35)",
+       "script":"Lektion zwei. Die Ein-Prozent-Regel. Bevor du fragst, wie viel du mit einem Trade verdienen kannst, frag dich, wie viel du verlieren darfst. Profi-Trader antworten mit einer Zahl: etwa ein Prozent des Kontos pro Trade. Bei einem Konto mit eintausend Dollar ist ein Prozent gleich zehn Dollar. Jeder Trade wird so geplant, dass der schlimmste Fall etwa zehn Dollar kostet. Bei einem Konto mit fünftausend Dollar sind es fünfzig Dollar. Warum ist das so wichtig? Weil Verlustserien jeder und jedem passieren. Stell dir vor, du verlierst zehn Trades hintereinander. Riskierst du jedes Mal ein Prozent, sinkt dein Konto um etwa neun Komma sechs Prozent. Du bist genervt, aber noch im Spiel. Stell dir jetzt vor, du riskierst zehn Prozent pro Trade. Zehn Verluste hintereinander löschen etwa fünfundsechzig Prozent deines Kontos aus. Du müsstest dein Geld fast verdreifachen, nur um wieder bei null zu sein. Davon erholt sich fast niemand. Bleib als Anfängerin zwischen einem halben Prozent und zwei Prozent pro Trade. Ein Prozent ist der klassische Startpunkt. Und hier ist ein Filter für immer: Wenn ein Trade mehr Risiko braucht, um Sinn zu ergeben, ist der Trade zu groß – nicht zu gut."},
+      "l03": {"title":"Den Abstand messen: vom Einstieg bis zum Stopp","tagline":"Bevor du einen Trade dimensionieren kannst, musst du die Lücke messen.","oneLiner":"Der Stoppabstand ist einfach der Abstand zwischen deinem Stopp und deinem Einstiegspreis – gemessen in Pips, Dollar oder Punkten.","formula":"Stoppabstand = |Einstiegspreis − Stopppreis|",
+       "sections":[
+         {"h":"Es ist einfach eine Lücke","p":["Dein Einstieg ist der Preis, zu dem du kaufst. Dein Stopp ist der Preis, bei dem du aussteigst, wenn du falsch liegst. Der Abstand dazwischen ist der Stoppabstand.","Im Forex-Handel misst man den Abstand in Pips. Kaufst du Euro-Dollar bei 1.0850 und dein Stopp liegt bei 1.0830, beträgt der Abstand 20 Pips. Bei Aktien sind es Dollar pro Aktie: Kauf bei 72, Stopp bei 69, Abstand 3 Dollar."]},
+         {"h":"Wilde Märkte brauchen weitere Stopps","p":["An manchen Tagen springen die Preise mehr herum als an anderen. Liegt dein Stopp in einem wilden Markt zu nah, wirft dich das normale Hin und Her raus, bevor die echte Bewegung beginnt.","Trader messen das typische Schwanken mit einem Werkzeug namens Average True Range, kurz ATR. Die Mathematik brauchst du noch nicht. Merk dir nur: ruhiger Markt, näherer Stopp. Wilder Markt, weiterer Stopp – und deshalb eine kleinere Positionsgröße."]},
+         {"h":"Der Abstand bestimmt deine Größe","p":["Hier ist die entscheidende Verbindung: Ein weiterer Stopp bedeutet, dass jede Einheit, die du kaufst, mehr Dollar riskiert. Also musst du weniger Einheiten kaufen, um dasselbe 1-%-Risiko zu halten. Abstand und Größe bewegen sich immer in entgegengesetzte Richtungen."]}
+       ],
+       "workedExample":{"setup":"Du kaufst EUR/USD bei 1.0850. Stop-Loss bei 1.0830.","steps":["Abstand = 1.0850 − 1.0830 = 0.0020 = 20 Pips."],"answer":"Dein Stoppabstand beträgt 20 Pips."},
+       "tryIt":"Du kaufst eine Aktie für $72, Stopp bei $69. Wie groß ist der Stoppabstand? ($3 pro Aktie)",
+       "script":"Lektion drei. Den Abstand messen. Dein Einstieg ist der Preis, zu dem du kaufst. Dein Stopp ist der Preis, bei dem du aussteigst, wenn du falsch liegst. Die Lücke dazwischen ist der Stoppabstand, und hier beginnt alles bei der Positionsgröße. Im Forex-Handel misst man den Abstand in Pips. Kaufst du Euro-Dollar bei eins Komma null acht fünf null und dein Stopp liegt bei eins Komma null acht drei null, beträgt der Abstand zwanzig Pips. Bei Aktien sind es Dollar pro Aktie: Kauf bei zweiundsiebzig, Stopp bei neunundsechzig, Abstand drei Dollar. Wilde Märkte brauchen weitere Stopps. An manchen Tagen springen die Preise mehr herum. Liegt dein Stopp an einem wilden Tag zu nah, wirft dich das normale Hin und Her raus, bevor die echte Bewegung beginnt. Trader messen das typische Schwanken mit einem Werkzeug namens Average True Range. Die Mathematik brauchst du noch nicht. Merk dir nur: ruhiger Markt, näherer Stopp. Wilder Markt, weiterer Stopp – und deshalb eine kleinere Positionsgröße. Hier ist die entscheidende Verbindung für die nächste Lektion: Ein weiterer Stopp bedeutet, dass jede gekaufte Einheit mehr Dollar riskiert. Also musst du weniger Einheiten kaufen, um dasselbe Ein-Prozent-Risiko zu halten. Abstand und Größe bewegen sich immer gegenläufig."},
+      "l04": {"title":"Deine erste Lot-Größen-Berechnung","tagline":"Risiko und Abstand zusammenbringen – und deine exakte Handelsgröße erhalten.","oneLiner":"Lot-Größe = Risiko in Dollar ÷ (Stoppabstand × Wert pro Einheit). Sie sagt dir genau, wie viel du kaufen darfst.","formula":"Lots = Risiko in $ ÷ (Stoppabstand in Pips × $-Wert pro Pip und Lot)",
+       "sections":[
+         {"h":"Die einzige Formel, die am Anfang zählt","p":["Du kennst dein Risiko in Dollar aus der 1-%-Regel. Du kennst deinen Stoppabstand aus Lektion 3. Die Lot-Größe verbindet einfach beides.","Lot-Größe = Risiko in Dollar ÷ (Stoppabstand × Wert pro Einheit). In einfachen Worten: Teile den Betrag, den du verlieren darfst, durch den Betrag, den eine Einheit verlieren würde, wenn der Stopp getroffen wird."]},
+         {"h":"Ein Forex-Beispiel, ganz langsam","p":["Konto: 1,000 Dollar. Risiko bei 1%: 10 Dollar. Stoppabstand: 20 Pips. Ein Standard-Lot bewegt sich um etwa 10 Dollar pro Pip.","Größe = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 Lots. Das sind 5,000 Einheiten, auch 5 Micro-Lots genannt. Wird der Stopp getroffen, verlierst du etwa 10 Dollar. Die Mathematik garantiert das."]},
+         {"h":"Vertrau der Mathematik, nicht deinem Bauch","p":["Anfänger raten ihre Größe. Raten ist der Weg, auf dem Konten sterben. Von jetzt an beginnt jeder Trade mit drei Zahlen: Konto, Risiko-Prozent, Stoppabstand. Der Rechner liefert dir die Größe. Ganz ohne Gefühle."]}
+       ],
+       "workedExample":{"setup":"Konto mit $1,000, 1% Risiko = $10. Stoppabstand 20 Pips. Standard-Lot = $10/Pip.","steps":["Nenner = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 Lots. Wirst du ausgestoppt, verlierst du etwa $10."},
+       "tryIt":"Konto mit $2,000, 1% Risiko ($20), Stopp über 25 Pips. Größe = 20 ÷ (25 × 10) = 0.08 Lots.",
+       "script":"Lektion vier. Deine erste Lot-Größen-Berechnung. Du kennst dein Risiko in Dollar aus der Ein-Prozent-Regel. Du kennst deinen Stoppabstand aus Lektion drei. Die Lot-Größe verbindet einfach beides. Die Formel lautet: Lot-Größe gleich Risiko in Dollar, geteilt durch Stoppabstand mal Wert pro Einheit. In einfachen Worten: Teile den Betrag, den du verlieren darfst, durch den Betrag, den eine Einheit verlieren würde, wenn der Stopp getroffen wird. Machen wir ein Forex-Beispiel, ganz langsam. Konto: eintausend Dollar. Risiko bei einem Prozent: zehn Dollar. Stoppabstand: zwanzig Pips. Ein Standard-Lot bewegt sich um etwa zehn Dollar pro Pip. Größe gleich zehn geteilt durch zwanzig mal zehn. Das ist zehn geteilt durch zweihundert, also null Komma null fünf Lots. Das sind fünftausend Einheiten. Wird der Stopp getroffen, verlierst du etwa zehn Dollar. Die Mathematik garantiert das. Bau dir diese Gewohnheit auf: Anfänger raten ihre Größe, und Raten ist der Weg, auf dem Konten sterben. Von jetzt an beginnt jeder Trade mit drei Zahlen: Konto, Risiko-Prozent, Stoppabstand. Der Rechner liefert dir die Größe. Ganz ohne Gefühle."},
+      "l05": {"title":"Die Lot-Größen-Formel, Schritt für Schritt","tagline":"Die universelle Formel für Aktien, Forex, Krypto und Futures.","oneLiner":"Die universelle Regel: Positionsgröße = Risiko in Dollar ÷ Stoppabstand. Sie funktioniert für Aktien, Forex, Krypto und Futures.","formula":"Aktien = Risiko in $ ÷ Stoppabstand pro Aktie",
+       "sections":[
+         {"h":"Eine Formel für jeden Markt","p":["Die universelle Regel: Positionsgröße = Risiko in Dollar ÷ Stoppabstand.","Bei Aktien und Krypto bewegt sich eine Aktie oder ein Coin um 1 Dollar pro 1 Dollar Preisänderung. Also: Aktien = Risiko in Dollar ÷ Stoppabstand in Dollar. Bei Forex: Lots = Risiko in Dollar ÷ (Stoppabstand in Pips × Dollar pro Pip und Lot). Bei Futures ersetzt du Dollar pro Pip durch den Tick-Wert des Kontrakts."]},
+         {"h":"Ein Aktien-Beispiel","p":["Konto: 5,000 Dollar. Risiko bei 1%: 50 Dollar. Kauf bei 40, Stopp bei 38. Stoppabstand = 2 Dollar.","Aktien = 50 ÷ 2 = 25 Aktien. Wird der Stopp getroffen, verlierst du etwa 50 Dollar. Garantiert durch Mathematik, nicht durch Glück."]},
+         {"h":"Drei Schritte, jedes Mal","p":["Schritt 1: Risiko in Dollar, aus deinem Konto und deinem Risiko-Prozent. Schritt 2: Stoppabstand, aus deinem Chart. Schritt 3: dividieren. Größeres Konto, größere Positionsgröße. Weiterer Stopp, kleinere Positionsgröße. Das ist das ganze Spiel."]}
+       ],
+       "workedExample":{"setup":"Konto mit $5,000, 1% Risiko = $50. Kauf bei $40, Stopp bei $38.","steps":["Stoppabstand = 40 − 38 = $2.","Aktien = 50 ÷ 2 = 25."],"answer":"Kaufe 25 Aktien. Wirst du ausgestoppt, verlierst du etwa $50."},
+       "tryIt":"Konto mit $1,500, 2% Risiko ($30). Kauf bei $60, Stopp bei $57 ($3 Abstand). Aktien = 30 ÷ 3 = 10.",
+       "script":"Lektion fünf. Die Lot-Größen-Formel, Schritt für Schritt, für jeden Markt. In der letzten Lektion hast du die Forex-Version gelernt. Jetzt kommt die universelle Regel, die überall funktioniert: Positionsgröße gleich Risiko in Dollar, geteilt durch Stoppabstand. Bei Aktien und Krypto bewegt sich eine Aktie oder ein Coin um einen Dollar pro Dollar Preisänderung. Also: Aktien gleich Risiko in Dollar geteilt durch Stoppabstand in Dollar. Beispiel: Konto fünftausend Dollar. Risiko bei einem Prozent: fünfzig Dollar. Kauf bei vierzig, Stopp bei achtunddreißig. Stoppabstand ist zwei Dollar. Fünfzig geteilt durch zwei sind fünfundzwanzig Aktien. Wird der Stopp getroffen, verlierst du etwa fünfzig Dollar – garantiert durch Mathematik. Bei Forex kommt der Pip-Wert-Schritt dazu: Lots gleich Risiko in Dollar geteilt durch Stoppabstand in Pips mal Dollar pro Pip und Lot. Bei Futures ersetzt du Dollar pro Pip durch den Tick-Wert. Die Form ist immer dieselbe. Schritt eins: Risiko in Dollar aus Konto und Risiko-Prozent. Schritt zwei: Stoppabstand aus deinem Chart. Schritt drei: dividieren. Änderst du einen Wert, ändert sich die Größe automatisch richtig. Größeres Konto, größere Größe. Weiterer Stopp, kleinere Größe. Das ist das ganze Spiel."},
+      "l06": {"title":"Pips, Punkte, Ticks und Kontrakte","tagline":"Übersetze den Fachjargon jedes Marktes in Dollar pro Bewegung.","oneLiner":"Ein Pip ist der kleinste übliche Preisschritt im Forex. Lot-Namen beschreiben einfach, wie viele Einheiten du kontrollierst.","formula":"1 Standard-Lot = 100,000 Einheiten · 1 Mini = 10,000 · 1 Micro = 1,000",
+       "sections":[
+         {"h":"Jeder Markt hat sein eigenes Lineal","p":["Forex: Der klassische Schritt ist der Pip. Bei den meisten Paaren ist ein Pip 0.0001. Bewegt sich EUR/USD von 1.0850 auf 1.0860, sind das 10 Pips. Bei Yen-Paaren ist ein Pip 0.01. Manche Broker zeigen auch einen Punkt oder eine Pipette an – das ist ein Zehntel eines Pips.","Aktien: Eine Aktie gewinnt oder verliert 1 Dollar pro 1 Dollar Bewegung. Krypto: Ein Coin funktioniert genauso pro Coin. Futures: Der kleinste Schritt heißt Tick, und jeder Kontrakt hat einen festen Dollar-Wert pro Tick."]},
+         {"h":"Lot-Namen, entschlüsselt","p":["Im Forex ist ein Standard-Lot 100,000 Einheiten. Ein Mini-Lot sind 10,000. Ein Micro-Lot sind 1,000.","Also sind 0.10 Lots gleich 10,000 Einheiten, etwa 1 Dollar pro Pip. Und 0.01 Lots sind 1,000 Einheiten, etwa 10 Cent pro Pip."]},
+         {"h":"Denk in Dollar pro Pip","p":["Die Buttons deines Brokers sagen Lots, aber dein Kopf sollte in Dollar pro Pip denken. Übersetze immer: Wie viele Dollar gewinne oder verliere ich pro Pip bei dieser Größe? Dann wird die Stop-Loss-Rechnung einfach."]}
+       ],
+       "workedExample":{"setup":"Du möchtest, dass jeder Pip etwa $1 wert ist.","steps":["Standard-Lot (1.00) ≈ $10/Pip.","0.10 Lots ≈ $1/Pip."],"answer":"0.10 Lots ≈ $1 pro Pip."},
+       "tryIt":"Du tradest 0.01 Lots (Micro). Wie viel ist ein Pip ungefähr wert? ($0.10)",
+       "script":"Lektion sechs. Pips, Punkte, Ticks und Kontrakte. Jeder Markt misst kleine Bewegungen anders. Im Forex ist der klassische Schritt der Pip. Bei den meisten Paaren ist ein Pip null Komma null null null eins. Bewegt sich Euro-Dollar von eins Komma null acht fünf null auf eins Komma null acht sechs null, sind das zehn Pips. Bei Yen-Paaren ist ein Pip null Komma null eins. Manche Broker zeigen auch einen Punkt oder eine Pipette an, ein Zehntel eines Pips. Bei Aktien gewinnt oder verliert eine Aktie einen Dollar pro Dollar Bewegung. Ganz einfach. Bei Krypto funktioniert ein Coin genauso. Bei Futures heißt der kleinste Schritt Tick, und jeder Kontrakt hat einen festen Dollar-Wert pro Tick. Jetzt die Lot-Namen: Im Forex ist ein Standard-Lot einhunderttausend Einheiten. Ein Mini-Lot sind zehntausend. Ein Micro-Lot sind eintausend. Also sind null Komma eins null Lots gleich zehntausend Einheiten, etwa ein Dollar pro Pip. Null Komma null eins Lots sind eintausend Einheiten, etwa zehn Cent pro Pip. Warum ist das wichtig? Weil die Buttons deines Brokers Lots sagen, dein Kopf aber in Dollar pro Pip denken sollte. Übersetze immer: Wie viele Dollar gewinne oder verliere ich pro Pip bei dieser Größe? Dann wird die Stop-Loss-Rechnung einfach."},
+      "l07": {"title":"Gebühren: Die Kosten, die dir niemand zeigt","tagline":"Zähle die versteckten Kosten vor jedem Trade.","oneLiner":"Jeder Trade startet leicht im Minus: Spread, Kommission, Übernacht-Gebühren und Slippage gehen alle von deinem Gewinn ab.","formula":"Kosten hin und zurück ≈ Spread-Kosten + (Kommission × 2)",
+       "sections":[
+         {"h":"Jeder Trade startet im Minus","p":["Bevor sich der Preis zu deinen Gunsten bewegt, musst du zuerst deine Kosten wieder hereinholen. Es gibt vier Kosten, die du kennen musst.","Der Spread ist die Lücke zwischen Kauf- und Verkaufspreis. Du kaufst immer etwas teurer und verkaufst etwas billiger. Der Spread ist der Anteil des Brokers."]},
+         {"h":"Die anderen drei Kosten","p":["Kommission: Manche Broker verlangen eine fixe Gebühr pro Trade, oft sowohl beim Öffnen als auch beim Schließen.","Übernacht-Gebühr, genannt Swap: Hältst du einen Forex- oder CFD-Trade über Nacht, zahlst oder erhältst du einen kleinen täglichen Zinsbetrag.","Slippage: Aus Lektion 1 – deine Ausführungen können in schnellen Märkten etwas schlechter sein als erwartet."]},
+         {"h":"Rechne, bevor du klickst","p":["Beispiel: Du tradest 0.05 Lots EUR/USD. Der Spread beträgt 1.2 Pips. Ein Standard-Lot sind etwa 10 Dollar pro Pip. Spread-Kosten = 1.2 × 10 × 0.05 = 0.60 Dollar. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich.","Die Gewohnheit: Frag dich vor jedem Trade, wie hoch die Kosten hin und zurück sind und ob dein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa 10% deines Zielgewinns, ist der Trade vermutlich nichts wert."]}
+       ],
+       "workedExample":{"setup":"0.05 Lots EUR/USD. Spread 1.2 Pips. Standard-Lot ≈ $10/Pip.","steps":["Kosten = 1.2 × 10 × 0.05 = $0.60."],"answer":"Der Spread kostet dich bei diesem Trade etwa $0.60."},
+       "tryIt":"Spread 2 Pips, 0.10 Lots. Kosten = 2 × 10 × 0.10 = $2 pro Trade hin und zurück.",
+       "script":"Lektion sieben. Gebühren – die Kosten, die dir niemand zeigt. Jeder Trade startet leicht im Minus. Bevor sich der Preis zu deinen Gunsten bewegt, musst du zuerst deine Kosten wieder hereinholen. Es gibt vier Kosten, die du kennen musst. Erstens der Spread: die Lücke zwischen Kauf- und Verkaufspreis. Du kaufst immer etwas teurer und verkaufst etwas billiger. Der Spread ist der Anteil des Brokers. Zweitens die Kommission: Manche Broker verlangen eine fixe Gebühr pro Trade, oft beim Öffnen und beim Schließen. Drittens die Übernacht-Gebühr, genannt Swap: Hältst du einen Forex- oder CFD-Trade über Nacht, zahlst oder erhältst du einen kleinen täglichen Zinsbetrag. Viertens Slippage, aus Lektion eins: Deine Ausführungen können in schnellen Märkten etwas schlechter sein als erwartet. Rechnen wir: Du tradest null Komma null fünf Lots Euro-Dollar. Der Spread beträgt eins Komma zwei Pips. Ein Standard-Lot sind etwa zehn Dollar pro Pip. Spread-Kosten gleich eins Komma zwei mal zehn mal null Komma null fünf. Das sind sechzig Cent. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich. Die Gewohnheit: Frag dich vor jedem Trade, wie hoch meine Kosten hin und zurück sind und ob mein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa zehn Prozent deines Zielgewinns, ist der Trade vermutlich nichts wert."},
+      "l08": {"title":"Chance-Risiko-Verhältnis: Lohnt sich der Trade?","tagline":"Das Verhältnis, mit dem du 6 von 10 Trades verlieren und trotzdem gewinnen kannst.","oneLiner":"Das Chance-Risiko-Verhältnis sagt dir, ob sich ein Trade lohnt: Ziele auf mindestens 1:2, dann darfst du meistens falsch liegen und trotzdem gewinnen.","formula":"Chance-Risiko = Gewinnabstand ÷ Risikoabstand · Break-even-Trefferquote = 1 ÷ (1 + R)",
+       "sections":[
+         {"h":"Lohnt sich dieser Trade überhaupt?","p":["Das Chance-Risiko-Verhältnis beantwortet eine Frage: Für jeden Dollar, den ich riskiere, wie viele Dollar kann ich verdienen?","Gewinnabstand ÷ Risikoabstand. Kauf EUR/USD bei 1.0850, Stopp bei 1.0830 (20 Pips Risiko), Ziel bei 1.0890 (40 Pips Gewinn). 40 ÷ 20 = 2. Das ist ein Chance-Risiko-Verhältnis von 1 zu 2."]},
+         {"h":"Die Magie: Du darfst meistens falsch liegen","p":["Bei einem Verhältnis von 1 zu 2 musst du nur etwa 33% deiner Trades gewinnen, um bei null herauszukommen. Die Rechnung: Break-even-Trefferquote = 1 ÷ (1 + R). Also 1 ÷ 3 = 33%.","Gewinnst du 4 von 10 Trades bei 1 zu 2, bist du im Plus. Darum sind Profis von dieser Zahl besessen. Sie befreit dich davon, immer recht haben zu müssen."]},
+         {"h":"Die Faustregel","p":["Nimm nie einen Trade unter 1 zu 1.5, und bevorzuge 1 zu 2 oder besser. Ein Trade mit tollem Setup, aber einem Verhältnis von 1 zu 1, ist ein Münzwurf mit Gebühren. Lass ihn aus."]}
+       ],
+       "workedExample":{"setup":"Risiko 20 Pips (1.0850 → 1.0830). Ziel 40 Pips (→ 1.0890).","steps":["Chance-Risiko = 40 ÷ 20 = 2.","Break-even-Trefferquote = 1 ÷ (1+2) = 33%."],"answer":"Ein 1:2-Trade. Du kannst nur 4 von 10 gewinnen und trotzdem profitieren."},
+       "tryIt":"Risiko $3 pro Aktie, Ziel $9 über dem Einstieg. Chance-Risiko = 9 ÷ 3 = 1:3. Nimm ihn!",
+       "script":"Lektion acht. Chance-Risiko-Verhältnis. Nicht jeder Trade ist es wert, genommen zu werden – selbst mit perfektem Stop-Loss. Das Chance-Risiko-Verhältnis beantwortet eine Frage: Für jeden Dollar, den ich riskiere, wie viele Dollar kann ich verdienen? Du findest es durch Dividieren: Gewinnabstand geteilt durch Risikoabstand. Beispiel: Du kaufst Euro-Dollar bei eins Komma null acht fünf null. Stopp bei eins Komma null acht drei null. Das sind zwanzig Pips Risiko. Dein Ziel ist eins Komma null acht neun null. Das sind vierzig Pips Gewinn. Vierzig geteilt durch zwanzig ist zwei. Ein Chance-Risiko-Verhältnis von eins zu zwei. Jetzt die Magie: Bei eins zu zwei musst du nur etwa dreiunddreißig Prozent deiner Trades gewinnen, um bei null herauszukommen. Die Rechnung: Break-even-Trefferquote gleich eins geteilt durch eins plus R. Eins geteilt durch drei sind dreiunddreißig Prozent. Gewinnst du vier von zehn Trades bei eins zu zwei, bist du im Plus. Darum sind Profis von dieser Zahl besessen. Sie befreit dich davon, immer recht haben zu müssen. Die Faustregel: Nimm nie einen Trade unter eins zu eins Komma fünf, und bevorzuge eins zu zwei oder besser. Ein Trade mit tollem Setup, aber einem Verhältnis von eins zu eins, ist ein Münzwurf mit Gebühren. Lass ihn aus."},
+      "l09": {"title":"Trailing-Stops und der Weg zur Gewinnschwelle","tagline":"Sichere Gewinne, während der Trade noch läuft.","oneLiner":"Läuft ein Trade für dich, verschiebe deinen Stopp, sodass der schlimmste Fall die Gewinnschwelle ist.","formula":"Break-even-Stopp: Stopp auf den Einstieg verschieben, sobald der Trade +1R im Plus ist",
+       "sections":[
+         {"h":"Mach aus Gewinnern Gratis-Trades","p":["Dein Trade läuft um 1 R zu deinen Gunsten – er hat also so viel gewonnen, wie du riskiert hast. Jetzt verschiebst du deinen Stop-Loss auf deinen Einstiegspreis.","Der schlimmste Fall ist jetzt null, ein Null-Trade, statt eines vollen Verlusts. Dein Risiko ist verschwunden, aber deine Gewinnchance bleibt offen."]},
+         {"h":"Ein durchgerechnetes Beispiel","p":["Du kaufst eine Aktie für 50 Dollar, Stopp bei 48. Der Preis steigt auf 54. Das sind 2 R Gewinn. Du verschiebst deinen Stopp von 48 auf 50.","Kehrt der Preis um, steigst du bei 50 ohne Verlust aus. Steigt er weiter, fährst du mit."]},
+         {"h":"Trailing-Stops machen es automatisch","p":["Ein Trailing-Stopp folgt dem Preis in festem Abstand. Steigt der Preis, kriecht der Stopp hinterher. Fällt der Preis, bleibt der Stopp stehen, und irgendwann berührt der Preis ihn und du steigst mit gesichertem Gewinn aus.","Beispiel: Kauf bei 50, Trailing-Stopp von 2 Dollar. Der Preis erreicht 56, also liegt dein Stopp jetzt bei 54. Der Preis fällt auf 54, du bist raus – mit 4 Dollar pro Aktie gesichert."]},
+         {"h":"Die goldene Regel beim Verschieben von Stopps","p":["Verschiebe deinen Stopp nie weiter weg, wenn ein Trade gegen dich läuft. Das verwandelt einen geplanten kleinen Verlust in Hoffnung. Stopps wandern nur in Richtung Gewinn, nie davon weg."]}
+       ],
+       "workedExample":{"setup":"Kauf bei $50, Trailing-Stopp $2. Der Preis steigt auf $56 und fällt dann.","steps":["Stopp folgt auf 56 − 2 = $54.","Preis berührt $54 → Ausstieg. Gewinn = 54 − 50 = $4 pro Aktie."],"answer":"Du steigst bei $54 aus, mit $4 pro Aktie gesichert."},
+       "tryIt":"Kauf $50, Stopp $48. Preis erreicht $53 (+1.5R). Stopp auf $50 verschieben: Schlimmster Fall ist jetzt $0.",
+       "script":"Lektion neun. Trailing-Stops und der Weg zur Gewinnschwelle. Ein Stop-Loss schützt dich vor großen Verlusten. Aber er kann auch deine Gewinner schützen. Hier ist der klassische Zug: Dein Trade läuft um ein R zu deinen Gunsten – er hat so viel gewonnen, wie du riskiert hast. Jetzt verschiebst du deinen Stop-Loss auf deinen Einstiegspreis. Der schlimmste Fall ist jetzt null, ein Null-Trade, statt eines vollen Verlusts. Dein Risiko ist einfach verschwunden. Beispiel: Du kaufst eine Aktie für fünfzig Dollar, Stopp bei achtundvierzig. Der Preis steigt auf vierundfünfzig. Das sind zwei R Gewinn. Du verschiebst deinen Stopp von achtundvierzig auf fünfzig. Kehrt der Preis um, steigst du bei fünfzig aus, ohne Verlust. Steigt er weiter, fährst du mit. Ein Trailing-Stopp automatisiert diese Idee: Er folgt dem Preis in festem Abstand. Steigt der Preis, kriecht der Stopp hinterher. Fällt der Preis, bleibt der Stopp stehen, und irgendwann berührt der Preis ihn und du steigst mit gesichertem Gewinn aus. Beispiel: Kauf bei fünfzig, Trailing-Stopp von zwei Dollar. Der Preis erreicht sechsundfünfzig. Dein Stopp liegt jetzt bei vierundfünfzig. Der Preis fällt auf vierundfünfzig, du bist raus, mit vier Dollar pro Aktie gesichert. Eine Warnung: Verschiebe deinen Stopp nie weiter weg, wenn ein Trade gegen dich läuft. Das verwandelt einen geplanten kleinen Verlust in Hoffnung. Stopps wandern nur in Richtung Gewinn, nie davon weg."},
+      "l10": {"title":"Setz nicht zweimal alles auf eine Karte: korreliertes Risiko","tagline":"Fünf 1-%-Trades können heimlich ein einziges 5-%-Spiel sein.","oneLiner":"Korrelierte Trades vervielfachen dein Risiko. Zähle das gesamte offene Risiko, nicht nur das Risiko pro Trade.","formula":"Gesamte Hitze = Summe der Risiko-% aller offenen Trades (bei ≤ 3–6% halten)",
+       "sections":[
+         {"h":"Fünf sichere Trades können eine gefährliche Wette sein","p":["Die 1-%-Regel schützt jeden einzelnen Trade. Aber bei fünf gleichzeitig offenen Trades heißt dein gesamtes offenes Risiko „Hitze“ – und sie kann dich verbrennen.","Die Falle ist die Korrelation. Zwei Trades können heimlich dieselbe Wette sein. Long EUR/USD und long GBP/USD heißt im Grunde zweimal zu wetten, dass der Dollar fällt. Schießt der Dollar nach oben, werden beide Stopps am selben Tag getroffen. Das sind nicht zwei getrennte 1-%-Risiken. Das ist ein 2-%-Risiko in Verkleidung."]},
+         {"h":"Die Lösung: Addiere alles","p":["Addiere das Risiko jedes offenen Trades. Diese Summe ist deine Hitze. Halte sie unter etwa 3 bis 6% deines Kontos.","Beispiel: drei Trades mit je 1.5% Risiko. Gesamte Hitze: 4.5%. Sind alle drei Dollar-Trades, ist das zu heiß. Schließe einen oder verkleinere die Positionen."]},
+         {"h":"Die zwei Fragen vor jedem Trade","p":["Wie hoch ist meine gesamte Hitze gerade? Und wettet dieser Trade auf dasselbe wie etwas, das ich schon habe? Wenn ja, dimensioniere ihn als einen kombinierten Trade, nicht als zwei getrennte."]}
+       ],
+       "workedExample":{"setup":"Drei Trades mit je 1.5% Risiko, alle long gegen den USD.","steps":["Gesamte Hitze = 1.5 + 1.5 + 1.5 = 4.5%.","Alle drei hängen davon ab, dass der Dollar fällt → eine kombinierte Wette."],"answer":"4.5% gesamte Hitze auf ein Thema – zu heiß. Größe reduzieren oder einen Trade streichen."},
+       "tryIt":"4 Trades × 1% Risiko, alle auf USD-Paaren. Gesamte Hitze = 4% auf ein Thema – zu heiß. Auf 2–3% kürzen.",
+       "script":"Lektion zehn. Setz nicht zweimal alles auf eine Karte. Die Ein-Prozent-Regel schützt jeden einzelnen Trade. Aber was, wenn du fünf Trades gleichzeitig offen hast? Dein gesamtes offenes Risiko heißt Hitze, und sie kann dich verbrennen, selbst wenn jeder Trade der Ein-Prozent-Regel folgt. Die Falle ist die Korrelation: Zwei Trades können heimlich dieselbe Wette sein. Bist du long Euro-Dollar und long Pfund-Dollar, wettest du im Grunde zweimal darauf, dass der Dollar fällt. Schießt der Dollar nach oben, werden beide Stopps am selben Tag getroffen. Das sind nicht zwei getrennte Ein-Prozent-Risiken. Das ist ein Zwei-Prozent-Risiko in Verkleidung. Die Lösung ist einfach: Addiere das Risiko jedes offenen Trades. Diese Summe ist deine Hitze. Halte sie unter etwa drei bis sechs Prozent deines Kontos. Beispiel: Du hast drei Trades mit je eineinhalb Prozent Risiko. Gesamte Hitze: viereinhalb Prozent. Sind alle drei Dollar-Trades, ist das zu heiß. Schließe einen oder verkleinere die Positionen. Die Gewohnheit: Frag dich vor jedem neuen Trade zwei Dinge. Wie hoch ist meine gesamte Hitze gerade? Und wettet dieser Trade auf dasselbe wie etwas, das ich schon habe? Wenn die zweite Antwort ja ist, dimensioniere ihn als einen kombinierten Trade, nicht als zwei getrennte."},
+      "l11": {"title":"Erwartungswert: Gewinnst du wirklich?","tagline":"Eine Zahl, die Können von Glück trennt.","oneLiner":"Der Erwartungswert sagt dir in einfacher Mathematik, ob deine Strategie über viele Trades wirklich Geld verdient.","formula":"Erwartungswert = (Trefferquote × Ø Gewinn) − (Verlustquote × Ø Verlust)",
+       "sections":[
+         {"h":"Glück oder Können? Eine Zahl antwortet","p":["Erwartungswert = (Trefferquote × durchschnittlicher Gewinn) − (Verlustquote × durchschnittlicher Verlust). Miss Gewinne und Verluste in R, aus Lektion 8.","Er sagt dir, was dir jeder Trade im Durchschnitt bringt. Positiv heißt: Die Strategie verdient mit der Zeit Geld. Negativ heißt: Sie verliert Geld, egal wie gut sich einzelne Trades anfühlen."]},
+         {"h":"Ein durchgerechnetes Beispiel","p":["Du gewinnst 40% der Trades. Durchschnittlicher Gewinn: +2 R. Durchschnittlicher Verlust: −1 R.","Erwartungswert = (0.40 × 2) − (0.60 × 1) = 0.8 − 0.6 = +0.2 R pro Trade. Bei 1% Risiko pro Trade sind das +0.2% pro Trade. Über 100 Trades erwarte grob +20%."]},
+         {"h":"Zwei Regeln, damit du ihm trauen kannst","p":["Du brauchst mindestens 30 Trades, idealerweise 50, bevor die Zahl etwas bedeutet. Zehn Trades sind nur Rauschen.","Schreibe jeden Trade in ein Tagebuch: Einstieg, Stopp, Ziel, Größe und das R-Ergebnis. Dein Tagebuch ist das Rohmaterial. Ohne es ist der Erwartungswert ein Ratespiel – und Raten ist teuer."]}
+       ],
+       "workedExample":{"setup":"40% Trefferquote. Ø Gewinn +2 R, Ø Verlust −1 R.","steps":["Gewinne: 0.40 × 2 = 0.8.","Verluste: 0.60 × 1 = 0.6.","Erwartungswert = 0.8 − 0.6 = +0.2 R."],"answer":"+0.2 R pro Trade. Die Strategie ist profitabel."},
+       "tryIt":"50% Gewinne, Ø Gewinn +1.5R, Ø Verlust −1R. Erwartungswert = (0.5×1.5) − (0.5×1) = +0.25R. Profitabel!",
+       "script":"Lektion elf. Erwartungswert. Die Frage, die jede Traderin und jeder Trader beantworten muss: Bin ich wirklich gut darin, oder hatte ich in letzter Zeit nur Glück? Der Erwartungswert gibt dir die ehrliche Antwort in einer Zahl. Die Formel: Erwartungswert gleich Trefferquote mal durchschnittlicher Gewinn, minus Verlustquote mal durchschnittlicher Verlust. Miss Gewinne und Verluste in R, aus Lektion acht. Beispiel: Du gewinnst vierzig Prozent deiner Trades. Dein durchschnittlicher Gewinn ist plus zwei R. Dein durchschnittlicher Verlust ist minus ein R. Erwartungswert gleich null Komma vier mal zwei, minus null Komma sechs mal eins. Das ist null Komma acht minus null Komma sechs, also plus null Komma zwei R. Jeder Trade bringt dir im Durchschnitt null Komma zwei R. Bei einem Prozent Risiko pro Trade sind das null Komma zwei Prozent pro Trade. Bei einhundert Trades erwarte etwa zwanzig Prozent Wachstum. Ist der Erwartungswert negativ, rettet keine Einstellung der Welt die Strategie. Repariere die Strategie oder höre auf, sie zu traden. Zwei Regeln: Erstens brauchst du mindestens dreißig Trades, idealerweise fünfzig, bevor die Zahl etwas bedeutet. Zehn Trades sind nur Rauschen. Zweitens: Schreibe jeden Trade in ein Tagebuch. Einstieg, Stopp, Ziel, Größe und das R-Ergebnis. Dein Tagebuch ist das Rohmaterial. Ohne es ist der Erwartungswert ein Ratespiel – und Raten ist teuer."},
+      "l12": {"title":"TradingView: Das Wichtigste","tagline":"Zeichne den Trade, lies das Verhältnis, setze den Alarm, übe mit Spielgeld.","oneLiner":"Das Positions-Werkzeug von TradingView zeichnet dein Risiko und deinen Gewinn in den Chart und rechnet das Verhältnis für dich aus.","formula":"Nutze das Long-/Short-Positions-Werkzeug, um Risiko, Gewinn und Chance-Risiko vor dem Einstieg zu sehen",
+       "sections":[
+         {"h":"Zeichne deinen Trade, bevor du ihn nimmst","p":["In der linken Werkzeugleiste findest du das Werkzeug „Long-Position“ (Alt+L unter Windows, Option+L am Mac). Daneben liegt das Werkzeug „Short-Position“.","Klicke auf deinen Einstiegspreis und ziehe dann nach unten zu deinem Stopp. Ein rotes Feld erscheint: deine Risikozone. Ziehe nach oben zu deinem Ziel. Ein blaues Feld erscheint: deine Gewinnzone."]},
+         {"h":"Lies das Etikett, vertrau der Mathematik","p":["Das Etikett des Werkzeugs zeigt automatisch den Stoppabstand, den Zielabstand und das Chance-Risiko-Verhältnis. Steht dort 1 zu 1, ziehe das Ziel weiter weg oder suche einen besseren Trade.","Lies den Stoppabstand aus dem Werkzeug ab, öffne den Lot-Größen-Rechner aus Stufe 2 und hole dir deine exakte Größe. Kein Raten."]},
+         {"h":"Zwei starke Funktionen","p":["Alarme: Klicke mit der rechten Maustaste auf deine Stopplinie, wähle „Alarm hinzufügen“ und stelle ihn so ein, dass er auslöst, wenn der Preis die Linie kreuzt. Dein Handy sagt dir Bescheid, sobald ein Trade geschlossen wird.","Üben mit Spielgeld: Eröffne in TradingView ein Paper-Trading-Konto und nutze die Balken-Wiedergabe (Bar Replay) in der unteren Werkzeugleiste, um jeden Chart zurückzuspulen und Kerze für Kerze zu traden – genau wie der Simulator in dieser App, aber mit echter Historie."]}
+       ],
+       "workedExample":{"setup":"Einstieg 1.0850, Stopp 1.0830, Ziel 1.0890 bei EUR/USD.","steps":["Einstieg → Stopp ziehen: rotes Feld, 20 Pips.","→ Ziel ziehen: blaues Feld, 40 Pips. Etikett zeigt 1:2."],"answer":"Das Werkzeug zeigt 20 Pips Risiko, 40 Pips Gewinn, Verhältnis 1:2 – ein gültiger Trade."},
+       "tryIt":"Öffne TradingView, zeichne eine Long-Position in irgendeinen Chart und lies das Verhältnis auf dem Etikett ab. Ziele auf 1:2+.",
+       "script":"Lektion zwölf. TradingView-Grundlagen. Du hast die Mathematik gelernt. Jetzt lassen wir TradingView das Zeichnen für dich übernehmen. Öffne einen beliebigen Chart. In der linken Werkzeugleiste findest du das Werkzeug Long-Position, oder drücke Alt plus L unter Windows, Option plus L am Mac. Daneben liegt ein Short-Positions-Werkzeug. Klicke auf deinen Einstiegspreis und ziehe dann nach unten zu deinem Stopp. Ein rotes Feld erscheint: deine Risikozone. Ziehe jetzt nach oben zu deinem Ziel. Ein blaues Feld erscheint: deine Gewinnzone. Schau auf das Etikett am Feld. TradingView zeigt dir automatisch den Stoppabstand, den Zielabstand und das Chance-Risiko-Verhältnis. Steht dort eins zu eins, ziehe das Ziel weiter weg oder suche einen besseren Trade. Als Nächstes lies den Stoppabstand aus dem Werkzeug ab, öffne den Lot-Größen-Rechner aus Stufe zwei und hole dir deine exakte Größe. Kein Raten. Zwei starke Funktionen: Erstens Alarme. Klicke mit der rechten Maustaste auf deine Stopplinie, wähle Alarm hinzufügen und stelle ihn so ein, dass er auslöst, wenn der Preis die Linie kreuzt. Dein Handy sagt dir Bescheid, sobald ein Trade geschlossen wird. Zweitens: Üben mit Spielgeld. Eröffne in TradingView ein Paper-Trading-Konto und nutze die Balken-Wiedergabe in der unteren Werkzeugleiste, um jeden Chart zurückzuspulen und Kerze für Kerze zu traden – genau wie der Simulator in dieser App, aber mit echter Historie. Glückwunsch! Du weißt jetzt, was die meisten Trader nie lernen: Schütze die Unterseite mit Stopps, dimensioniere mit Mathematik, zähle die Gebühren und lass Gewinner laufen. Übe weiter, und der Markt bezahlt deine Ausbildung in kleinen, leistbaren Lektionen."}
+    };
+
+    /* ============ state ============ */
+    var LS_KEY = "stoploss-lab-progress-v1";
+    var LANG_KEY = "stoploss-lab-lang-v1";
+    var LANG = "de";
+    try{ var savedLang = localStorage.getItem(LANG_KEY); if(savedLang === "en" || savedLang === "de") LANG = savedLang; }catch(e){}
+    function defaultState(){ return {lessons:{}, quizzes:{}, journal:[], simStats:{trades:0,wins:0,totalR:0}}; }
+    var state = defaultState();
+    try{
+      var saved = localStorage.getItem(LS_KEY);
+      if(saved){ var parsed = JSON.parse(saved); state = Object.assign(defaultState(), parsed); state.simStats = Object.assign({trades:0,wins:0,totalR:0}, parsed.simStats||{}); }
+    }catch(e){}
+    function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} updateTopProgress(); }
+
+    /* ============ helpers ============ */
+    function $(sel, root){ return (root||document).querySelector(sel); }
+    function el(html){ var d=document.createElement("div"); d.innerHTML=html; return d.firstElementChild; }
+    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+    function money(n){ var sign = n<0?"-$":"$"; var a=Math.abs(n); return sign + a.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+    function trimNum(n, d){ return Number(n.toFixed(d===undefined?4:d)).toLocaleString("en-US",{maximumFractionDigits:d===undefined?4:d}); }
+    function levelById(id){ for(var i=0;i<LEVELS.length;i++) if(LEVELS[i].id===id) return LEVELS[i]; return null; }
+    function lessonById(id){ for(var i=0;i<LESSONS.length;i++) if(LESSONS[i].id===id) return LESSONS[i]; return null; }
+    function lessonsOf(levelId){ return LESSONS.filter(function(l){ return l.level===levelId; }); }
+    function locLevel(lv){ if(LANG==="de" && lv && LEVELS_DE[lv.id]){ var o={}; for(var k in lv) o[k]=lv[k]; for(var k2 in LEVELS_DE[lv.id]) o[k2]=LEVELS_DE[lv.id][k2]; return o; } return lv; }
+    function locLesson(l){ if(LANG==="de" && l && LESSONS_DE[l.id]){ var o={}; for(var k in l) o[k]=l[k]; for(var k2 in LESSONS_DE[l.id]) o[k2]=LESSONS_DE[l.id][k2]; return o; } return l; }
+    function quizOf(levelId){ return (LANG==="de" && QUIZZES_DE[levelId]) ? QUIZZES_DE[levelId] : QUIZZES[levelId]; }
+    function guideSteps(){ return LANG==="de" ? GUIDE_DE : GUIDE; }
+    function isUnlocked(levelId){
+      if(levelId==="novice") return true;
+      if(levelId==="builder") return !!(state.quizzes.novice && state.quizzes.novice.passed);
+      if(levelId==="pro") return !!(state.quizzes.builder && state.quizzes.builder.passed);
+      return false;
+    }
+    function lessonsDoneCount(levelId){
+      return lessonsOf(levelId).filter(function(l){ return state.lessons[l.id]; }).length;
+    }
+    function updateTopProgress(){
+      var done = LESSONS.filter(function(l){ return state.lessons[l.id]; }).length;
+      var t = $("#topprogress"); if(t) t.textContent = T().topProgress(done);
+    }
+
+    /* ============ navigation ============ */
+    var currentView = "home";
+    function show(view){
+      currentView = view;
+      document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+      var target = $("#view-"+view); if(target) target.classList.add("active");
+      document.querySelectorAll(".tab").forEach(function(t){ t.classList.toggle("active", t.getAttribute("data-view")===view); });
+      window.scrollTo(0,0);
+      if(view==="home") renderHome();
+      if(view==="learn") renderLearn();
+      if(view==="calc") renderCalc();
+      if(view==="sim") renderSim();
+      if(view==="guide") renderGuide();
+      if(view==="progress") renderProgress();
+    }
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.addEventListener("click", function(){ show(t.getAttribute("data-view")); });
+    });
+
+    /* ============ language toggle ============ */
+    function applyLanguage(){
+      var s = T();
+      document.documentElement.lang = LANG === "de" ? "de-AT" : "en";
+      var bt = $("#brand-tagline"); if(bt) bt.textContent = s.tagline;
+      document.querySelectorAll(".lang-toggle button").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-lang") === LANG);
+      });
+      var labels = [s.tabHome, s.tabLearn, s.tabTools, s.tabPractice, s.tabGuide, s.tabProgress];
+      document.querySelectorAll(".tab .tab-label").forEach(function(sp, i){ if(labels[i]) sp.textContent = labels[i]; });
+      updateTopProgress();
+      var vc = $("#view-calc");
+      if(vc && vc.dataset.built && vc.dataset.built !== LANG){ delete vc.dataset.built; vc.innerHTML = ""; }
+      var vs = $("#view-sim");
+      if(vs && vs.dataset.built && vs.dataset.built !== LANG){ stopSimTimer(); if(sim) sim.running = false; delete vs.dataset.built; vs.innerHTML = ""; }
+      if(currentView === "lesson" && currentLesson){ openLesson(currentLesson); }
+      else if(currentView === "quiz" && quizState){ renderQuiz(); }
+      else { show(currentView); }
+    }
+    document.querySelectorAll(".lang-toggle button").forEach(function(b){
+      b.addEventListener("click", function(){
+        var nl = b.getAttribute("data-lang");
+        if(nl === LANG) return;
+        LANG = nl;
+        try{ localStorage.setItem(LANG_KEY, LANG); }catch(e){}
+        applyLanguage();
+      });
+    });
+
+    /* ============ home ============ */
+    function renderHome(){
+      var v = $("#view-home");
+      var s = T();
+      var html = "";
+      html += '<div class="hero"><p class="kicker">'+s.homeKicker+'</p>';
+      html += '<h2>'+s.homeTitleHtml+'</h2>';
+      html += '<p class="lead">'+esc(s.homeLead)+'</p></div>';
+
+      html += '<div class="howitworks">';
+      html += '<div class="how"><div class="stepno">1</div><div><h3>'+s.how1t+'</h3><p>'+esc(s.how1p)+'</p></div></div>';
+      html += '<div class="how"><div class="stepno">2</div><div><h3>'+s.how2t+'</h3><p>'+esc(s.how2p)+'</p></div></div>';
+      html += '<div class="how"><div class="stepno">3</div><div><h3>'+s.how3t+'</h3><p>'+esc(s.how3p)+'</p></div></div>';
+      html += '</div>';
+
+      html += '<p class="kicker" style="margin-bottom:12px;">'+s.roadmapKicker+'</p><div class="roadmap">';
+      LEVELS.forEach(function(lvRaw){
+        var lv = locLevel(lvRaw);
+        var unlocked = isUnlocked(lv.id);
+        var done = lessonsDoneCount(lv.id);
+        var total = lessonsOf(lv.id).length;
+        var quiz = state.quizzes[lv.id];
+        var pct = Math.round(done/total*100);
+        var chip = !unlocked ? '<span class="status-chip chip-lock">'+s.chipLocked+'</span>'
+          : (quiz && quiz.passed) ? '<span class="status-chip chip-done">'+s.chipPassed+'</span>'
+          : '<span class="status-chip chip-open">'+s.chipOpen+'</span>';
+        html += '<article class="card levelcard'+(unlocked?"":" locked")+'">';
+        html += '<span class="lvl-badge">'+esc(lv.name.split("·")[0].trim())+'</span>';
+        html += '<h3>'+esc(lv.name)+'</h3>';
+        html += '<p>'+esc(lv.tagline)+'</p>';
+        html += '<div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div>';
+        html += '<div class="meta"><span class="small muted">'+s.lessonsOfTotal(done, total)+'</span>'+chip+'</div>';
+        if(unlocked){
+          html += '<button class="btn" data-goto-level="'+lv.id+'">'+s.startLearning+'</button>';
+        } else {
+          var prevShort = locLevel(levelById(lv.id==="builder" ? "novice" : "builder")).name.split("·")[0].trim();
+          html += '<p class="locknote"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'+esc(s.lockNote(prevShort))+'</p>';
+        }
+        html += '</article>';
+      });
+      html += '</div>';
+
+      html += '<div class="card" style="margin-top:22px;"><h3 style="margin-bottom:6px;">'+s.tvCardTitle+'</h3>';
+      html += '<p class="muted" style="margin:0 0 14px;">'+esc(s.tvCardText)+'</p>';
+      html += '<button class="btn secondary" data-goto="guide">'+s.tvCardBtn+'</button></div>';
+
+      v.innerHTML = html;
+      v.querySelectorAll("[data-goto-level]").forEach(function(b){
+        b.addEventListener("click", function(){ show("learn"); });
+      });
+      v.querySelectorAll("[data-goto]").forEach(function(b){
+        b.addEventListener("click", function(){ show(b.getAttribute("data-goto")); });
+      });
+    }
+
+    /* ============ learn ============ */
+    function renderLearn(){
+      var v = $("#view-learn");
+      var s = T();
+      var html = '<p class="kicker">'+s.learnKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 8px;">'+s.learnTitle+'</h2>';
+      html += '<p class="lead">'+esc(s.learnLead)+'</p>';
+      LEVELS.forEach(function(lvRaw, li){
+        var lv = locLevel(lvRaw);
+        var unlocked = isUnlocked(lv.id);
+        var quiz = state.quizzes[lv.id];
+        html += '<div class="levelblock">';
+        html += '<div class="level-head"><h2>'+esc(lv.name)+'</h2><span class="tag">'+esc(lv.tagline)+'</span></div>';
+        if(!unlocked){
+          var prevFull = locLevel(levelById(lv.id==="builder" ? "novice" : "builder")).name;
+          html += '<div class="lockedbox">'+s.lockedBox(esc(prevFull))+'</div>';
+        } else {
+          html += '<div class="lessonlist">';
+          lessonsOf(lv.id).forEach(function(lRaw, i){
+            var l = locLesson(lRaw);
+            var done = !!state.lessons[l.id];
+            html += '<button class="lessonrow'+(done?" done":"")+'" data-lesson="'+l.id+'">'
+              + '<span class="n">'+(done ? "✓" : (li*4+i+1))+'</span>'
+              + '<span><h3>'+esc(l.title)+'</h3><p>'+esc(l.tagline)+'</p></span>'
+              + '<span class="chev">›</span></button>';
+          });
+          html += '</div>';
+          html += '<div class="card" style="margin-bottom:12px;"><p class="kicker" style="margin-bottom:6px;">'+s.watchKicker+'</p>'
+            + '<h3 style="font-size:1.05rem;margin-bottom:4px;">'+esc(lv.videoTopic)+'</h3>'
+            + '<div class="videobox"><video controls preload="metadata" src="assets/videos/'+lvRaw.video+'" onerror="videoFailed(this)"></video>'
+            + '<div class="placeholder" style="display:none;">'+esc(s.videoPlaceholder)+'</div></div></div>';
+          html += '<div class="card"><p class="kicker" style="margin-bottom:6px;">'+s.quizKicker+'</p>'
+            + '<h3 style="font-size:1.05rem;margin-bottom:4px;">'+(quiz && quiz.passed ? s.quizPassedLabel : s.quizToPass)+'</h3>'
+            + '<p class="muted small" style="margin:0 0 14px;">'+(quiz ? esc(s.quizBest(quiz.best)) : "")+esc(s.quizExplainNote)+'</p>'
+            + '<button class="btn" data-quiz="'+lv.id+'">'+(quiz && quiz.passed ? s.retakeQuiz : s.takeQuiz)+'</button></div>';
+        }
+        html += '</div>';
+      });
+      v.innerHTML = html;
+      v.querySelectorAll("[data-lesson]").forEach(function(b){
+        b.addEventListener("click", function(){ openLesson(b.getAttribute("data-lesson")); });
+      });
+      v.querySelectorAll("[data-quiz]").forEach(function(b){
+        b.addEventListener("click", function(){ startQuiz(b.getAttribute("data-quiz")); });
+      });
+    }
+    function videoFailed(vid){
+      vid.style.display = "none";
+      var ph = vid.parentElement.querySelector(".placeholder");
+      if(ph) ph.style.display = "block";
+    }
+
+    /* ============ lesson page ============ */
+    var currentLesson = null;
+    function openLesson(id){
+      currentLesson = id;
+      var lRaw = lessonById(id); if(!lRaw) return;
+      var l = locLesson(lRaw);
+      var s = T();
+      var lv = locLevel(levelById(l.level));
+      var idx = LESSONS.indexOf(lRaw);
+      var prev = idx>0 ? LESSONS[idx-1] : null;
+      var next = idx<LESSONS.length-1 ? LESSONS[idx+1] : null;
+      var done = !!state.lessons[l.id];
+      var audioSrc = LANG==="de" ? "assets/audio/de/lesson-"+l.id+".mp3" : "assets/audio/lesson-"+l.id+".mp3";
+      var html = "";
+      html += '<button class="backlink" data-back>'+s.lessonBack+'</button>';
+      html += '<div class="lesson-hero"><p class="kicker">'+esc(lv.name)+'</p><h2>'+esc(l.title)+'</h2><p class="tagline">'+esc(l.tagline)+'</p></div>';
+
+      html += '<div class="playerbox"><div class="plabel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>'+s.listenLabel+'</div>'
+        + '<audio controls preload="metadata" src="'+audioSrc+'" onerror="audioFailed(this)"></audio>'
+        + '<p class="soon" style="display:none;">'+esc(s.audioSoon)+'</p>'
+        + '<details class="transcript"><summary>'+s.transcriptSummary+'</summary><p>'+esc(l.script)+'</p></details></div>';
+
+      html += '<div class="oneliner">'+esc(l.oneLiner)+'</div>';
+
+      if(l.diagram){
+        html += '<figure class="diagram" style="margin-left:0;margin-right:0;"><img src="assets/images/'+l.diagram+'" alt="'+esc(s.diagramAlt(l.title))+'" onerror="diagramFailed(this)"/>'
+          + '<div class="placeholder" style="display:none;">'+esc(s.diagramPlaceholder)+'</div></figure>';
+      }
+
+      html += '<div class="lesson-body">';
+      l.sections.forEach(function(s){
+        html += '<h3>'+esc(s.h)+'</h3>';
+        s.p.forEach(function(p){ html += '<p>'+esc(p)+'</p>'; });
+      });
+      html += '</div>';
+
+      html += '<div class="formula">'+esc(l.formula)+'</div>';
+
+      html += '<div class="worked"><h3>'+s.workedExample+'</h3><p class="setup">'+esc(l.workedExample.setup)+'</p><ol>';
+      l.workedExample.steps.forEach(function(st){ html += '<li>'+esc(st)+'</li>'; });
+      html += '</ol><div class="answer">'+esc(l.workedExample.answer)+'</div></div>';
+
+      html += '<div class="tryit"><span class="t-label">'+s.tryItLabel+'</span>'+esc(l.tryIt)+'</div>';
+
+      if(done){
+        html += '<div class="donecheck"><span>✓</span>'+esc(s.lessonDoneNote)+'</div>';
+      } else {
+        html += '<button class="btn" data-complete="'+l.id+'" style="width:100%;margin:22px 0;">'+s.markDone+'</button>';
+      }
+
+      html += '<div class="lesson-nav">';
+      if(prev) html += '<button class="btn secondary" data-open-lesson="'+prev.id+'">'+s.prevLesson+'</button>';
+      if(next){
+        var nextLocked = !isUnlocked(next.level);
+        html += nextLocked
+          ? '<button class="btn secondary" disabled title="">'+s.nextLocked+'</button>'
+          : '<button class="btn" data-open-lesson="'+next.id+'">'+s.nextLesson+'</button>';
+      } else {
+        html += '<button class="btn" data-goto-view="sim">'+s.goPractice+'</button>';
+      }
+      html += '</div>';
+
+      var v = $("#view-lesson");
+      v.innerHTML = html;
+      show("lesson");
+      v.querySelector("[data-back]").addEventListener("click", function(){ show("learn"); });
+      var comp = v.querySelector("[data-complete]");
+      if(comp) comp.addEventListener("click", function(){
+        state.lessons[l.id] = true; save(); openLesson(l.id);
+      });
+      v.querySelectorAll("[data-open-lesson]").forEach(function(b){
+        b.addEventListener("click", function(){ openLesson(b.getAttribute("data-open-lesson")); });
+      });
+      var gv = v.querySelector("[data-goto-view]");
+      if(gv) gv.addEventListener("click", function(){ show(gv.getAttribute("data-goto-view")); });
+    }
+    function audioFailed(a){
+      a.style.display = "none";
+      var box = a.closest(".playerbox");
+      var soon = box ? box.querySelector(".soon") : null;
+      if(soon) soon.style.display = "block";
+    }
+    function diagramFailed(img){
+      img.style.display = "none";
+      var fig = img.closest(".diagram");
+      var ph = fig ? fig.querySelector(".placeholder") : null;
+      if(ph) ph.style.display = "block";
+    }
+
+    /* ============ quiz ============ */
+    var quizState = null;
+    function startQuiz(levelId){
+      if(!isUnlocked(levelId)) return;
+      quizState = {levelId: levelId, index: 0, score: 0, answered: false, picked: null};
+      renderQuiz();
+      show("quiz");
+    }
+    function renderQuiz(){
+      var v = $("#view-quiz");
+      var s = T();
+      var qs = quizOf(quizState.levelId);
+      var lv = locLevel(levelById(quizState.levelId));
+      if(quizState.index >= qs.length){ renderQuizDone(); return; }
+      var q = qs[quizState.index];
+      var html = '<button class="backlink" data-leave>'+s.quizBack+'</button>';
+      html += '<div class="quizbar"><span>'+esc(s.quizBarLevel(lv.name))+'</span><span>'+esc(s.questionOf(quizState.index+1, qs.length, quizState.score))+'</span></div>';
+      html += '<div class="progress-track" style="margin-bottom:18px;"><div class="progress-fill" style="width:'+Math.round(quizState.index/qs.length*100)+'%"></div></div>';
+      html += '<div class="card qcard"><h2>'+esc(q.q)+'</h2><div class="opts">';
+      q.options.forEach(function(opt, i){
+        html += '<button class="opt" data-opt="'+i+'">'+esc(opt)+'</button>';
+      });
+      html += '</div><div class="explain" id="qexplain"></div>';
+      html += '<div class="quiz-actions"><button class="btn" id="qnext" style="display:none;">'+(quizState.index===qs.length-1 ? s.seeResult : s.nextQuestion)+'</button></div></div>';
+      v.innerHTML = html;
+      v.querySelector("[data-leave]").addEventListener("click", function(){ show("learn"); });
+      v.querySelectorAll(".opt").forEach(function(b){
+        b.addEventListener("click", function(){ answerQuiz(parseInt(b.getAttribute("data-opt"),10)); });
+      });
+      $("#qnext").addEventListener("click", function(){ quizState.index++; quizState.answered=false; quizState.picked=null; renderQuiz(); });
+      if(quizState.answered && quizState.picked !== null && quizState.picked !== undefined) paintAnswer(false);
+    }
+    function paintAnswer(countScore){
+      var s = T();
+      var q = quizOf(quizState.levelId)[quizState.index];
+      var i = quizState.picked;
+      var correct = i === q.a;
+      if(countScore && correct) quizState.score++;
+      document.querySelectorAll("#view-quiz .opt").forEach(function(b, bi){
+        b.disabled = true;
+        if(bi === q.a) b.classList.add("correct");
+        else if(bi === i) b.classList.add("wrong");
+      });
+      var ex = $("#qexplain");
+      if(ex){
+        ex.className = "explain show " + (correct ? "good" : "bad");
+        ex.innerHTML = (correct ? "<strong>"+s.correct+"</strong> " : "<strong>"+s.notQuite+"</strong> ") + esc(q.explain);
+      }
+      var nx = $("#qnext"); if(nx) nx.style.display = "inline-flex";
+    }
+    function answerQuiz(i){
+      if(quizState.answered) return;
+      quizState.answered = true;
+      quizState.picked = i;
+      paintAnswer(true);
+    }
+    function renderQuizDone(){
+      var v = $("#view-quiz");
+      var s = T();
+      var qs = quizOf(quizState.levelId);
+      var lv = locLevel(levelById(quizState.levelId));
+      var passed = quizState.score >= 4;
+      var prev = state.quizzes[quizState.levelId] || {best:0, passed:false};
+      state.quizzes[quizState.levelId] = {best: Math.max(prev.best||0, quizState.score), passed: !!(prev.passed || passed)};
+      save();
+      var html = '<div class="card" style="text-align:center;">';
+      html += '<p class="kicker">'+esc(s.quizBarLevel(lv.name))+'</p>';
+      html += '<div class="scorebig num" style="margin:12px 0 4px;">'+quizState.score+' / '+qs.length+'</div>';
+      html += '<p class="muted" style="margin:0;">'+esc(s.needToPass)+'</p>';
+      if(passed){
+        var nextLvRaw = quizState.levelId==="novice" ? levelById("builder") : (quizState.levelId==="builder" ? levelById("pro") : null);
+        var nextLv = nextLvRaw ? locLevel(nextLvRaw) : null;
+        html += '<div class="passbanner">'+esc(s.passedWord)+(nextLv ? s.passedUnlock(esc(nextLv.name)) : esc(s.passedFinal))+'</div>';
+        if(nextLv) html += '<button class="btn" data-next-level="'+nextLv.id+'" style="margin-right:10px;">'+esc(s.goToLevel(nextLv.name))+'</button>';
+      } else {
+        html += '<div class="failbanner">'+esc(s.failBanner)+'</div>';
+      }
+      html += '<div class="quiz-actions" style="justify-content:center;"><button class="btn secondary" data-retry>'+s.retakeQuiz+'</button><button class="btn secondary" data-lessons>'+s.backToLessons+'</button></div>';
+      html += '</div>';
+      v.innerHTML = html;
+      v.querySelector("[data-retry]").addEventListener("click", function(){ startQuiz(quizState.levelId); });
+      v.querySelector("[data-lessons]").addEventListener("click", function(){ show("learn"); });
+      var nl = v.querySelector("[data-next-level]");
+      if(nl) nl.addEventListener("click", function(){ show("learn"); });
+    }
+
+    /* ============ calculators ============ */
+    function renderCalc(){
+      var v = $("#view-calc");
+      if(v.dataset.built === LANG) return;
+      v.dataset.built = LANG;
+      var s = T();
+      var html = '<p class="kicker">'+s.calcKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 8px;">'+s.calcTitle+'</h2>';
+      html += '<p class="lead">'+esc(s.calcLead)+'</p><div class="calc-grid">';
+
+      /* --- lot size --- */
+      html += '<div class="card"><h3 style="margin-bottom:4px;">'+s.lotCalcTitle+'</h3>';
+      html += '<p class="muted small" style="margin:0 0 16px;">'+esc(s.lotCalcSub)+'</p>';
+      html += '<div class="field"><label for="c-acct">'+s.acctBalance+'</label><input id="c-acct" type="number" min="0" step="any" value="1000"></div>';
+      html += '<div class="field"><label for="c-risk">'+s.riskPerTradePct+' <span class="hint">'+s.riskHintBeginners+'</span></label><input id="c-risk" type="number" min="0" step="any" value="1"></div>';
+      html += '<div class="field"><label for="c-inst">'+s.tradingWhat+'</label><select id="c-inst">'
+        + '<option value="forex" selected>'+s.optForex+'</option><option value="stock">'+s.optStock+'</option><option value="crypto">'+s.optCrypto+'</option><option value="futures">'+s.optFutures+'</option></select></div>';
+      html += '<div class="field"><label for="c-entry">'+s.entryPrice+'</label><input id="c-entry" type="number" min="0" step="any" value="1.0850"></div>';
+      html += '<div class="field"><label for="c-stop">'+s.stopPrice+'</label><input id="c-stop" type="number" min="0" step="any" value="1.0830"></div>';
+      html += '<div class="field"><label for="c-pipval">'+s.pipValLabel+'</label><input id="c-pipval" type="number" min="0" step="any" value="10"><span class="hint">'+esc(s.pipValHint)+'</span></div>';
+      html += '<div class="resultbox" id="c-out"></div></div>';
+
+      /* --- risk visualizer --- */
+      html += '<div class="card"><h3 style="margin-bottom:4px;">'+s.riskVizTitle+'</h3>';
+      html += '<p class="muted small" style="margin:0 0 16px;">'+esc(s.riskVizSub)+'</p>';
+      html += '<div class="field"><label for="r-acct">'+s.acctBalance+'</label><input id="r-acct" type="number" min="0" step="any" value="1000"></div>';
+      html += '<div class="field"><label for="r-risk">'+s.riskPerTradeLabel+' <span id="r-riskval" class="num">1%</span></label><input id="r-risk" type="range" min="0.25" max="10" step="0.25" value="1"></div>';
+      html += '<div class="resultbox" id="r-out"></div></div>';
+
+      /* --- fee estimator --- */
+      html += '<div class="card wide"><h3 style="margin-bottom:4px;">'+s.feeTitle+'</h3>';
+      html += '<p class="muted small" style="margin:0 0 16px;">'+esc(s.feeSub)+'</p>';
+      html += '<div style="display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">';
+      html += '<div class="field"><label for="f-spread">'+s.fSpread+'</label><input id="f-spread" type="number" min="0" step="any" value="1.2"></div>';
+      html += '<div class="field"><label for="f-pipval">'+s.fPipVal+'</label><input id="f-pipval" type="number" min="0" step="any" value="10"></div>';
+      html += '<div class="field"><label for="f-comm">'+s.fComm+'</label><input id="f-comm" type="number" min="0" step="any" value="0"></div>';
+      html += '<div class="field"><label for="f-size">'+s.fSize+'</label><input id="f-size" type="number" min="0" step="any" value="0.05"></div>';
+      html += '<div class="field"><label for="f-target">'+s.fTarget+'</label><input id="f-target" type="number" min="0" step="any" value="20"></div>';
+      html += '</div><div class="resultbox" id="f-out"></div></div>';
+
+      html += '</div>';
+      v.innerHTML = html;
+
+      function calcLot(){
+        var acct = parseFloat($("#c-acct").value)||0;
+        var riskPct = parseFloat($("#c-risk").value)||0;
+        var entry = parseFloat($("#c-entry").value)||0;
+        var stop = parseFloat($("#c-stop").value)||0;
+        var pipVal = parseFloat($("#c-pipval").value)||0;
+        var inst = $("#c-inst").value;
+        var riskDollars = acct * riskPct / 100;
+        var distPrice = Math.abs(entry - stop);
+        var out = $("#c-out");
+        if(distPrice <= 0 || pipVal <= 0){
+          out.innerHTML = '<p style="margin:0;">'+esc(s.lotEmpty)+'</p>'; return;
+        }
+        var distPips, size, sizeText, sentence;
+        if(inst === "forex"){
+          distPips = distPrice / 0.0001;
+          size = riskDollars / (distPips * pipVal);
+          sizeText = '<span class="big num">' + size.toFixed(2) + ' ' + s.unitLots + '</span><div class="small muted" style="margin-top:4px;">' + esc(s.lotAbout(Math.round(size*100000).toLocaleString("en-US"), distPips.toFixed(1))) + '</div>';
+        } else {
+          size = riskDollars / distPrice;
+          var unit = inst==="stock" ? s.unitStock : (inst==="crypto" ? s.unitCrypto : s.unitFutures);
+          var unitOne = inst==="stock" ? s.unitStockOne : (inst==="crypto" ? s.unitCryptoOne : s.unitFuturesOne);
+          sizeText = '<span class="big num">' + trimNum(size,2) + ' ' + unit + '</span><div class="small muted" style="margin-top:4px;">' + esc(s.stopDistPer(money(distPrice), unitOne)) + '</div>';
+        }
+        sentence = s.lotSentence(money(riskDollars), trimNum(riskPct,2));
+        out.innerHTML = sizeText + '<div class="statgrid">'
+          + '<div class="stat"><div class="v">'+money(riskDollars)+'</div><div class="k">'+s.youRisk+'</div></div>'
+          + '<div class="stat"><div class="v num">'+trimNum(inst==="forex"?distPips:distPrice, inst==="forex"?1:2)+'</div><div class="k">'+(inst==="forex"?s.stopPipsK:s.stopDistanceK)+'</div></div>'
+          + '</div><p class="sentence">'+sentence+'</p>';
+      }
+      ["c-acct","c-risk","c-entry","c-stop","c-pipval","c-inst"].forEach(function(id){
+        $("#"+id).addEventListener("input", calcLot);
+        $("#"+id).addEventListener("change", calcLot);
+      });
+      $("#c-inst").addEventListener("change", function(){
+        var inst = this.value;
+        if(inst==="forex"){ $("#c-entry").value = "1.0850"; $("#c-stop").value = "1.0830"; $("#c-pipval").value = "10"; }
+        if(inst==="stock"){ $("#c-entry").value = "232.50"; $("#c-stop").value = "228.50"; $("#c-pipval").value = "1"; }
+        if(inst==="crypto"){ $("#c-entry").value = "67500"; $("#c-stop").value = "66000"; $("#c-pipval").value = "1"; }
+        if(inst==="futures"){ $("#c-entry").value = "5400"; $("#c-stop").value = "5390"; $("#c-pipval").value = "12.50"; }
+        calcLot();
+      });
+
+      function calcRisk(){
+        var acct = parseFloat($("#r-acct").value)||0;
+        var pct = parseFloat($("#r-risk").value)||0;
+        $("#r-riskval").textContent = trimNum(pct,2) + "%";
+        var per = acct * pct/100;
+        var after10 = acct * Math.pow(1 - pct/100, 10);
+        var cost10 = acct - after10;
+        $("#r-out").innerHTML = '<div class="statgrid" style="margin-top:0;">'
+          + '<div class="stat"><div class="v">'+money(per)+'</div><div class="k">'+s.riskPerTradeK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(cost10)+'</div><div class="k">'+s.losses10K+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(after10)+'</div><div class="k">'+s.acctLeftK+'</div></div></div>'
+          + '<p class="sentence">'+esc(s.riskSentence(trimNum(pct,2), trimNum(acct? (cost10/acct*100):0,1), pct<=2))+'</p>';
+      }
+      ["r-acct","r-risk"].forEach(function(id){
+        $("#"+id).addEventListener("input", calcRisk);
+      });
+
+      function calcFees(){
+        var spread = parseFloat($("#f-spread").value)||0;
+        var pipVal = parseFloat($("#f-pipval").value)||0;
+        var comm = parseFloat($("#f-comm").value)||0;
+        var size = parseFloat($("#f-size").value)||0;
+        var target = parseFloat($("#f-target").value)||0;
+        var spreadCost = spread * pipVal * size;
+        var commRT = comm * 2;
+        var total = spreadCost + commRT;
+        var pctOfTarget = target>0 ? (total/target*100) : 0;
+        $("#f-out").innerHTML = '<div class="statgrid" style="margin-top:0;">'
+          + '<div class="stat"><div class="v">'+money(spreadCost)+'</div><div class="k">'+s.spreadCostK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(commRT)+'</div><div class="k">'+s.commK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(total)+'</div><div class="k">'+s.roundTripK+'</div></div></div>'
+          + '<p class="sentence">'+s.feeSentence(money(total), trimNum(pctOfTarget,1), money(target), pctOfTarget>10)+'</p>';
+      }
+      ["f-spread","f-pipval","f-comm","f-size","f-target"].forEach(function(id){
+        $("#"+id).addEventListener("input", calcFees);
+      });
+
+      calcLot(); calcRisk(); calcFees();
+    }
+
+    /* ============ practice desk (simulator) ============ */
+    var INSTRUMENTS = {
+      "eurusd":{name:"EUR/USD (forex)",nameDe:"EUR/USD (Forex)",unit:"lots",startPrice:1.0850,pipSize:0.0001,pipValuePerLot:10,spreadPips:1.2,decimals:4,vol:0.00045,defaultStopPips:20},
+      "aapl":{name:"Apple stock (shares)",nameDe:"Apple-Aktie (Aktien)",unit:"shares",startPrice:232.50,pipSize:1,pipValuePerLot:1,spreadDollars:0.02,decimals:2,vol:0.9,defaultStopPips:4},
+      "btc":{name:"Bitcoin (coins)",nameDe:"Bitcoin (Coins)",unit:"coins",startPrice:67500,pipSize:1,pipValuePerLot:1,spreadDollars:15,decimals:0,vol:220,defaultStopPips:1200}
+    };
+    function instName(key){ var inst = INSTRUMENTS[key]; if(!inst) return ""; return LANG==="de" ? (inst.nameDe || inst.name) : inst.name; }
+    function simUnit(){ var u = simInst().unit; var s = T(); return u==="shares" ? s.unitStock : (u==="coins" ? s.unitCrypto : s.unitLots); }
+    var sim = null;
+
+    function newCandles(inst, count, startPrice){
+      var candles = []; var price = startPrice;
+      for(var i=0;i<count;i++){
+        var open = price;
+        var drift = (Math.random()-0.47) * inst.vol * 0.4;
+        var close = open + drift + (Math.random()-0.5) * inst.vol * 1.6;
+        var high = Math.max(open, close) + Math.random()*inst.vol*0.6;
+        var low = Math.min(open, close) - Math.random()*inst.vol*0.6;
+        candles.push({o:open,h:high,l:low,c:close});
+        price = close;
+      }
+      return candles;
+    }
+    function nextCandle(inst, prevClose){
+      var open = prevClose;
+      var trend = sim && sim.trend ? sim.trend : 0;
+      var close = open + trend + (Math.random()-0.5) * inst.vol * 1.7;
+      var high = Math.max(open, close) + Math.random()*inst.vol*0.7;
+      var low = Math.min(open, close) - Math.random()*inst.vol*0.7;
+      return {o:open,h:high,l:low,c:close};
+    }
+
+    function renderSim(){
+      var v = $("#view-sim");
+      if(v.dataset.built !== LANG){
+        v.dataset.built = LANG;
+        var s = T();
+        var html = '<p class="kicker">'+s.simKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 8px;">'+s.simTitle+'</h2>';
+        html += '<p class="lead">'+esc(s.simLead)+'</p>';
+        html += '<div class="sim-layout"><div>';
+        html += '<div class="field"><label for="s-inst">'+s.instrument+'</label><select id="s-inst">'
+          + '<option value="eurusd">'+esc(instName("eurusd"))+'</option><option value="aapl">'+esc(instName("aapl"))+'</option><option value="btc">'+esc(instName("btc"))+'</option></select></div>';
+        html += '<div class="chartwrap"><canvas id="simchart" width="640" height="320"></canvas><p class="chart-hint">'+esc(s.chartHint)+'</p></div>';
+        html += '<div class="feedback" id="s-feedback"></div>';
+        html += '<button class="btn" id="s-run" style="width:100%;">'+s.runTrade+'</button>';
+        html += '<button class="btn secondary" id="s-reset" style="width:100%;margin-top:10px;">'+s.newChart+'</button>';
+        html += '</div><div>';
+        html += '<div class="card" style="margin-bottom:16px;"><h3 style="margin-bottom:12px;">'+s.planTitle+'</h3>';
+        html += '<div class="field"><label for="s-acct">'+s.acctLabel+'</label><input id="s-acct" type="number" min="0" step="any" value="1000"></div>';
+        html += '<div class="field"><label for="s-risk">'+s.riskPerTradePct+'</label><input id="s-risk" type="number" min="0" step="any" value="1"></div>';
+        html += '<div class="resultbox" id="s-plan"></div></div>';
+        html += '<div class="card"><h3 style="margin-bottom:6px;">'+s.trackTitle+'</h3><div class="statgrid" id="s-stats" style="margin-top:0;"></div></div>';
+        html += '</div></div>';
+        html += '<h3 style="margin:28px 0 4px;">'+s.journalTitle+'</h3><p class="muted small" style="margin:0;">'+esc(s.journalSub)+'</p><div class="journal" id="s-journal"></div>';
+        v.innerHTML = html;
+
+        sim = {instKey:"eurusd", candles:[], entry:null, stop:null, target:null, running:false, timer:null, trend:0, dragTarget:null, finished:false};
+        resetSimChart();
+        setupCanvas();
+
+        $("#s-inst").addEventListener("change", function(){ sim.instKey = this.value; resetSimChart(); });
+        $("#s-acct").addEventListener("input", updatePlan);
+        $("#s-risk").addEventListener("input", updatePlan);
+        $("#s-reset").addEventListener("click", function(){ resetSimChart(); setFeedback("info", T().fbFresh); });
+        $("#s-run").addEventListener("click", runTrade);
+      }
+      drawSim();
+      renderJournal();
+      renderSimStats();
+      updatePlan();
+    }
+
+    function simInst(){ return INSTRUMENTS[sim.instKey]; }
+    function fmtPrice(inst, p){ return p.toLocaleString("en-US",{minimumFractionDigits:inst.decimals, maximumFractionDigits:inst.decimals}); }
+
+    function resetSimChart(){
+      stopSimTimer();
+      var inst = simInst();
+      sim.candles = newCandles(inst, 42, inst.startPrice);
+      var last = sim.candles[sim.candles.length-1].c;
+      sim.entry = last;
+      sim.stop = last - inst.defaultStopPips * inst.pipSize;
+      sim.target = last + inst.defaultStopPips * inst.pipSize * 2;
+      sim.running = false; sim.finished = false;
+      drawSim(); updatePlan(); renderJournal(); renderSimStats();
+    }
+    function stopSimTimer(){ if(sim && sim.timer){ clearInterval(sim.timer); sim.timer = null; } }
+
+    function chartGeom(){
+      var canvas = $("#simchart"); if(!canvas) return null;
+      var rect = canvas.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var W = Math.max(280, Math.floor(rect.width));
+      var H = 320;
+      if(canvas.width !== W*dpr || canvas.height !== H*dpr){ canvas.width = W*dpr; canvas.height = H*dpr; }
+      var ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      var prices = [];
+      sim.candles.forEach(function(c){ prices.push(c.h, c.l); });
+      [sim.entry, sim.stop, sim.target].forEach(function(p){ if(p!==null && p!==undefined) prices.push(p); });
+      var hi = Math.max.apply(null, prices), lo = Math.min.apply(null, prices);
+      var pad = (hi-lo)*0.12 || 1; hi += pad; lo -= pad;
+      return {ctx:ctx, W:W, H:H, hi:hi, lo:lo,
+        y:function(p){ return H - (p-lo)/(hi-lo)*H; },
+        priceAt:function(y){ return lo + (H-y)/H*(hi-lo); }};
+    }
+
+    function drawSim(){
+      var canvas = $("#simchart"); if(!canvas || !sim) return;
+      var g = chartGeom(); if(!g) return;
+      var ctx = g.ctx, inst = simInst();
+      ctx.clearRect(0,0,g.W,g.H);
+      ctx.fillStyle = "#101d33"; ctx.fillRect(0,0,g.W,g.H);
+      ctx.strokeStyle = "rgba(246,239,221,.08)"; ctx.lineWidth = 1;
+      for(var i=1;i<5;i++){ var gy = g.H*i/5; ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(g.W,gy); ctx.stroke(); }
+      var n = sim.candles.length;
+      var slot = g.W / Math.max(n, 30);
+      var bw = Math.max(3, slot*0.6);
+      sim.candles.forEach(function(c, i){
+        var x = i*slot + slot/2;
+        var up = c.c >= c.o;
+        var col = up ? "#4db884" : "#e0655a";
+        ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(x, g.y(c.h)); ctx.lineTo(x, g.y(c.l)); ctx.stroke();
+        var yO = g.y(c.o), yC = g.y(c.c);
+        ctx.fillRect(x-bw/2, Math.min(yO,yC), bw, Math.max(2, Math.abs(yC-yO)));
+      });
+      function line(price, color, label){
+        if(price===null || price===undefined) return;
+        var y = g.y(price);
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(price===sim.entry?[]:[7,5]);
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(g.W,y); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = color;
+        var text = label + " " + fmtPrice(inst, price);
+        ctx.font = "bold 12px " + getComputedStyle(document.body).getPropertyValue("--font");
+        var tw = ctx.measureText(text).width + 14;
+        ctx.fillRect(g.W-tw-4, y-11, tw, 22);
+        ctx.fillStyle = "#101d33"; ctx.fillText(text, g.W-tw+3, y+4);
+      }
+      line(sim.target, "#4db884", T().lineTarget);
+      line(sim.stop, "#e0655a", T().lineStop);
+      line(sim.entry, "#f0a84e", T().lineEntry);
+    }
+
+    function setupCanvas(){
+      var canvas = $("#simchart");
+      function pos(e){
+        var rect = canvas.getBoundingClientRect();
+        var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        return y;
+      }
+      function nearestLine(y){
+        var g = chartGeom(); if(!g) return null;
+        var best = null, bestD = 18;
+        [["stop", sim.stop], ["target", sim.target]].forEach(function(pair){
+          if(pair[1]===null || pair[1]===undefined) return;
+          var d = Math.abs(g.y(pair[1]) - y);
+          if(d < bestD){ bestD = d; best = pair[0]; }
+        });
+        return best;
+      }
+      function onDown(e){
+        if(sim.running) return;
+        var y = pos(e);
+        var near = nearestLine(y);
+        var g = chartGeom(); if(!g) return;
+        if(near){ sim.dragTarget = near; }
+        else {
+          var last = sim.candles[sim.candles.length-1].c;
+          var inst = simInst();
+          sim.entry = last;
+          sim.stop = last - inst.defaultStopPips * inst.pipSize;
+          sim.target = last + inst.defaultStopPips * inst.pipSize * 2;
+          sim.finished = false;
+          setFeedback("info", T().fbEntrySet(fmtPrice(inst, last)));
+        }
+        drawSim(); updatePlan();
+        e.preventDefault();
+      }
+      function onMove(e){
+        if(!sim.dragTarget || sim.running) return;
+        var g = chartGeom(); if(!g) return;
+        var p = g.priceAt(pos(e));
+        if(sim.dragTarget === "stop"){ sim.stop = Math.min(p, sim.entry - simInst().pipSize); }
+        if(sim.dragTarget === "target"){ sim.target = Math.max(p, sim.entry + simInst().pipSize); }
+        drawSim(); updatePlan();
+        e.preventDefault();
+      }
+      function onUp(){ sim.dragTarget = null; }
+      canvas.addEventListener("pointerdown", onDown);
+      canvas.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("resize", function(){ drawSim(); });
+    }
+
+    function simFee(size){
+      var inst = simInst();
+      if(sim.instKey === "eurusd") return inst.spreadPips * inst.pipValuePerLot * size;
+      return inst.spreadDollars * size;
+    }
+    function updatePlan(){
+      var out = $("#s-plan"); if(!out || !sim) return;
+      var inst = simInst();
+      var acct = parseFloat($("#s-acct").value)||0;
+      var riskPct = parseFloat($("#s-risk").value)||0;
+      var riskDollars = acct * riskPct / 100;
+      if(sim.entry===null || sim.stop===null || sim.target===null){
+        out.innerHTML = '<p style="margin:0;">'+esc(T().planEmpty)+'</p>'; return;
+      }
+      var distPrice = Math.abs(sim.entry - sim.stop);
+      var distUnits = distPrice / inst.pipSize;
+      var size = distUnits>0 ? riskDollars / (distUnits * inst.pipValuePerLot) : 0;
+      var gainPrice = Math.abs(sim.target - sim.entry);
+      var gainUnits = gainPrice / inst.pipSize;
+      var gainDollars = gainUnits * inst.pipValuePerLot * size;
+      var fee = simFee(size);
+      var rr = distPrice>0 ? gainPrice/distPrice : 0;
+      sim.plan = {size:size, riskDollars:riskDollars, gainDollars:gainDollars, fee:fee, rr:rr};
+      out.innerHTML = '<div class="statgrid" style="margin-top:0;">'
+        + '<div class="stat"><div class="v">'+trimNum(size, sim.instKey==="eurusd"?2:3)+' '+simUnit()+'</div><div class="k">'+T().tradeSizeK+'</div></div>'
+        + '<div class="stat"><div class="v">'+money(riskDollars)+'</div><div class="k">'+T().ifStopK+'</div></div>'
+        + '<div class="stat"><div class="v">'+money(gainDollars)+'</div><div class="k">'+T().ifTargetK+'</div></div>'
+        + '<div class="stat"><div class="v">1 : '+trimNum(rr,1)+'</div><div class="k">'+T().riskRewardK+'</div></div>'
+        + '<div class="stat"><div class="v">'+money(fee)+'</div><div class="k">'+T().feeEstK+'</div></div></div>'
+        + '<p class="sentence">'+T().planSentence(money(riskDollars + fee), money(gainDollars - fee))+'</p>';
+    }
+
+    function setFeedback(kind, text){
+      var f = $("#s-feedback"); if(!f) return;
+      f.className = "feedback show " + kind;
+      f.textContent = text;
+    }
+
+    function runTrade(){
+      if(sim.running) return;
+      if(sim.entry===null){ setFeedback("info", T().fbTapFirst); return; }
+      updatePlan();
+      if(!sim.plan || sim.plan.size<=0){ setFeedback("info", T().fbCheckPlan); return; }
+      sim.running = true; sim.finished = false;
+      var inst = simInst();
+      sim.trend = (Math.random()-0.46) * inst.vol * 0.5;
+      var btn = $("#s-run"); btn.disabled = true; btn.textContent = T().runningTrade;
+      setFeedback("info", T().fbLive);
+      var ticks = 0;
+      stopSimTimer();
+      sim.timer = setInterval(function(){
+        ticks++;
+        var prev = sim.candles[sim.candles.length-1].c;
+        var c = nextCandle(inst, prev);
+        sim.candles.push(c);
+        if(sim.candles.length > 90) sim.candles.shift();
+        drawSim();
+        var hitStop = c.l <= sim.stop;
+        var hitTarget = c.h >= sim.target;
+        if(hitStop || hitTarget || ticks >= 60){
+          finishTrade(hitTarget && !hitStop ? "target" : (hitStop ? "stop" : "timeout"), c.c);
+        }
+      }, 320);
+    }
+
+    function finishTrade(how, lastPrice){
+      stopSimTimer();
+      sim.running = false; sim.finished = true;
+      var btn = $("#s-run"); btn.disabled = false; btn.textContent = T().runTrade;
+      var inst = simInst();
+      var plan = sim.plan;
+      var exitPrice = how==="target" ? sim.target : (how==="stop" ? sim.stop : lastPrice);
+      var moveUnits = (exitPrice - sim.entry) / inst.pipSize;
+      var gross = moveUnits * inst.pipValuePerLot * plan.size;
+      var net = gross - plan.fee;
+      var R = plan.riskDollars>0 ? net / plan.riskDollars : 0;
+      var entry = {key: sim.instKey, inst: instName(sim.instKey), entry: sim.entry, stop: sim.stop, target: sim.target, size: plan.size, unit: simUnit(), exit: exitPrice, how: how, net: net, R: R};
+      state.journal.unshift(entry);
+      state.simStats.trades += 1;
+      if(net > 0) state.simStats.wins += 1;
+      state.simStats.totalR += R;
+      save();
+      renderJournal(); renderSimStats();
+      if(how==="target"){
+        setFeedback("win", T().fbWin(money(net), (R>=0?"+":"") + trimNum(R,2)));
+      } else if(how==="stop"){
+        setFeedback("lose", T().fbLose(money(Math.abs(net)), trimNum(R,2)));
+      } else {
+        setFeedback("info", T().fbTimeout(money(net), (R>=0?"+":"") + trimNum(R,2)));
+      }
+      drawSim();
+    }
+
+    function renderJournal(){
+      var j = $("#s-journal"); if(!j) return;
+      var s = T();
+      if(!state.journal.length){
+        j.innerHTML = '<div class="jrow muted">'+esc(s.journalEmpty)+'</div>'; return;
+      }
+      j.innerHTML = state.journal.slice(0, 20).map(function(t){
+        var inst = null;
+        Object.keys(INSTRUMENTS).forEach(function(k){ if(INSTRUMENTS[k].name===t.inst || INSTRUMENTS[k].nameDe===t.inst || k===t.key) inst = INSTRUMENTS[k]; });
+        var d = inst ? inst.decimals : 2;
+        var dispName = (t.key && INSTRUMENTS[t.key]) ? instName(t.key) : t.inst;
+        var fp = function(p){ return p.toLocaleString("en-US",{minimumFractionDigits:d, maximumFractionDigits:d}); };
+        var cls = t.net>0 ? "r-win" : "r-lose";
+        return '<div class="jrow"><strong>'+esc(dispName)+'</strong>'
+          + '<span>'+s.jEntry+' '+fp(t.entry)+'</span><span>'+s.jStop+' '+fp(t.stop)+'</span><span>'+s.jTarget+' '+fp(t.target)+'</span>'
+          + '<span>'+s.jSize+' '+trimNum(t.size,3)+' '+esc(t.unit)+'</span>'
+          + '<span>'+s.jClosedAt+' '+fp(t.exit)+' ('+(t.how==="target"?s.jTargetHit:(t.how==="stop"?s.jStoppedOut:s.jTimeOut))+')</span>'
+          + '<span class="'+cls+'">'+(t.R>=0?"+":"")+trimNum(t.R,2)+'R · '+money(t.net)+'</span></div>';
+      }).join("");
+    }
+
+    function renderSimStats(){
+      var sEl = $("#s-stats"); if(!sEl) return;
+      var s = T();
+      var st = state.simStats;
+      var winRate = st.trades ? Math.round(st.wins/st.trades*100) : 0;
+      var avgR = st.trades ? st.totalR/st.trades : 0;
+      sEl.innerHTML =
+          '<div class="stat"><div class="v">'+st.trades+'</div><div class="k">'+s.statTrades+'</div></div>'
+        + '<div class="stat"><div class="v">'+winRate+'%</div><div class="k">'+s.statWinRate+'</div></div>'
+        + '<div class="stat"><div class="v">'+(avgR>=0?"+":"")+trimNum(avgR,2)+'R</div><div class="k">'+s.statAvgR+'</div></div>';
+    }
+
+    /* ============ guide ============ */
+    function renderGuide(){
+      var v = $("#view-guide");
+      var s = T();
+      var html = '<p class="kicker">'+s.guideKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 8px;">'+s.guideTitle+'</h2>';
+      html += '<p class="lead">'+esc(s.guideLead)+'</p>';
+      html += '<div class="card">';
+      guideSteps().forEach(function(st, i){
+        html += '<div class="gstep"><div class="gn">'+(i+1)+'</div><div><h3>'+esc(st.t)+'</h3><p>'+esc(st.d)+'</p></div></div>';
+      });
+      html += '<a class="btn" href="https://www.tradingview.com" target="_blank" rel="noopener" style="margin-top:8px;">'+s.openTV+'</a>';
+      html += '<p class="small muted" style="margin:14px 0 0;">'+esc(s.guideTip)+'</p></div>';
+      v.innerHTML = html;
+    }
+
+    /* ============ progress ============ */
+    function renderProgress(){
+      var v = $("#view-progress");
+      var s = T();
+      var done = LESSONS.filter(function(l){ return state.lessons[l.id]; }).length;
+      var passed = LEVELS.filter(function(lv){ return state.quizzes[lv.id] && state.quizzes[lv.id].passed; }).length;
+      var st = state.simStats;
+      var winRate = st.trades ? Math.round(st.wins/st.trades*100) : 0;
+      var avgR = st.trades ? st.totalR/st.trades : 0;
+      var html = '<p class="kicker">'+s.progressKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 18px;">'+s.progressTitle+'</h2>';
+      html += '<div class="calc-grid">';
+      html += '<div class="card"><h3 style="margin-bottom:12px;">'+s.lessonsCardT+'</h3>'
+        + '<div class="progress-track" style="margin-bottom:10px;"><div class="progress-fill" style="width:'+Math.round(done/12*100)+'%"></div></div>'
+        + '<p style="margin:0;"><span class="big num" style="font-size:1.4rem;font-weight:900;">'+done+' / 12</span> <span class="muted">'+s.ofLessonsWord+'</span></p>';
+      LEVELS.forEach(function(lvRaw){
+        var lv = locLevel(lvRaw);
+        html += '<p class="small" style="margin:8px 0 0;">'+esc(s.perLevelLine(lv.name, lessonsDoneCount(lv.id), lessonsOf(lv.id).length))+'</p>';
+      });
+      html += '</div>';
+      html += '<div class="card"><h3 style="margin-bottom:12px;">'+s.quizzesCardT+'</h3>'
+        + '<p style="margin:0 0 8px;"><span style="font-size:1.4rem;font-weight:900;" class="num">'+passed+' / 3</span> <span class="muted">'+s.ofQuizzesWord+'</span></p>';
+      LEVELS.forEach(function(lvRaw){
+        var lv = locLevel(lvRaw);
+        var q = state.quizzes[lv.id];
+        html += '<p class="small" style="margin:6px 0 0;">'+esc(lv.name)+': '+(q ? esc(s.quizLine(q.best, q.passed)) : esc(s.quizLineNone))+'</p>';
+      });
+      html += '</div>';
+      html += '<div class="card wide"><h3 style="margin-bottom:12px;">'+s.practiceRecordT+'</h3><div class="statgrid" style="margin-top:0;">'
+        + '<div class="stat"><div class="v">'+st.trades+'</div><div class="k">'+s.statTrades+'</div></div>'
+        + '<div class="stat"><div class="v">'+winRate+'%</div><div class="k">'+s.statWinRate+'</div></div>'
+        + '<div class="stat"><div class="v">'+(avgR>=0?"+":"")+trimNum(avgR,2)+'R</div><div class="k">'+s.statAvgR+'</div></div>'
+        + '<div class="stat"><div class="v">'+state.journal.length+'</div><div class="k">'+s.statJournal+'</div></div></div>'
+        + '<p class="small muted" style="margin:12px 0 0;">'+esc(s.progressNote)+'</p></div>';
+      html += '</div>';
+      html += '<div class="card" style="margin-top:18px;"><h3 style="margin-bottom:6px;">'+s.startOverT+'</h3>'
+        + '<p class="muted small" style="margin:0 0 14px;">'+esc(s.startOverText)+'</p>'
+        + '<button class="btn ghost" id="reset-progress">'+s.resetBtn+'</button> <span id="reset-note" class="small" style="font-weight:700;"></span></div>';
+      v.innerHTML = html;
+      var confirming = false;
+      $("#reset-progress").addEventListener("click", function(){
+        if(!confirming){
+          confirming = true;
+          this.textContent = T().resetConfirmBtn;
+          $("#reset-note").textContent = T().resetUndoNote;
+          return;
+        }
+        state = defaultState(); save();
+        renderProgress(); updateTopProgress();
+        $("#reset-note").textContent = T().resetDoneNote;
+      });
+    }
+
+    /* ============ boot ============ */
+    applyLanguage();
+    </script>
+  </body>
+</html>
