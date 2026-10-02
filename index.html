@@ -241,6 +241,7 @@
       .scorebig{font-size:2.4rem;font-weight:900;line-height:1;}
       .passbanner{background:var(--green-soft);border-radius:14px;padding:16px 18px;font-weight:700;margin:16px 0;}
       .failbanner{background:var(--accent-soft);border-radius:14px;padding:16px 18px;font-weight:700;margin:16px 0;}
+      .examplenote{background:var(--accent-soft);border:2px solid var(--accent);border-radius:14px;padding:12px 16px;font-weight:700;margin:0 0 16px;}
 
       /* ---------- calculators ---------- */
       .calc-grid{display:grid;gap:18px;}
@@ -303,7 +304,7 @@
           <button type="button" data-lang="en">EN</button>
           <button type="button" data-lang="de" class="active">DE</button>
         </div>
-        <div class="pill-progress" id="topprogress">0 of 12 lessons done</div>
+        <div class="pill-progress" id="topprogress">0 of 14 lessons done</div>
       </div>
     </header>
 
@@ -372,12 +373,12 @@
       {"id":"l04","level":"novice","title":"Your first lot-size calculation","tagline":"Put risk and distance together and get your exact trade size.","oneLiner":"Lot size = risk dollars ÷ (stop distance × value per unit). It tells you exactly how much to buy.","formula":"Lots = risk $ ÷ (stop distance in pips × $ value per pip per lot)","diagram":"diagram-lot-size.webp",
        "sections":[
          {"h":"The only formula that matters at first","p":["You know your risk in dollars from the 1% rule. You know your stop distance from lesson 3. Lot size just connects them.","Lot size = risk dollars ÷ (stop distance × value per unit). In plain words: divide what you can afford to lose by what one unit would lose if the stop is hit."]},
-         {"h":"A forex example, slowly","p":["Account: 1,000 dollars. Risk at 1%: 10 dollars. Stop distance: 20 pips. One standard lot moves about 10 dollars per pip.","Size = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 lots. That is 5,000 units, also called 5 micro lots. If the stop is hit, you lose about 10 dollars. The math guarantees it."]},
+         {"h":"A forex example, slowly","p":["Account: 1,000 dollars. Risk at 1%: 10 dollars. Stop distance: 20 pips. In this example, one standard lot moves about 10 dollars per pip (the common example value — always use your broker's number).","Size = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 lots. That is 5,000 units, also called 5 micro lots. If the stop is hit, you lose about 10 dollars. The math guarantees it."]},
          {"h":"Trust the math, not your gut","p":["Beginners guess their size. Guessing is how accounts die. From now on, every trade starts with three numbers: account, risk percent, stop distance. The calculator gives you the size. No feelings involved."]}
        ],
-       "workedExample":{"setup":"$1,000 account, 1% risk = $10. Stop distance 20 pips. Standard lot = $10/pip.","steps":["Denominator = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 lots. If stopped out, you lose about $10."},
+       "workedExample":{"setup":"$1,000 account, 1% risk = $10. Stop distance 20 pips. Example standard lot = $10/pip.","steps":["Denominator = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 lots. If stopped out, you lose about $10."},
        "tryIt":"$2,000 account, 1% risk ($20), 25-pip stop. Size = 20 ÷ (25 × 10) = 0.08 lots.",
-       "script":"Lesson four. Your first lot size calculation. You know your risk in dollars from the one percent rule. You know your stop distance from lesson three. Lot size just connects them. The formula is, lot size equals risk dollars, divided by stop distance times value per unit. In plain words, divide what you can afford to lose by what one unit would lose if the stop is hit. Let's do a forex example, slowly. Account, one thousand dollars. Risk at one percent, ten dollars. Stop distance, twenty pips. One standard lot moves about ten dollars per pip. Size equals ten, divided by twenty times ten. That is ten divided by two hundred, which is zero point zero five lots. That is five thousand units. If the stop is hit, you lose about ten dollars. The math guarantees it. Here is the habit to build. Beginners guess their size, and guessing is how accounts die. From now on, every trade starts with three numbers. Account, risk percent, stop distance. The calculator gives you the size. No feelings involved."}
+       "script":"Lesson four. Your first lot size calculation. You know your risk in dollars from the one percent rule. You know your stop distance from lesson three. Lot size just connects them. The formula is, lot size equals risk dollars, divided by stop distance times value per unit. In plain words, divide what you can afford to lose by what one unit would lose if the stop is hit. Let's do a forex example, slowly. Account, one thousand dollars. Risk at one percent, ten dollars. Stop distance, twenty pips. In this example, one standard lot moves about ten dollars per pip. Size equals ten, divided by twenty times ten. That is ten divided by two hundred, which is zero point zero five lots. That is five thousand units. If the stop is hit, you lose about ten dollars. The math guarantees it. Here is the habit to build. Beginners guess their size, and guessing is how accounts die. From now on, every trade starts with three numbers. Account, risk percent, stop distance. The calculator gives you the size. No feelings involved."}
     ];
     LESSONS.push(
       {"id":"l05","level":"builder","title":"The lot-size formula, step by step","tagline":"The universal sizing formula for stocks, forex, crypto, and futures.","oneLiner":"The universal rule: position size = risk dollars ÷ stop distance. It works for stocks, forex, crypto, and futures.","formula":"Shares = risk $ ÷ stop distance per share","diagram":"diagram-lot-size.webp",
@@ -393,7 +394,8 @@
        "sections":[
          {"h":"Every market has its own ruler","p":["Forex: the classic step is the pip. For most pairs a pip is 0.0001. If EUR/USD moves from 1.0850 to 1.0860, that is 10 pips. For yen pairs, a pip is 0.01. Some brokers also quote a point or pipette, which is one tenth of a pip.","Stocks: one share gains or loses 1 dollar per 1 dollar move. Crypto: one coin works the same way per coin. Futures: the smallest step is called a tick, and each contract has a fixed dollar value per tick."]},
          {"h":"Lot names, decoded","p":["In forex, a standard lot is 100,000 units. A mini lot is 10,000. A micro lot is 1,000.","So 0.10 lots is 10,000 units, about 1 dollar per pip. And 0.01 lots is 1,000 units, about 10 cents per pip."]},
-         {"h":"Think in dollars per pip","p":["Your broker's buttons say lots, but your brain should think dollars per pip. Always translate: how many dollars do I gain or lose per pip at this size? Then the stop loss math is easy."]}
+         {"h":"Your instruments, side by side (your note)","p":["You asked why gold, silver, oil, and the Dow never size like EUR/USD. Because a 'lot' means a different amount of stuff in every market. The numbers below are EXAMPLE values — every broker sets its own contract size. Always check YOUR broker's contract specification; brokers can differ by a lot.","Example — Dow Jones (US30): 1.00 lot = about $1 per point. So 0.50 lots = 50 cents per point, exactly like you said. If the Dow moves 100 points against you at 0.50 lots, that is $50.","Example — EUR/USD and GBP/USD: 1.00 lot = about $10 per pip. So 0.10 lots = $1 per pip, and 0.01 lots = 10 cents per pip. A 100 pip stop at 0.10 lots risks about $100.","Example — Gold (XAU/USD): 1.00 lot = 100 ounces, so about $100 for every $1 gold moves. 0.10 lots = about $10 per $1 move. Gold moves in dollars, not pips, so think 'dollars per $1 move'.","Example — Silver (XAG/USD): 1.00 lot is much bigger in ounces, about $50 for every 1 cent (0.01) silver moves. That is why a silver lot can feel huge. Small lots, like 0.01 to 0.05, are normal for silver.","Example — Oil (WTI crude): 1.00 lot = 1,000 barrels, about $10 for every 1 cent oil moves. 0.10 lots = about $1 per cent."]},
+         {"h":"Think in dollars per pip","p":["Your broker's buttons say lots, but your brain should think dollars per pip. Always translate: how many dollars do I gain or lose per pip at this size? Then the stop loss math is easy.","Your exact workflow from your note: 1) I want to risk this many dollars. 2) My entry is here, my stop is here, my take profit is here. 3) The asset gives me its dollars per pip. 4) Lots = risk dollars divided by (stop distance in pips times dollars per pip for 1 lot). The Tools tab now does this for each of your assets, Takes your entry, stop, and take profit, and also shows your reward and risk-to-reward."]}
        ],
        "workedExample":{"setup":"You want each pip to be worth about $1.","steps":["Standard lot (1.00) ≈ $10/pip.","0.10 lots ≈ $1/pip."],"answer":"0.10 lots ≈ $1 per pip."},
        "tryIt":"You trade 0.01 lots (micro). About how much is one pip worth? ($0.10)",
@@ -402,11 +404,12 @@
        "sections":[
          {"h":"Every trade starts in the red","p":["Before price moves in your favor, you must first earn back your costs. There are four costs to know.","The spread is the gap between the buy price and the sell price. You always buy a little higher and sell a little lower. The spread is the broker's cut."]},
          {"h":"The other three costs","p":["Commission: some brokers charge a flat fee per trade, often both when you open and when you close.","Overnight fee, called swap: if you hold a forex or CFD trade overnight, you pay or earn a small daily interest amount.","Slippage: from lesson 1, your fills can be slightly worse than expected in fast markets."]},
-         {"h":"Do the math before you click","p":["Example: you trade 0.05 lots of EUR/USD. The spread is 1.2 pips. One standard lot is about 10 dollars per pip. Spread cost = 1.2 × 10 × 0.05 = 0.60 dollars. Small on one trade, but fifty trades adds up.","The habit: before every trade, ask what the round-trip cost is, and whether the profit target covers it several times over. If fees eat more than about 10% of your target profit, the trade is probably not worth taking."]}
+         {"h":"Your swap story: how a planned loss quietly grows","p":["This is the exact trap from your note, so let's name it plainly. You can do everything right with a stop loss and still lose more than you planned, if you hold the trade for many days.","In your example, gold's swap is about $78 per day for the size you held, and silver's is only about $23 per day. Hold gold for 10 days and that is roughly $780 in swap fees, close to the 780 euro extra you saw, on top of a price loss around $2,500. Your stop loss only controlled the price part. The calendar added a second bill every night.","The lesson: holding longer is not free. If you risk $100 at your stop, but you pay $78 a day in swap, after just 2 days your true risk is already $100 + $156 = $256. Your risk plan is broken, even though your stop never moved.","Rule: add swap to your risk before you enter. True risk = stop loss risk + (swap per day x number of days you plan to hold). If that true risk is bigger than your 1% budget, shrink the lot size or pick a shorter plan. If one broker charges $78 a day for gold and another charges far less for the same size, that difference is real money. That is why you were right to compare accounts."]},
+         {"h":"Do the math before you click","p":["Example: you trade 0.05 lots of EUR/USD. The spread is 1.2 pips. One standard lot in this example is about 10 dollars per pip (the common example value — your broker's number is the one that counts). Spread cost = 1.2 × 10 × 0.05 = 0.60 dollars. Small on one trade, but fifty trades adds up.","The habit: before every trade, ask what the round-trip cost is, and whether the profit target covers it several times over. If fees eat more than about 10% of your target profit, the trade is probably not worth taking.","The Tools tab now has a True-risk checker for this. Pick gold or silver, enter your lot size, your broker's swap per lot per day, and how many days you might hold. It shows the total swap bill and your true risk, so the calendar cannot surprise you again."]}
        ],
        "workedExample":{"setup":"0.05 lots EUR/USD. Spread 1.2 pips. Standard lot ≈ $10/pip.","steps":["Cost = 1.2 × 10 × 0.05 = $0.60."],"answer":"The spread costs you about $0.60 on this trade."},
        "tryIt":"Spread 2 pips, 0.10 lots. Cost = 2 × 10 × 0.10 = $2 per round trip.",
-       "script":"Lesson seven. Fees, the costs nobody shows you. Every trade starts slightly in the red. Before price moves in your favor, you must first earn back your costs. There are four costs to know. First, the spread. That is the gap between the buy price and the sell price. You always buy a little higher and sell a little lower. The spread is the broker's cut. Second, commission. Some brokers charge a flat fee per trade, often both when you open and when you close. Third, the overnight fee, called swap. If you hold a forex or C F D trade overnight, you pay or earn a small daily interest amount. Fourth, slippage, from lesson one. Your fills can be slightly worse than expected in fast markets. Let's do the math. You trade zero point zero five lots of euro dollar. The spread is one point two pips. One standard lot is about ten dollars per pip. Spread cost equals one point two times ten times zero point zero five. That is sixty cents. Small on one trade, but do fifty trades and it adds up. Here is the habit. Before every trade, ask, what is my round trip cost, and is my profit target big enough to cover it several times over? If fees eat more than about ten percent of your target profit, the trade is probably not worth taking."},
+       "script":"Lesson seven. Fees, the costs nobody shows you. Every trade starts slightly in the red. Before price moves in your favor, you must first earn back your costs. There are four costs to know. First, the spread. That is the gap between the buy price and the sell price. You always buy a little higher and sell a little lower. The spread is the broker's cut. Second, commission. Some brokers charge a flat fee per trade, often both when you open and when you close. Third, the overnight fee, called swap. If you hold a forex or C F D trade overnight, you pay or earn a small daily interest amount. Fourth, slippage, from lesson one. Your fills can be slightly worse than expected in fast markets. Let's do the math. You trade zero point zero five lots of euro dollar. The spread is one point two pips. In this example, one standard lot is about ten dollars per pip. Spread cost equals one point two times ten times zero point zero five. That is sixty cents. Small on one trade, but do fifty trades and it adds up. Here is the habit. Before every trade, ask, what is my round trip cost, and is my profit target big enough to cover it several times over? If fees eat more than about ten percent of your target profit, the trade is probably not worth taking."},
       {"id":"l08","level":"builder","title":"Risk-to-reward: is the trade worth it?","tagline":"The ratio that lets you lose 6 out of 10 trades and still profit.","oneLiner":"Risk-to-reward tells you if a trade is worth taking: aim for at least 1:2, so you can be wrong most of the time and still win.","formula":"R:R = reward distance ÷ risk distance · Breakeven win rate = 1 ÷ (1 + R)","diagram":"diagram-risk-reward.webp",
        "sections":[
          {"h":"Is this trade even worth it?","p":["Risk-to-reward answers one question: for every dollar I risk, how many dollars could I make?","Reward distance ÷ risk distance. Buy EUR/USD at 1.0850, stop at 1.0830 (20 pips of risk), target at 1.0890 (40 pips of reward). 40 ÷ 20 = 2. That is a 1 to 2 risk-to-reward."]},
@@ -415,7 +418,9 @@
        ],
        "workedExample":{"setup":"Risk 20 pips (1.0850 → 1.0830). Target 40 pips (→ 1.0890).","steps":["R:R = 40 ÷ 20 = 2.","Breakeven win rate = 1 ÷ (1+2) = 33%."],"answer":"A 1:2 trade. You can win just 4 of 10 and still profit."},
        "tryIt":"Risk $3/share, target $9 above entry. R:R = 9 ÷ 3 = 1:3. Take it!",
-       "script":"Lesson eight. Risk to reward. Not every trade is worth taking, even with a perfect stop loss. Risk to reward answers one question. For every dollar I risk, how many dollars could I make? You find it by dividing. Reward distance divided by risk distance. Example. You buy euro dollar at one point zero eight five zero. Stop at one point zero eight three zero. That is twenty pips of risk. Your target is one point zero eight nine zero. That is forty pips of reward. Forty divided by twenty is two. A one to two risk reward. Now the magic. With a one to two ratio, you only need to win about thirty three percent of your trades to break even. The math: break even win rate equals one divided by one plus R. One divided by three is thirty three percent. Win four out of ten trades at one to two, and you are profitable. That is why professionals obsess over this number. It frees you from needing to be right all the time. The rule of thumb. Never take a trade below one to one point five, and prefer one to two or better. A trade with a great setup but a one to one ratio is a coin flip with fees. Skip it."}
+       "script":"Lesson eight. Risk to reward. Not every trade is worth taking, even with a perfect stop loss. Risk to reward answers one question. For every dollar I risk, how many dollars could I make? You find it by dividing. Reward distance divided by risk distance. Example. You buy euro dollar at one point zero eight five zero. Stop at one point zero eight three zero. That is twenty pips of risk. Your target is one point zero eight nine zero. That is forty pips of reward. Forty divided by twenty is two. A one to two risk reward. Now the magic. With a one to two ratio, you only need to win about thirty three percent of your trades to break even. The math: break even win rate equals one divided by one plus R. One divided by three is thirty three percent. Win four out of ten trades at one to two, and you are profitable. That is why professionals obsess over this number. It frees you from needing to be right all the time. The rule of thumb. Never take a trade below one to one point five, and prefer one to two or better. A trade with a great setup but a one to one ratio is a coin flip with fees. Skip it."},
+      {"id": "l13", "level": "builder", "title": "One lot is not one lot", "tagline": "Why the same '1 lot' means different dollars on every asset.", "oneLiner": "One lot means something different on every asset — always translate it to dollars per point before you size the trade.", "formula": "$ per point = lots × contract value per point per lot", "sections": [{"h": "A real trader's headache", "p": ["A trader we know learned this the hard way. She traded the Dow Jones index (US30) at 0.5 or 1.0 lots. On her broker, 1.0 lot of the Dow meant about $1 per index point — so 0.5 lots was 50 cents per point. Simple.", "Then she moved to forex and metals. Suddenly '1 lot' meant something completely different — and she had to check five different broker accounts just to figure out how big a gold position she could safely hold. She skipped the trade. The confusion cost her the opportunity."]}, {"h": "What 1 lot actually buys", "p": ["Every broker publishes a contract size. The numbers below are EXAMPLE values — every broker sets its own contract size. Always check YOUR broker's contract specification.", "Example — EUR/USD (forex): 1.0 lot = 100,000 units, about $10 per pip. Dow Jones (US30): 1.0 lot is about $1 per index point. Gold (XAUUSD): 1.0 lot = 100 ounces, about $100 per $1 move. Silver (XAGUSD): 1.0 lot = 5,000 ounces, about $5,000 per $1 move. Oil (WTI): 1.0 lot = 1,000 barrels, about $1,000 per $1 move."]}, {"h": "The 10-second check", "p": ["Before trading any new asset: find your broker's contract size, translate it to dollars per point, then run the lot-size formula from lesson 5. Never assume one lot equals one lot.", "The lot-size calculator in this app now has these example presets built in — pick the asset and it fills in the example contract size for you.", "If your broker's number differs from the example, type in your broker's number — the math only works with your broker's specification."]}], "workedExample": {"setup": "Gold trade. Account $5,000, risk 1% = $50. Stop distance $3. Your broker: 1.0 lot of gold = $100 per $1 move.", "steps": ["Risk per lot if stopped = 3 × $100 = $300.", "Lots = $50 ÷ $300 = 0.166… → trade 0.16 lots (always round down)."], "answer": "Trade 0.16 lots of gold. If the stop is hit, you lose about $50."}, "tryIt": "US30: your broker says 1.0 lot = $1 per point. Risk $20, stop 40 points. Lots = 20 ÷ (40 × 1) = 0.5 lots — the exact size she used on the Dow.", "script": "Lesson thirteen. One lot is not one lot. This one comes from a real trader's headache. She traded the Dow Jones index at half a lot or one lot. On her broker, one lot of the Dow meant about one dollar per index point, so half a lot was fifty cents per point. Simple. Then she moved to forex and metals, and one lot meant something completely different. She had to check five different broker accounts just to figure out how big a gold position she could safely hold. She skipped the trade. The confusion cost her the opportunity. Here are example values for what one lot buys — remember, every broker sets its own contract size, so always check your broker's contract specification. Euro dollar forex: one lot is one hundred thousand units, about ten dollars per pip. Dow Jones: about one dollar per point. Gold: one hundred ounces, about one hundred dollars per one dollar move. Silver: five thousand ounces. Oil: one thousand barrels. And it varies between brokers, which is exactly why you check. The ten second check. Before trading a new asset, find your broker's contract size, translate it to dollars per point, then use the lot size formula from lesson five. Never assume one lot equals one lot."},
+      {"id": "l14", "level": "builder", "title": "Swaps are part of your risk", "tagline": "The overnight fee that quietly rewrote one trader's whole risk plan.", "oneLiner": "Every night you hold a trade, the swap fee adds to your risk — size the trade on the total, not just the stop loss.", "formula": "True risk = stop-loss risk + (swap per day × planned hold days)", "sections": [{"h": "The €780 surprise", "p": ["The same trader planned a trade with a $2,500 stop loss. The stop was fine and her risk management was proper — on paper.", "But she held the trade for days. When she added it up, there were €780 in swap fees on top of the planned loss. Her 'risk' was suddenly $2,500 plus €780. The risk plan she had carefully built was broken — not by the market, but by fees she hadn't counted."]}, {"h": "What a swap is", "p": ["A swap (overnight fee) is what your broker charges — or sometimes pays you — for holding a position overnight. It is different for every asset, and for long vs short.", "Her real numbers: holding gold cost about $78 per day. Silver cost about $23 per day. Ten days of gold = $780, before the market even moves."]}, {"h": "The true-risk formula", "p": ["True risk = stop-loss risk + (swap per day × planned hold days).", "Size your position on the true risk, not just the stop. If the swaps alone would break your 1% budget, the trade is too big — or meant to be shorter."]}, {"h": "The habit", "p": ["Before holding any trade overnight: check the swap rate, multiply by your planned hold days, add it to your stop-loss risk. The fee calculator in this app now does this for you — enter your planned hold days and it shows the true risk."]}], "workedExample": {"setup": "Gold trade. Stop-loss risk $200. Swap $78/day. You plan to hold 10 days.", "steps": ["Swap cost = 78 × 10 = $780.", "True risk = 200 + 780 = $980."], "answer": "Your true risk is $980 — nearly 5× the planned $200. Size down or shorten the hold."}, "tryIt": "Silver: stop risk $100, swap $23/day, hold 5 days. Swap cost = $115. True risk = $215.", "script": "Lesson fourteen. Swaps are part of your risk. Same trader, another expensive lesson. She planned a trade with a two thousand five hundred dollar stop loss. The stop was fine. Her risk management was proper, on paper. But she held the trade for days, and when she added it up, there were seven hundred eighty euros in swap fees on top. Her risk was suddenly the stop loss plus seven hundred eighty euros. The plan was broken, not by the market, but by fees she had not counted. A swap is the overnight fee for holding a position. It is different for every asset, and for long versus short. Her real numbers: gold cost about seventy eight dollars per day, silver about twenty three dollars per day. Ten days of gold is seven hundred eighty dollars, before the market even moves. The formula: true risk equals stop loss risk, plus swap per day times planned hold days. Size your position on the true risk, not just the stop. The habit: before holding overnight, check the swap, multiply by your planned days, add it to your risk. If the swaps alone break your one percent budget, the trade is too big, or meant to be shorter."}
     );
     LESSONS.push(
       {"id":"l09","level":"pro","title":"Trailing stops and moving to break-even","tagline":"Lock in profit while the trade is still running.","oneLiner":"Once a trade is winning, move your stop so the worst case becomes breaking even.","formula":"Break-even stop: move stop to entry once trade is +1R in profit","diagram":"diagram-trailing-stop.webp",
@@ -470,7 +475,9 @@
         {"q":"A pip in EUR/USD is:","options":["0.01 for all pairs","0.0001 for most pairs","One full dollar","One tenth of a cent"],"a":1,"explain":"For most pairs a pip is 0.0001; for yen pairs it is 0.01."},
         {"q":"Spread is 2 pips and you trade 0.10 lots. Rough round-trip spread cost?","options":["$0.20","$2","$20","$0.02"],"a":1,"explain":"2 pips x $10/pip/lot x 0.10 lots = $2."},
         {"q":"You risk $30 to make $90. What is the risk-to-reward?","options":["1:1","1:2","1:3","3:1"],"a":2,"explain":"$90 / $30 = 3, a 1:3 risk-to-reward."},
-        {"q":"At a 1:2 risk-reward, what win rate breaks even?","options":["50%","33%","66%","25%"],"a":1,"explain":"Breakeven win rate = 1 / (1 + 2) = 33%."}
+        {"q":"At a 1:2 risk-reward, what win rate breaks even?","options":["50%","33%","66%","25%"],"a":1,"explain":"Breakeven win rate = 1 / (1 + 2) = 33%."},
+        {"q":"In the lesson examples, 1.0 lot of gold (XAUUSD) is:","options":["1 ounce","100 ounces","1,000 ounces","10 ounces"],"a":1,"explain":"In that example, 1.0 lot of gold = 100 ounces, about $100 per $1 move — always check your own broker's contract size."},
+        {"q":"Your stop-loss risk is $200 and swaps will cost $780 over your planned hold. Your true risk is:","options":["$200","$580","$980","$780"],"a":2,"explain":"True risk = stop-loss risk + swap cost = 200 + 780 = $980."}
       ],
       "pro":[
         {"q":"Price rises and you move your stop to your entry price. This is called:","options":["A trailing loss","A break-even stop","A margin call","Hedging"],"a":1,"explain":"Worst case becomes zero - a scratch trade instead of a loss."},
@@ -498,12 +505,12 @@
       en: {
         tagline: "Learn to protect your money first. Trade second.",
         tabHome: "Home", tabLearn: "Learn", tabTools: "Tools", tabPractice: "Practice", tabGuide: "Guide", tabProgress: "Progress",
-        topProgress: function(d){ return d + " of 12 lessons done"; },
+        topProgress: function(d){ return d + " of 14 lessons done"; },
         homeKicker: "A beginner practice app",
         homeTitleHtml: "First protect your money. <span>Then trade.</span>",
-        homeLead: "Trading is not about guessing the future. It is about deciding, before every trade, how much you are willing to lose — and letting a stop loss keep you close to that plan. (In very fast markets the price can slip a little past your stop; lesson 1 explains that honestly.) These 12 short lessons teach you the whole system, one small step at a time.",
+        homeLead: "Trading is not about guessing the future. It is about deciding, before every trade, how much you are willing to lose — and letting a stop loss keep you close to that plan. (In very fast markets the price can slip a little past your stop; lesson 1 explains that honestly.) These 14 short lessons teach you the whole system, one small step at a time.",
         how1t: "Learn", how1p: "Short lessons you can read or listen to, with simple pictures and worked examples.",
-        how2t: "Prove it", how2p: "Pass a 5-question quiz (4 out of 5) to unlock the next level.",
+        how2t: "Prove it", how2p: "Pass the level quiz to unlock the next level. Level 1 and 3: 4 of 5. Level 2: 5 of 7.",
         how3t: "Practice", how3p: "Trade on a pretend chart with fake money before you ever risk a real dollar.",
         roadmapKicker: "Your roadmap",
         lessonsOfTotal: function(d, t){ return d + " of " + t + " lessons"; },
@@ -513,13 +520,13 @@
         tvCardTitle: "Built to use with TradingView",
         tvCardText: "TradingView is a charting platform with a free plan that many traders use. The Guide tab shows you, step by step, how to draw your stop loss and profit target right on its charts — the same skill you practice here.",
         tvCardBtn: "Open the TradingView guide",
-        learnKicker: "Learn", learnTitle: "Three levels, twelve lessons",
+        learnKicker: "Learn", learnTitle: "Three levels, fourteen lessons",
         learnLead: "Read the lessons, listen to the audio, watch one short video per level, then pass the quiz to move on.",
-        lockedBox: function(prev){ return "This level is locked. Pass the quiz at the end of <strong>" + prev + "</strong> (score 4 out of 5) to open it."; },
+        lockedBox: function(prev){ return "This level is locked. Pass the quiz at the end of <strong>" + prev + "</strong> to open it."; },
         watchKicker: "Watch",
         videoPlaceholder: "Video coming soon — the lessons below cover this topic in words and pictures.",
-        quizKicker: "Level quiz", quizPassedLabel: "Passed", quizToPass: "5 questions · score 4 of 5 to pass",
-        quizBest: function(b){ return "Your best score so far: " + b + " of 5. "; },
+        quizKicker: "Level quiz", quizPassedLabel: "Passed", quizToPass: "Quiz · pass to unlock the next level",
+        quizBest: function(b){ return "Your best score so far: " + b + ". "; },
         quizExplainNote: "You will see the explanation after every answer.",
         retakeQuiz: "Retake the quiz", takeQuiz: "Take the quiz",
         lessonBack: "‹ All lessons",
@@ -539,7 +546,7 @@
         questionOf: function(i, n, s){ return "Question " + i + " of " + n + " · Score: " + s; },
         nextQuestion: "Next question", seeResult: "See my result",
         correct: "Correct.", notQuite: "Not quite.",
-        needToPass: "You need 4 out of 5 to pass.",
+        needToPass: "Level 2 needs 5 of 7. Other levels need 4 of 5.",
         passedFinal: "You finished the final level — amazing work.",
         passedUnlock: function(n){ return "<strong>" + n + "</strong> is now unlocked."; },
         passedWord: "You passed! ",
@@ -555,9 +562,32 @@
         riskHintBeginners: "— beginners: 0.5% to 2%",
         tradingWhat: "What are you trading?",
         optForex: "EUR/USD (forex)", optStock: "Stock", optCrypto: "Crypto", optFutures: "Futures",
+        presetLabel: "Instrument preset — EXAMPLE values (fills the contract size)",
+        optEURUSD: "EUR/USD — example: $10 per pip per 1.0 lot", optUS30: "US30 Dow Jones — example: $1 per point per 1.0 lot", optGold: "Gold (XAUUSD) — example: $100 per $1 move per 1.0 lot", optSilver: "Silver (XAGUSD) — example: $5,000 per $1 move per 1.0 lot", optWTI: "WTI Oil — example: $1,000 per $1 move per 1.0 lot", optCustom: "Custom (my broker)",
+        contractLabel: "Contract size: $ per pip/point per 1.0 lot (editable)",
+        contractHint: "These are EXAMPLE values. Every broker sets its own contract size — check YOUR broker's contract specification and type your broker's number here.",
+        exampleBanner: "EXAMPLE values — every broker sets its own contract size. Always check YOUR broker's contract specification.",
+        acctCurLabel: "Account currency",
+        convRateLabel: "Conversion rate to USD",
+        convRateHint: "How many USD one unit of your account currency buys (e.g. an EUR account: about 1.08). Used only to convert $/point values when your account isn't in USD.",
+        minLotLabel: "Broker minimum lot",
+        lotStepLabel: "Broker lot step",
+        brokerSpecHint: "Find these in your broker's contract specification.",
+        rawLine: function(raw, tr){ return "raw " + raw + " → tradable " + tr; },
+        tooSmall: function(min){ return "Too small for this broker's minimum (" + min + " lots). Widen your stop or increase risk to trade this."; },
+        simExampleNote: "Instrument sizes here are EXAMPLE values — every broker sets its own contract size. Check your broker's contract specification.",
+        simAcctLabel: "Account balance",
+        takeProfitPrice: "Take-profit price (optional)",
+        rrLabel: "Risk : reward", dollarsPerPipK: "$ per pip/point at this size",
+        lotSentenceFull: function(lots, risk, reward, rr){ return "Trade <strong>" + lots + " lots</strong>. If your stop is hit, you lose about <strong>" + risk + "</strong>. If your take profit is hit, you make about <strong>" + reward + "</strong>. That is a risk-to-reward of <strong>1 : " + rr + "</strong>."; },
+        swapPerDay: "Swap per day ($ per lot)", holdDays: "Planned hold days", stopRiskMoney: "Your stop-loss risk budget ($)",
+        swapCostK: "Total swap cost", trueRiskK: "True risk (stop + swaps)",
+        trueRiskWarn: function(tr, budget){ return "Warning: your true risk is " + tr + ", which is over your " + budget + " budget. Shrink the lot size or hold for fewer days."; },
+        trueRiskOk: function(tr){ return "True risk " + tr + " fits your budget — the calendar is counted, not a surprise."; },
+        feeSentenceFull: function(a,b,c){ return "Spread + commission: <strong>" + a + "</strong>. Swaps: <strong>" + b + "</strong>. Total cost before price moves: <strong>" + c + "</strong>."; },
         entryPrice: "Entry price", stopPrice: "Stop-loss price",
         pipValLabel: "Value per pip / tick, per 1 lot or contract ($)",
-        pipValHint: "For a standard EUR/USD lot this is $10. For stocks and crypto it is $1 per share or coin.",
+        pipValHint: "Example: a standard EUR/USD lot is often $10 per pip. Always use your own broker's number.",
         lotEmpty: "Enter an entry price and a different stop price to see your size.",
         unitsWord: "units",
         lotAbout: function(u, p){ return "That is about " + u + " units · stop distance " + p + " pips"; },
@@ -615,7 +645,7 @@
         perLevelLine: function(n, d, t){ return n + ": " + d + " of " + t; },
         quizzesCardT: "Quizzes", ofQuizzesWord: "level quizzes passed",
         quizLineNone: "not taken yet",
-        quizLine: function(b, p){ return "best score " + b + " of 5" + (p ? " · passed" : ""); },
+        quizLine: function(b, p){ return "best score " + b + (p ? " · passed" : ""); },
         practiceRecordT: "Practice Desk record",
         progressNote: "Remember lesson 11: give it at least 30 trades before you judge the numbers.",
         startOverT: "Start over",
@@ -626,12 +656,12 @@
       de: {
         tagline: "Lerne zuerst, dein Geld zu schützen. Trade danach.",
         tabHome: "Start", tabLearn: "Lernen", tabTools: "Werkzeuge", tabPractice: "Üben", tabGuide: "Anleitung", tabProgress: "Fortschritt",
-        topProgress: function(d){ return d + " von 12 Lektionen geschafft"; },
+        topProgress: function(d){ return d + " von 14 Lektionen geschafft"; },
         homeKicker: "Eine Übungs-App für Anfängerinnen",
         homeTitleHtml: "Schütze zuerst dein Geld. <span>Trade danach.</span>",
-        homeLead: "Beim Trading geht es nicht darum, die Zukunft zu erraten. Es geht darum, vor jedem Trade zu entscheiden, wie viel du zu verlieren bereit bist – und einen Stop-Loss zu nutzen, der dich nahe an diesem Plan hält. (In sehr schnellen Märkten kann der Preis ein wenig über deinen Stopp hinausrutschen; Lektion 1 erklärt das ehrlich.) Diese 12 kurzen Lektionen bringen dir das ganze System bei, einen kleinen Schritt nach dem anderen.",
+        homeLead: "Beim Trading geht es nicht darum, die Zukunft zu erraten. Es geht darum, vor jedem Trade zu entscheiden, wie viel du zu verlieren bereit bist – und einen Stop-Loss zu nutzen, der dich nahe an diesem Plan hält. (In sehr schnellen Märkten kann der Preis ein wenig über deinen Stopp hinausrutschen; Lektion 1 erklärt das ehrlich.) Diese 14 kurzen Lektionen bringen dir das ganze System bei, einen kleinen Schritt nach dem anderen.",
         how1t: "Lernen", how1p: "Kurze Lektionen zum Lesen oder Anhören, mit einfachen Bildern und durchgerechneten Beispielen.",
-        how2t: "Beweise es", how2p: "Bestehe ein Quiz mit 5 Fragen (4 von 5), um die nächste Stufe freizuschalten.",
+        how2t: "Beweise es", how2p: "Bestehe das Stufen-Quiz, um die nächste Stufe freizuschalten. Stufe 1 und 3: 4 von 5. Stufe 2: 5 von 7.",
         how3t: "Üben", how3p: "Trade auf einem Übungs-Chart mit Spielgeld, bevor du je einen echten Dollar riskierst.",
         roadmapKicker: "Dein Fahrplan",
         lessonsOfTotal: function(d, t){ return d + " von " + t + " Lektionen"; },
@@ -641,13 +671,13 @@
         tvCardTitle: "Gebaut für die Arbeit mit TradingView",
         tvCardText: "TradingView ist eine Chart-Plattform mit einem kostenlosen Tarif, die viele Trader nutzen. Der Reiter „Anleitung“ zeigt dir Schritt für Schritt, wie du deinen Stop-Loss und dein Gewinnziel direkt in die Charts zeichnest – genau die Fähigkeit, die du hier übst.",
         tvCardBtn: "TradingView-Anleitung öffnen",
-        learnKicker: "Lernen", learnTitle: "Drei Stufen, zwölf Lektionen",
+        learnKicker: "Lernen", learnTitle: "Drei Stufen, vierzehn Lektionen",
         learnLead: "Lies die Lektionen, höre dir das Audio an, schau dir ein kurzes Video pro Stufe an und bestehe dann das Quiz, um weiterzukommen.",
-        lockedBox: function(prev){ return "Diese Stufe ist gesperrt. Bestehe das Quiz am Ende von <strong>" + prev + "</strong> (4 von 5 Punkten), um sie zu öffnen."; },
+        lockedBox: function(prev){ return "Diese Stufe ist gesperrt. Bestehe das Quiz am Ende von <strong>" + prev + "</strong> zum Öffnen."; },
         watchKicker: "Anschauen",
         videoPlaceholder: "Video folgt in Kürze – die Lektionen unten behandeln dieses Thema in Worten und Bildern.",
-        quizKicker: "Stufen-Quiz", quizPassedLabel: "Bestanden", quizToPass: "5 Fragen · 4 von 5 zum Bestehen",
-        quizBest: function(b){ return "Dein bestes Ergebnis bisher: " + b + " von 5. "; },
+        quizKicker: "Stufen-Quiz", quizPassedLabel: "Bestanden", quizToPass: "Quiz · Bestehen schaltet die nächste Stufe frei",
+        quizBest: function(b){ return "Dein bestes Ergebnis bisher: " + b + ". "; },
         quizExplainNote: "Nach jeder Antwort siehst du die Erklärung.",
         retakeQuiz: "Quiz wiederholen", takeQuiz: "Quiz starten",
         lessonBack: "‹ Alle Lektionen",
@@ -667,7 +697,7 @@
         questionOf: function(i, n, s){ return "Frage " + i + " von " + n + " · Punkte: " + s; },
         nextQuestion: "Nächste Frage", seeResult: "Mein Ergebnis ansehen",
         correct: "Richtig.", notQuite: "Nicht ganz.",
-        needToPass: "Du brauchst 4 von 5 zum Bestehen.",
+        needToPass: "Stufe 2 braucht 5 von 7. Andere Stufen brauchen 4 von 5.",
         passedFinal: "Du hast die letzte Stufe geschafft – starke Arbeit!",
         passedUnlock: function(n){ return "<strong>" + n + "</strong> ist jetzt freigeschaltet."; },
         passedWord: "Bestanden! ",
@@ -683,9 +713,32 @@
         riskHintBeginners: "— Anfängerinnen: 0.5% bis 2%",
         tradingWhat: "Was tradest du?",
         optForex: "EUR/USD (Forex)", optStock: "Aktie", optCrypto: "Krypto", optFutures: "Futures",
+        presetLabel: "Instrument-Preset — BEISPIEL-Werte (füllt die Kontraktgröße)",
+        optEURUSD: "EUR/USD — Beispiel: $10 pro Pip pro 1.0 Lot", optUS30: "US30 Dow Jones — Beispiel: $1 pro Punkt pro 1.0 Lot", optGold: "Gold (XAUUSD) — Beispiel: $100 pro $1 Bewegung pro 1.0 Lot", optSilver: "Silber (XAGUSD) — Beispiel: $5,000 pro $1 Bewegung pro 1.0 Lot", optWTI: "WTI Öl — Beispiel: $1,000 pro $1 Bewegung pro 1.0 Lot", optCustom: "Benutzerdefiniert (mein Broker)",
+        contractLabel: "Kontraktgröße: $ pro Pip/Punkt pro 1.0 Lot (bearbeitbar)",
+        contractHint: "Das sind BEISPIEL-Werte. Jeder Broker legt seine eigene Kontraktgröße fest — prüfe die Kontraktspezifikation deines Brokers und tippe hier die Zahl deines Brokers ein.",
+        exampleBanner: "BEISPIEL-Werte — jeder Broker legt seine eigene Kontraktgröße fest. Prüfe immer die Kontraktspezifikation DEINES Brokers.",
+        acctCurLabel: "Kontowährung",
+        convRateLabel: "Umrechnungskurs zu USD",
+        convRateHint: "Wie viele USD eine Einheit deiner Kontowährung kauft (z. B. EUR-Konto: etwa 1,08). Wird nur verwendet, um $-pro-Punkt-Werte umzurechnen, wenn dein Konto nicht in USD ist.",
+        minLotLabel: "Mindest-Lot deines Brokers",
+        lotStepLabel: "Lot-Schritt deines Brokers",
+        brokerSpecHint: "Beides findest du in der Kontraktspezifikation deines Brokers.",
+        rawLine: function(raw, tr){ return "roh " + raw + " → handelbar " + tr; },
+        tooSmall: function(min){ return "Zu klein für das Minimum dieses Brokers (" + min + " Lots). Erweitere deinen Stopp oder erhöhe das Risiko, um das zu traden."; },
+        simExampleNote: "Die Instrumentgrößen hier sind BEISPIEL-Werte — jeder Broker legt seine eigene Kontraktgröße fest. Prüfe die Kontraktspezifikation deines Brokers.",
+        simAcctLabel: "Kontostand",
+        takeProfitPrice: "Take-Profit-Preis (optional)",
+        rrLabel: "Chance : Risiko", dollarsPerPipK: "$ pro Pip/Punkt bei dieser Größe",
+        lotSentenceFull: function(lots, risk, reward, rr){ return "Trade <strong>" + lots + " Lots</strong>. Trifft dein Stopp, verlierst du etwa <strong>" + risk + "</strong>. Trifft dein Take Profit, verdienst du etwa <strong>" + reward + "</strong>. Das ist ein Chance-Risiko-Verhältnis von <strong>1 : " + rr + "</strong>."; },
+        swapPerDay: "Swap pro Tag ($ pro Lot)", holdDays: "Geplante Haltetage", stopRiskMoney: "Dein Stop-Loss-Risiko-Budget ($)",
+        swapCostK: "Swap-Kosten gesamt", trueRiskK: "Wahres Risiko (Stopp + Swaps)",
+        trueRiskWarn: function(tr, budget){ return "Warnung: Dein wahres Risiko ist " + tr + " und liegt über deinem Budget von " + budget + ". Verkleinere die Lot-Größe oder halte weniger Tage."; },
+        trueRiskOk: function(tr){ return "Wahres Risiko " + tr + " passt in dein Budget — der Kalender ist mitgezählt, keine Überraschung."; },
+        feeSentenceFull: function(a,b,c){ return "Spread + Kommission: <strong>" + a + "</strong>. Swaps: <strong>" + b + "</strong>. Gesamtkosten vor jeder Preisbewegung: <strong>" + c + "</strong>."; },
         entryPrice: "Einstiegspreis", stopPrice: "Stop-Loss-Preis",
         pipValLabel: "Wert pro Pip / Tick, pro 1 Lot oder Kontrakt ($)",
-        pipValHint: "Bei einem Standard-Lot EUR/USD sind das $10. Bei Aktien und Krypto ist es $1 pro Aktie oder Coin.",
+        pipValHint: "Beispiel: Ein Standard-Lot EUR/USD sind oft $10 pro Pip. Verwende immer die Zahl deines eigenen Brokers.",
         lotEmpty: "Gib einen Einstiegspreis und einen anderen Stopppreis ein, um deine Größe zu sehen.",
         unitsWord: "Einheiten",
         lotAbout: function(u, p){ return "Das sind etwa " + u + " Einheiten · Stoppabstand " + p + " Pips"; },
@@ -743,7 +796,7 @@
         perLevelLine: function(n, d, t){ return n + ": " + d + " von " + t; },
         quizzesCardT: "Quizze", ofQuizzesWord: "Stufen-Quizze bestanden",
         quizLineNone: "noch nicht gemacht",
-        quizLine: function(b, p){ return "bestes Ergebnis " + b + " von 5" + (p ? " · bestanden" : ""); },
+        quizLine: function(b, p){ return "bestes Ergebnis " + b + (p ? " · bestanden" : ""); },
         practiceRecordT: "Bilanz des Übungsbereichs",
         progressNote: "Denk an Lektion 11: Gib den Zahlen mindestens 30 Trades, bevor du sie beurteilst.",
         startOverT: "Von vorne beginnen",
@@ -773,7 +826,9 @@
         {"q":"Ein Pip bei EUR/USD ist:","options":["0.01 bei allen Paaren","0.0001 bei den meisten Paaren","Ein ganzer Dollar","Ein Zehntel Cent"],"a":1,"explain":"Bei den meisten Paaren ist ein Pip 0.0001; bei Yen-Paaren 0.01."},
         {"q":"Spread 2 Pips und du tradest 0.10 Lots. Ungefähre Spread-Kosten hin und zurück?","options":["$0.20","$2","$20","$0.02"],"a":1,"explain":"2 Pips × $10 pro Pip und Lot × 0.10 Lots = $2."},
         {"q":"Du riskierst $30, um $90 zu verdienen. Wie ist das Chance-Risiko-Verhältnis?","options":["1:1","1:2","1:3","3:1"],"a":2,"explain":"$90 ÷ $30 = 3, ein Chance-Risiko-Verhältnis von 1:3."},
-        {"q":"Bei einem Chance-Risiko-Verhältnis von 1:2: Welche Trefferquote bringt dich auf null?","options":["50%","33%","66%","25%"],"a":1,"explain":"Break-even-Trefferquote = 1 ÷ (1 + 2) = 33%."}
+        {"q":"Bei einem Chance-Risiko-Verhältnis von 1:2: Welche Trefferquote bringt dich auf null?","options":["50%","33%","66%","25%"],"a":1,"explain":"Break-even-Trefferquote = 1 ÷ (1 + 2) = 33%."},
+        {"q":"In den Beispielen der Lektionen sind 1.0 Lot Gold (XAUUSD):","options":["1 Unze","100 Unzen","1,000 Unzen","10 Unzen"],"a":1,"explain":"In diesem Beispiel = 100 Unzen, etwa $100 pro $1 Bewegung — prüfe immer die Kontraktgröße deines eigenen Brokers."},
+        {"q":"Dein Stop-Loss-Risiko ist $200 und die Swaps kosten über deine geplante Haltedauer $780. Dein wahres Risiko ist:","options":["$200","$580","$980","$780"],"a":2,"explain":"Wahres Risiko = Stop-Loss-Risiko + Swap-Kosten = 200 + 780 = $980."}
       ],
       "pro":[
         {"q":"Der Preis steigt und du verschiebst deinen Stopp auf deinen Einstiegspreis. Das nennt man:","options":["Einen nachlaufenden Verlust","Einen Break-even-Stopp","Einen Margin Call","Hedging"],"a":1,"explain":"Der schlimmste Fall wird null – ein Null-Trade statt eines Verlusts."},
@@ -824,12 +879,12 @@
       "l04": {"title":"Deine erste Lot-Größen-Berechnung","tagline":"Risiko und Abstand zusammenbringen – und deine exakte Handelsgröße erhalten.","oneLiner":"Lot-Größe = Risiko in Dollar ÷ (Stoppabstand × Wert pro Einheit). Sie sagt dir genau, wie viel du kaufen darfst.","formula":"Lots = Risiko in $ ÷ (Stoppabstand in Pips × $-Wert pro Pip und Lot)",
        "sections":[
          {"h":"Die einzige Formel, die am Anfang zählt","p":["Du kennst dein Risiko in Dollar aus der 1-%-Regel. Du kennst deinen Stoppabstand aus Lektion 3. Die Lot-Größe verbindet einfach beides.","Lot-Größe = Risiko in Dollar ÷ (Stoppabstand × Wert pro Einheit). In einfachen Worten: Teile den Betrag, den du verlieren darfst, durch den Betrag, den eine Einheit verlieren würde, wenn der Stopp getroffen wird."]},
-         {"h":"Ein Forex-Beispiel, ganz langsam","p":["Konto: 1,000 Dollar. Risiko bei 1%: 10 Dollar. Stoppabstand: 20 Pips. Ein Standard-Lot bewegt sich um etwa 10 Dollar pro Pip.","Größe = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 Lots. Das sind 5,000 Einheiten, auch 5 Micro-Lots genannt. Wird der Stopp getroffen, verlierst du etwa 10 Dollar. Die Mathematik garantiert das."]},
+         {"h":"Ein Forex-Beispiel, ganz langsam","p":["Konto: 1,000 Dollar. Risiko bei 1%: 10 Dollar. Stoppabstand: 20 Pips. In diesem Beispiel bewegt sich ein Standard-Lot um etwa 10 Dollar pro Pip (der übliche Beispielwert – maßgeblich ist immer die Zahl deines Brokers).","Größe = 10 ÷ (20 × 10) = 10 ÷ 200 = 0.05 Lots. Das sind 5,000 Einheiten, auch 5 Micro-Lots genannt. Wird der Stopp getroffen, verlierst du etwa 10 Dollar. Die Mathematik garantiert das."]},
          {"h":"Vertrau der Mathematik, nicht deinem Bauch","p":["Anfänger raten ihre Größe. Raten ist der Weg, auf dem Konten sterben. Von jetzt an beginnt jeder Trade mit drei Zahlen: Konto, Risiko-Prozent, Stoppabstand. Der Rechner liefert dir die Größe. Ganz ohne Gefühle."]}
        ],
-       "workedExample":{"setup":"Konto mit $1,000, 1% Risiko = $10. Stoppabstand 20 Pips. Standard-Lot = $10/Pip.","steps":["Nenner = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 Lots. Wirst du ausgestoppt, verlierst du etwa $10."},
+       "workedExample":{"setup":"Konto mit $1,000, 1% Risiko = $10. Stoppabstand 20 Pips. Beispiel-Standard-Lot = $10/Pip.","steps":["Nenner = 20 × 10 = 200.","Lots = 10 ÷ 200 = 0.05."],"answer":"Trade 0.05 Lots. Wirst du ausgestoppt, verlierst du etwa $10."},
        "tryIt":"Konto mit $2,000, 1% Risiko ($20), Stopp über 25 Pips. Größe = 20 ÷ (25 × 10) = 0.08 Lots.",
-       "script":"Lektion vier. Deine erste Lot-Größen-Berechnung. Du kennst dein Risiko in Dollar aus der Ein-Prozent-Regel. Du kennst deinen Stoppabstand aus Lektion drei. Die Lot-Größe verbindet einfach beides. Die Formel lautet: Lot-Größe gleich Risiko in Dollar, geteilt durch Stoppabstand mal Wert pro Einheit. In einfachen Worten: Teile den Betrag, den du verlieren darfst, durch den Betrag, den eine Einheit verlieren würde, wenn der Stopp getroffen wird. Machen wir ein Forex-Beispiel, ganz langsam. Konto: eintausend Dollar. Risiko bei einem Prozent: zehn Dollar. Stoppabstand: zwanzig Pips. Ein Standard-Lot bewegt sich um etwa zehn Dollar pro Pip. Größe gleich zehn geteilt durch zwanzig mal zehn. Das ist zehn geteilt durch zweihundert, also null Komma null fünf Lots. Das sind fünftausend Einheiten. Wird der Stopp getroffen, verlierst du etwa zehn Dollar. Die Mathematik garantiert das. Bau dir diese Gewohnheit auf: Anfänger raten ihre Größe, und Raten ist der Weg, auf dem Konten sterben. Von jetzt an beginnt jeder Trade mit drei Zahlen: Konto, Risiko-Prozent, Stoppabstand. Der Rechner liefert dir die Größe. Ganz ohne Gefühle."},
+       "script":"Lektion vier. Deine erste Lot-Größen-Berechnung. Du kennst dein Risiko in Dollar aus der Ein-Prozent-Regel. Du kennst deinen Stoppabstand aus Lektion drei. Die Lot-Größe verbindet einfach beides. Die Formel lautet: Lot-Größe gleich Risiko in Dollar, geteilt durch Stoppabstand mal Wert pro Einheit. In einfachen Worten: Teile den Betrag, den du verlieren darfst, durch den Betrag, den eine Einheit verlieren würde, wenn der Stopp getroffen wird. Machen wir ein Forex-Beispiel, ganz langsam. Konto: eintausend Dollar. Risiko bei einem Prozent: zehn Dollar. Stoppabstand: zwanzig Pips. In diesem Beispiel bewegt sich ein Standard-Lot um etwa zehn Dollar pro Pip. Größe gleich zehn geteilt durch zwanzig mal zehn. Das ist zehn geteilt durch zweihundert, also null Komma null fünf Lots. Das sind fünftausend Einheiten. Wird der Stopp getroffen, verlierst du etwa zehn Dollar. Die Mathematik garantiert das. Bau dir diese Gewohnheit auf: Anfänger raten ihre Größe, und Raten ist der Weg, auf dem Konten sterben. Von jetzt an beginnt jeder Trade mit drei Zahlen: Konto, Risiko-Prozent, Stoppabstand. Der Rechner liefert dir die Größe. Ganz ohne Gefühle."},
       "l05": {"title":"Die Lot-Größen-Formel, Schritt für Schritt","tagline":"Die universelle Formel für Aktien, Forex, Krypto und Futures.","oneLiner":"Die universelle Regel: Positionsgröße = Risiko in Dollar ÷ Stoppabstand. Sie funktioniert für Aktien, Forex, Krypto und Futures.","formula":"Aktien = Risiko in $ ÷ Stoppabstand pro Aktie",
        "sections":[
          {"h":"Eine Formel für jeden Markt","p":["Die universelle Regel: Positionsgröße = Risiko in Dollar ÷ Stoppabstand.","Bei Aktien und Krypto bewegt sich eine Aktie oder ein Coin um 1 Dollar pro 1 Dollar Preisänderung. Also: Aktien = Risiko in Dollar ÷ Stoppabstand in Dollar. Bei Forex: Lots = Risiko in Dollar ÷ (Stoppabstand in Pips × Dollar pro Pip und Lot). Bei Futures ersetzt du Dollar pro Pip durch den Tick-Wert des Kontrakts."]},
@@ -852,11 +907,11 @@
        "sections":[
          {"h":"Jeder Trade startet im Minus","p":["Bevor sich der Preis zu deinen Gunsten bewegt, musst du zuerst deine Kosten wieder hereinholen. Es gibt vier Kosten, die du kennen musst.","Der Spread ist die Lücke zwischen Kauf- und Verkaufspreis. Du kaufst immer etwas teurer und verkaufst etwas billiger. Der Spread ist der Anteil des Brokers."]},
          {"h":"Die anderen drei Kosten","p":["Kommission: Manche Broker verlangen eine fixe Gebühr pro Trade, oft sowohl beim Öffnen als auch beim Schließen.","Übernacht-Gebühr, genannt Swap: Hältst du einen Forex- oder CFD-Trade über Nacht, zahlst oder erhältst du einen kleinen täglichen Zinsbetrag.","Slippage: Aus Lektion 1 – deine Ausführungen können in schnellen Märkten etwas schlechter sein als erwartet."]},
-         {"h":"Rechne, bevor du klickst","p":["Beispiel: Du tradest 0.05 Lots EUR/USD. Der Spread beträgt 1.2 Pips. Ein Standard-Lot sind etwa 10 Dollar pro Pip. Spread-Kosten = 1.2 × 10 × 0.05 = 0.60 Dollar. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich.","Die Gewohnheit: Frag dich vor jedem Trade, wie hoch die Kosten hin und zurück sind und ob dein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa 10% deines Zielgewinns, ist der Trade vermutlich nichts wert."]}
+         {"h":"Rechne, bevor du klickst","p":["Beispiel: Du tradest 0.05 Lots EUR/USD. Der Spread beträgt 1.2 Pips. Ein Standard-Lot sind in diesem Beispiel etwa 10 Dollar pro Pip (der übliche Beispielwert – maßgeblich ist die Zahl deines Brokers). Spread-Kosten = 1.2 × 10 × 0.05 = 0.60 Dollar. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich.","Die Gewohnheit: Frag dich vor jedem Trade, wie hoch die Kosten hin und zurück sind und ob dein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa 10% deines Zielgewinns, ist der Trade vermutlich nichts wert."]}
        ],
        "workedExample":{"setup":"0.05 Lots EUR/USD. Spread 1.2 Pips. Standard-Lot ≈ $10/Pip.","steps":["Kosten = 1.2 × 10 × 0.05 = $0.60."],"answer":"Der Spread kostet dich bei diesem Trade etwa $0.60."},
        "tryIt":"Spread 2 Pips, 0.10 Lots. Kosten = 2 × 10 × 0.10 = $2 pro Trade hin und zurück.",
-       "script":"Lektion sieben. Gebühren – die Kosten, die dir niemand zeigt. Jeder Trade startet leicht im Minus. Bevor sich der Preis zu deinen Gunsten bewegt, musst du zuerst deine Kosten wieder hereinholen. Es gibt vier Kosten, die du kennen musst. Erstens der Spread: die Lücke zwischen Kauf- und Verkaufspreis. Du kaufst immer etwas teurer und verkaufst etwas billiger. Der Spread ist der Anteil des Brokers. Zweitens die Kommission: Manche Broker verlangen eine fixe Gebühr pro Trade, oft beim Öffnen und beim Schließen. Drittens die Übernacht-Gebühr, genannt Swap: Hältst du einen Forex- oder CFD-Trade über Nacht, zahlst oder erhältst du einen kleinen täglichen Zinsbetrag. Viertens Slippage, aus Lektion eins: Deine Ausführungen können in schnellen Märkten etwas schlechter sein als erwartet. Rechnen wir: Du tradest null Komma null fünf Lots Euro-Dollar. Der Spread beträgt eins Komma zwei Pips. Ein Standard-Lot sind etwa zehn Dollar pro Pip. Spread-Kosten gleich eins Komma zwei mal zehn mal null Komma null fünf. Das sind sechzig Cent. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich. Die Gewohnheit: Frag dich vor jedem Trade, wie hoch meine Kosten hin und zurück sind und ob mein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa zehn Prozent deines Zielgewinns, ist der Trade vermutlich nichts wert."},
+       "script":"Lektion sieben. Gebühren – die Kosten, die dir niemand zeigt. Jeder Trade startet leicht im Minus. Bevor sich der Preis zu deinen Gunsten bewegt, musst du zuerst deine Kosten wieder hereinholen. Es gibt vier Kosten, die du kennen musst. Erstens der Spread: die Lücke zwischen Kauf- und Verkaufspreis. Du kaufst immer etwas teurer und verkaufst etwas billiger. Der Spread ist der Anteil des Brokers. Zweitens die Kommission: Manche Broker verlangen eine fixe Gebühr pro Trade, oft beim Öffnen und beim Schließen. Drittens die Übernacht-Gebühr, genannt Swap: Hältst du einen Forex- oder CFD-Trade über Nacht, zahlst oder erhältst du einen kleinen täglichen Zinsbetrag. Viertens Slippage, aus Lektion eins: Deine Ausführungen können in schnellen Märkten etwas schlechter sein als erwartet. Rechnen wir: Du tradest null Komma null fünf Lots Euro-Dollar. Der Spread beträgt eins Komma zwei Pips. In diesem Beispiel sind ein Standard-Lot etwa zehn Dollar pro Pip. Spread-Kosten gleich eins Komma zwei mal zehn mal null Komma null fünf. Das sind sechzig Cent. Klein bei einem Trade, aber bei fünfzig Trades summiert es sich. Die Gewohnheit: Frag dich vor jedem Trade, wie hoch meine Kosten hin und zurück sind und ob mein Gewinnziel sie um ein Mehrfaches abdeckt. Fressen Gebühren mehr als etwa zehn Prozent deines Zielgewinns, ist der Trade vermutlich nichts wert."},
       "l08": {"title":"Chance-Risiko-Verhältnis: Lohnt sich der Trade?","tagline":"Das Verhältnis, mit dem du 6 von 10 Trades verlieren und trotzdem gewinnen kannst.","oneLiner":"Das Chance-Risiko-Verhältnis sagt dir, ob sich ein Trade lohnt: Ziele auf mindestens 1:2, dann darfst du meistens falsch liegen und trotzdem gewinnen.","formula":"Chance-Risiko = Gewinnabstand ÷ Risikoabstand · Break-even-Trefferquote = 1 ÷ (1 + R)",
        "sections":[
          {"h":"Lohnt sich dieser Trade überhaupt?","p":["Das Chance-Risiko-Verhältnis beantwortet eine Frage: Für jeden Dollar, den ich riskiere, wie viele Dollar kann ich verdienen?","Gewinnabstand ÷ Risikoabstand. Kauf EUR/USD bei 1.0850, Stopp bei 1.0830 (20 Pips Risiko), Ziel bei 1.0890 (40 Pips Gewinn). 40 ÷ 20 = 2. Das ist ein Chance-Risiko-Verhältnis von 1 zu 2."]},
@@ -866,6 +921,8 @@
        "workedExample":{"setup":"Risiko 20 Pips (1.0850 → 1.0830). Ziel 40 Pips (→ 1.0890).","steps":["Chance-Risiko = 40 ÷ 20 = 2.","Break-even-Trefferquote = 1 ÷ (1+2) = 33%."],"answer":"Ein 1:2-Trade. Du kannst nur 4 von 10 gewinnen und trotzdem profitieren."},
        "tryIt":"Risiko $3 pro Aktie, Ziel $9 über dem Einstieg. Chance-Risiko = 9 ÷ 3 = 1:3. Nimm ihn!",
        "script":"Lektion acht. Chance-Risiko-Verhältnis. Nicht jeder Trade ist es wert, genommen zu werden – selbst mit perfektem Stop-Loss. Das Chance-Risiko-Verhältnis beantwortet eine Frage: Für jeden Dollar, den ich riskiere, wie viele Dollar kann ich verdienen? Du findest es durch Dividieren: Gewinnabstand geteilt durch Risikoabstand. Beispiel: Du kaufst Euro-Dollar bei eins Komma null acht fünf null. Stopp bei eins Komma null acht drei null. Das sind zwanzig Pips Risiko. Dein Ziel ist eins Komma null acht neun null. Das sind vierzig Pips Gewinn. Vierzig geteilt durch zwanzig ist zwei. Ein Chance-Risiko-Verhältnis von eins zu zwei. Jetzt die Magie: Bei eins zu zwei musst du nur etwa dreiunddreißig Prozent deiner Trades gewinnen, um bei null herauszukommen. Die Rechnung: Break-even-Trefferquote gleich eins geteilt durch eins plus R. Eins geteilt durch drei sind dreiunddreißig Prozent. Gewinnst du vier von zehn Trades bei eins zu zwei, bist du im Plus. Darum sind Profis von dieser Zahl besessen. Sie befreit dich davon, immer recht haben zu müssen. Die Faustregel: Nimm nie einen Trade unter eins zu eins Komma fünf, und bevorzuge eins zu zwei oder besser. Ein Trade mit tollem Setup, aber einem Verhältnis von eins zu eins, ist ein Münzwurf mit Gebühren. Lass ihn aus."},
+      "l13": {"title": "Ein Lot ist nicht ein Lot", "tagline": "Warum dasselbe „1 Lot“ bei jedem Wertpapier andere Dollar bedeutet.", "oneLiner": "Ein Lot bedeutet bei jedem Wertpapier etwas anderes – rechne es immer in Dollar pro Punkt um, bevor du die Größe bestimmst.", "formula": "$ pro Punkt = Lots × Kontraktwert pro Punkt und Lot", "sections": [{"h": "Kopfschmerzen einer echten Traderin", "p": ["Eine Traderin, die wir kennen, hat das auf die harte Tour gelernt. Sie tradete den Dow Jones Index (US30) mit 0.5 oder 1.0 Lots. Bei ihrem Broker bedeutete 1.0 Lot Dow etwa $1 pro Indexpunkt – 0.5 Lots waren also 50 Cent pro Punkt. Einfach.", "Dann wechselte sie zu Forex und Metallen. Plötzlich bedeutete „1 Lot“ etwas völlig anderes – und sie musste fünf verschiedene Broker-Konten prüfen, nur um herauszufinden, wie groß eine Gold-Position sein darf, die sie sicher halten kann. Sie ließ den Trade aus. Die Verwirrung kostete sie die Chance."]}, {"h": "Was 1 Lot wirklich kauft", "p": ["Jeder Broker veröffentlicht eine Kontraktgröße. Die Zahlen unten sind BEISPIEL-Werte — jeder Broker legt seine eigene Kontraktgröße fest. Prüfe immer die Kontraktspezifikation DEINES Brokers.", "Beispiel — EUR/USD (Forex): 1.0 Lot = 100,000 Einheiten, etwa $10 pro Pip. Dow Jones (US30): 1.0 Lot ist etwa $1 pro Indexpunkt. Gold (XAUUSD): 1.0 Lot = 100 Unzen, etwa $100 pro $1 Bewegung. Silber (XAGUSD): 1.0 Lot = 5,000 Unzen, etwa $5,000 pro $1 Bewegung. Öl (WTI): 1.0 Lot = 1,000 Barrels, etwa $1,000 pro $1 Bewegung."]}, {"h": "Der 10-Sekunden-Check", "p": ["Bevor du einen neuen Wert tradest: Suche die Kontraktgröße deines Brokers, rechne sie in Dollar pro Punkt um, dann nutze die Lot-Größen-Formel aus Lektion 5. Nimm nie an, ein Lot sei ein Lot.", "Der Lot-Größen-Rechner in dieser App hat diese Beispiel-Presets jetzt eingebaut – wähle den Wert und sie füllt die Beispiel-Kontraktgröße für dich aus.", "Weicht die Zahl deines Brokers vom Beispiel ab, tippe die Zahl deines Brokers ein — die Rechnung funktioniert nur mit der Spezifikation deines Brokers."]}], "workedExample": {"setup": "Gold-Trade. Konto $5,000, Risiko 1% = $50. Stoppabstand $3. Dein Broker: 1.0 Lot Gold = $100 pro $1 Bewegung.", "steps": ["Risiko pro Lot bei Stopp = 3 × $100 = $300.", "Lots = $50 ÷ $300 = 0.166… → trade 0.16 Lots (immer abrunden)."], "answer": "Trade 0.16 Lots Gold. Trifft der Stopp, verlierst du etwa $50."}, "tryIt": "US30: Dein Broker sagt 1.0 Lot = $1 pro Punkt. Risiko $20, Stopp 40 Punkte. Lots = 20 ÷ (40 × 1) = 0.5 Lots – genau die Größe, die sie beim Dow genutzt hat.", "script": "Lektion dreizehn. Ein Lot ist nicht ein Lot. Diese Lektion kommt aus den Kopfschmerzen einer echten Traderin. Sie tradete den Dow Jones Index mit einem halben oder einem ganzen Lot. Bei ihrem Broker bedeutete ein Lot Dow etwa einen Dollar pro Indexpunkt, ein halbes Lot also fünfzig Cent pro Punkt. Einfach. Dann wechselte sie zu Forex und Metallen, und ein Lot bedeutete etwas völlig anderes. Sie musste fünf verschiedene Broker-Konten prüfen, nur um herauszufinden, wie groß eine Gold-Position sein darf. Sie ließ den Trade aus. Die Verwirrung kostete sie die Chance. Hier sind Beispielwerte dafür, was ein Lot kauft. Jeder Broker legt seine eigene Kontraktgröße fest, also prüfe immer die Kontraktspezifikation deines Brokers. Euro Dollar Forex: ein Lot sind einhunderttausend Einheiten, etwa zehn Dollar pro Pip. Dow Jones: etwa ein Dollar pro Punkt. Gold: einhundert Unzen, etwa einhundert Dollar pro ein Dollar Bewegung. Silber: fünftausend Unzen. Öl: eintausend Barrels. Und es ist bei jedem Broker anders, genau deshalb prüfst du es. Der Zehn-Sekunden-Check. Bevor du einen neuen Wert tradest, suche die Kontraktgröße deines Brokers, rechne sie in Dollar pro Punkt um, dann nutze die Lot-Größen-Formel aus Lektion fünf. Nimm nie an, ein Lot sei ein Lot."},
+      "l14": {"title": "Swaps gehören zu deinem Risiko", "tagline": "Die Übernacht-Gebühr, die den ganzen Risikoplan einer Traderin still umschrieb.", "oneLiner": "Jede Nacht, die du einen Trade hältst, addiert die Swap-Gebühr zu deinem Risiko – bestimme die Größe nach der Summe, nicht nur nach dem Stop-Loss.", "formula": "Wahres Risiko = Stop-Loss-Risiko + (Swap pro Tag × geplante Haltetage)", "sections": [{"h": "Die 780-Euro-Überraschung", "p": ["Dieselbe Traderin plante einen Trade mit einem Stop-Loss von $2,500. Der Stopp war in Ordnung und ihr Risikomanagement war sauber – auf dem Papier.", "Aber sie hielt den Trade über Tage. Als sie alles zusammenzählte, kamen €780 an Swap-Gebühren obendrauf. Ihr „Risiko“ war plötzlich $2,500 plus €780. Der Risikoplan, den sie sorgfältig gebaut hatte, war kaputt – nicht vom Markt, sondern von Gebühren, die sie nicht mitgezählt hatte."]}, {"h": "Was ein Swap ist", "p": ["Ein Swap (Übernacht-Gebühr) ist das, was dein Broker dir berechnet – oder manchmal gutschreibt – wenn du eine Position über Nacht hältst. Er ist für jeden Wert anders, und für Long und Short verschieden.", "Ihre echten Zahlen: Gold zu halten kostete etwa $78 pro Tag. Silber kostete etwa $23 pro Tag. Zehn Tage Gold = $780, bevor sich der Markt überhaupt bewegt."]}, {"h": "Die Formel für das wahre Risiko", "p": ["Wahres Risiko = Stop-Loss-Risiko + (Swap pro Tag × geplante Haltetage).", "Bestimme deine Position nach dem wahren Risiko, nicht nur nach dem Stopp. Würden die Swaps allein dein 1-%-Budget sprengen, ist der Trade zu groß – oder für eine kürzere Dauer gedacht."]}, {"h": "Die Gewohnheit", "p": ["Bevor du einen Trade über Nacht hältst: Prüfe den Swap-Satz, multipliziere ihn mit deinen geplanten Haltetagen, addiere ihn zu deinem Stop-Loss-Risiko. Der Gebühren-Rechner in dieser App macht das jetzt für dich – gib deine geplanten Haltetage ein und er zeigt dir das wahre Risiko."]}], "workedExample": {"setup": "Gold-Trade. Stop-Loss-Risiko $200. Swap $78 pro Tag. Du planst, 10 Tage zu halten.", "steps": ["Swap-Kosten = 78 × 10 = $780.", "Wahres Risiko = 200 + 780 = $980."], "answer": "Dein wahres Risiko ist $980 – fast das 5-Fache der geplanten $200. Verkleinere die Position oder halte kürzer."}, "tryIt": "Silber: Stopp-Risiko $100, Swap $23 pro Tag, 5 Tage halten. Swap-Kosten = $115. Wahres Risiko = $215.", "script": "Lektion vierzehn. Swaps gehören zu deinem Risiko. Dieselbe Traderin, eine weitere teure Lektion. Sie plante einen Trade mit einem Stop-Loss von zweitausendfünfhundert Dollar. Der Stopp war in Ordnung. Ihr Risikomanagement war sauber, auf dem Papier. Aber sie hielt den Trade über Tage, und als sie alles zusammenzählte, kamen siebenhundertachtzig Euro an Swap-Gebühren obendrauf. Ihr Risiko war plötzlich der Stop-Loss plus siebenhundertachtzig Euro. Der Plan war kaputt, nicht vom Markt, sondern von Gebühren, die sie nicht mitgezählt hatte. Ein Swap ist die Übernacht-Gebühr für das Halten einer Position. Er ist für jeden Wert anders, und für Long und Short verschieden. Ihre echten Zahlen: Gold kostete etwa achtundsiebzig Dollar pro Tag, Silber etwa dreiundzwanzig Dollar pro Tag. Zehn Tage Gold sind siebenhundertachtzig Dollar, bevor sich der Markt überhaupt bewegt. Die Formel: Wahres Risiko gleich Stop-Loss-Risiko plus Swap pro Tag mal geplante Haltetage. Bestimme deine Position nach dem wahren Risiko, nicht nur nach dem Stopp. Die Gewohnheit: Bevor du über Nacht hältst, prüfe den Swap, multipliziere ihn mit deinen geplanten Tagen, addiere ihn zu deinem Risiko. Sprengen die Swaps allein dein Ein-Prozent-Budget, ist der Trade zu groß oder für eine kürzere Dauer gedacht."},
       "l09": {"title":"Trailing-Stops und der Weg zur Gewinnschwelle","tagline":"Sichere Gewinne, während der Trade noch läuft.","oneLiner":"Läuft ein Trade für dich, verschiebe deinen Stopp, sodass der schlimmste Fall die Gewinnschwelle ist.","formula":"Break-even-Stopp: Stopp auf den Einstieg verschieben, sobald der Trade +1R im Plus ist",
        "sections":[
          {"h":"Mach aus Gewinnern Gratis-Trades","p":["Dein Trade läuft um 1 R zu deinen Gunsten – er hat also so viel gewonnen, wie du riskiert hast. Jetzt verschiebst du deinen Stop-Loss auf deinen Einstiegspreis.","Der schlimmste Fall ist jetzt null, ein Null-Trade, statt eines vollen Verlusts. Dein Risiko ist verschwunden, aber deine Gewinnchance bleibt offen."]},
@@ -1069,7 +1126,7 @@
             var l = locLesson(lRaw);
             var done = !!state.lessons[l.id];
             html += '<button class="lessonrow'+(done?" done":"")+'" data-lesson="'+l.id+'">'
-              + '<span class="n">'+(done ? "✓" : (li*4+i+1))+'</span>'
+              + '<span class="n">'+(done ? "✓" : (LESSONS.indexOf(lRaw)+1))+'</span>'
               + '<span><h3>'+esc(l.title)+'</h3><p>'+esc(l.tagline)+'</p></span>'
               + '<span class="chev">›</span></button>';
           });
@@ -1249,7 +1306,7 @@
       var s = T();
       var qs = quizOf(quizState.levelId);
       var lv = locLevel(levelById(quizState.levelId));
-      var passed = quizState.score >= 4;
+      var passed = quizState.score >= (quizState.levelId==="builder" ? 5 : 4);
       var prev = state.quizzes[quizState.levelId] || {best:0, passed:false};
       state.quizzes[quizState.levelId] = {best: Math.max(prev.best||0, quizState.score), passed: !!(prev.passed || passed)};
       save();
@@ -1288,11 +1345,19 @@
       html += '<p class="muted small" style="margin:0 0 16px;">'+esc(s.lotCalcSub)+'</p>';
       html += '<div class="field"><label for="c-acct">'+s.acctBalance+'</label><input id="c-acct" type="number" min="0" step="any" value="1000"></div>';
       html += '<div class="field"><label for="c-risk">'+s.riskPerTradePct+' <span class="hint">'+s.riskHintBeginners+'</span></label><input id="c-risk" type="number" min="0" step="any" value="1"></div>';
+      html += '<div class="examplenote">'+esc(s.exampleBanner)+'</div>';
+      html += '<div class="field"><label for="c-cur">'+s.acctCurLabel+'</label><select id="c-cur"><option value="USD" selected>USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="CHF">CHF</option></select></div>';
+      html += '<div class="field"><label for="c-conv">'+s.convRateLabel+'</label><input id="c-conv" type="number" min="0" step="any" value="1.00"><span class="hint">'+esc(s.convRateHint)+'</span></div>';
+      html += '<div class="field"><label for="c-preset">'+s.presetLabel+'</label><select id="c-preset">'
+        + '<option value="eurusd" selected>'+s.optEURUSD+'</option><option value="us30">'+s.optUS30+'</option><option value="gold">'+s.optGold+'</option><option value="silver">'+s.optSilver+'</option><option value="wti">'+s.optWTI+'</option><option value="custom">'+s.optCustom+'</option></select></div>';
       html += '<div class="field"><label for="c-inst">'+s.tradingWhat+'</label><select id="c-inst">'
         + '<option value="forex" selected>'+s.optForex+'</option><option value="stock">'+s.optStock+'</option><option value="crypto">'+s.optCrypto+'</option><option value="futures">'+s.optFutures+'</option></select></div>';
       html += '<div class="field"><label for="c-entry">'+s.entryPrice+'</label><input id="c-entry" type="number" min="0" step="any" value="1.0850"></div>';
       html += '<div class="field"><label for="c-stop">'+s.stopPrice+'</label><input id="c-stop" type="number" min="0" step="any" value="1.0830"></div>';
-      html += '<div class="field"><label for="c-pipval">'+s.pipValLabel+'</label><input id="c-pipval" type="number" min="0" step="any" value="10"><span class="hint">'+esc(s.pipValHint)+'</span></div>';
+      html += '<div class="field"><label for="c-tp">'+s.takeProfitPrice+'</label><input id="c-tp" type="number" min="0" step="any" value="1.0890"></div>';
+      html += '<div class="field"><label for="c-pipval">'+s.contractLabel+'</label><input id="c-pipval" type="number" min="0" step="any" value="10"><span class="hint">'+esc(s.contractHint)+'</span></div>';
+      html += '<div class="field"><label for="c-minlot">'+s.minLotLabel+'</label><input id="c-minlot" type="number" min="0" step="any" value="0.01"><span class="hint">'+esc(s.brokerSpecHint)+'</span></div>';
+      html += '<div class="field"><label for="c-lotstep">'+s.lotStepLabel+'</label><input id="c-lotstep" type="number" min="0" step="any" value="0.01"></div>';
       html += '<div class="resultbox" id="c-out"></div></div>';
 
       /* --- risk visualizer --- */
@@ -1309,46 +1374,80 @@
       html += '<div class="field"><label for="f-spread">'+s.fSpread+'</label><input id="f-spread" type="number" min="0" step="any" value="1.2"></div>';
       html += '<div class="field"><label for="f-pipval">'+s.fPipVal+'</label><input id="f-pipval" type="number" min="0" step="any" value="10"></div>';
       html += '<div class="field"><label for="f-comm">'+s.fComm+'</label><input id="f-comm" type="number" min="0" step="any" value="0"></div>';
-      html += '<div class="field"><label for="f-size">'+s.fSize+'</label><input id="f-size" type="number" min="0" step="any" value="0.05"></div>';
+      html += '<div class="field"><label for="f-size">'+s.fSize+'</label><input id="f-size" type="number" min="0" step="any" value="1"></div>';
       html += '<div class="field"><label for="f-target">'+s.fTarget+'</label><input id="f-target" type="number" min="0" step="any" value="20"></div>';
+      html += '<div class="field"><label for="f-swap">'+s.swapPerDay+'</label><input id="f-swap" type="number" min="0" step="any" value="78"></div>';
+      html += '<div class="field"><label for="f-days">'+s.holdDays+'</label><input id="f-days" type="number" min="0" step="any" value="10"></div>';
+      html += '<div class="field"><label for="f-budget">'+s.stopRiskMoney+'</label><input id="f-budget" type="number" min="0" step="any" value="200"></div>';
       html += '</div><div class="resultbox" id="f-out"></div></div>';
 
       html += '</div>';
       v.innerHTML = html;
 
+      var PRESETS = {eurusd:{pip:0.0001,val:10,entry:1.0850,stop:1.0830,tp:1.0890,inst:"forex"},us30:{pip:1,val:1,entry:39500,stop:39400,tp:39700,inst:"futures"},gold:{pip:1,val:100,entry:2350,stop:2347,tp:2356,inst:"futures"},silver:{pip:0.01,val:50,entry:28.50,stop:28.20,tp:29.10,inst:"futures"},wti:{pip:0.01,val:10,entry:78.00,stop:77.50,tp:79.00,inst:"futures"},custom:{pip:0.0001,val:10,entry:1.0850,stop:1.0830,tp:1.0890,inst:"forex"}};
+      // note: silver/wti pip defined so val*pips works: silver 1.0 lot $5000 per $1 = $50 per cent; wti $1000 per $1 = $10 per cent
       function calcLot(){
         var acct = parseFloat($("#c-acct").value)||0;
         var riskPct = parseFloat($("#c-risk").value)||0;
+        var cur = $("#c-cur") ? $("#c-cur").value : "USD";
+        var sym = {USD:"$",EUR:"€",GBP:"£",CHF:"CHF "}[cur] || "$";
+        var conv = parseFloat($("#c-conv") ? $("#c-conv").value : 1); if(!(conv>0)) conv = 1;
+        var minLot = parseFloat($("#c-minlot") ? $("#c-minlot").value : 0.01); if(!(minLot>0)) minLot = 0;
+        var lotStep = parseFloat($("#c-lotstep") ? $("#c-lotstep").value : 0.01); if(!(lotStep>0)) lotStep = 0;
         var entry = parseFloat($("#c-entry").value)||0;
         var stop = parseFloat($("#c-stop").value)||0;
+        var tpEl = $("#c-tp"); var tp = tpEl ? (parseFloat(tpEl.value)||0) : 0;
         var pipVal = parseFloat($("#c-pipval").value)||0;
         var inst = $("#c-inst").value;
-        var riskDollars = acct * riskPct / 100;
+        var presetKey = $("#c-preset") ? $("#c-preset").value : "eurusd";
+        var preset = PRESETS[presetKey] || PRESETS.eurusd;
+        var pipSize = preset.pip;
+        // for non-preset stock/crypto keep old price-distance logic via pipSize= price unit
+        if(presetKey==="custom" && inst!=="forex"){ pipSize = 1; }
+        var riskAcct = acct * riskPct / 100;
+        var riskUSD = riskAcct * conv;
         var distPrice = Math.abs(entry - stop);
         var out = $("#c-out");
         if(distPrice <= 0 || pipVal <= 0){
           out.innerHTML = '<p style="margin:0;">'+esc(s.lotEmpty)+'</p>'; return;
         }
-        var distPips, size, sizeText, sentence;
-        if(inst === "forex"){
-          distPips = distPrice / 0.0001;
-          size = riskDollars / (distPips * pipVal);
-          sizeText = '<span class="big num">' + size.toFixed(2) + ' ' + s.unitLots + '</span><div class="small muted" style="margin-top:4px;">' + esc(s.lotAbout(Math.round(size*100000).toLocaleString("en-US"), distPips.toFixed(1))) + '</div>';
-        } else {
-          size = riskDollars / distPrice;
-          var unit = inst==="stock" ? s.unitStock : (inst==="crypto" ? s.unitCrypto : s.unitFutures);
-          var unitOne = inst==="stock" ? s.unitStockOne : (inst==="crypto" ? s.unitCryptoOne : s.unitFuturesOne);
-          sizeText = '<span class="big num">' + trimNum(size,2) + ' ' + unit + '</span><div class="small muted" style="margin-top:4px;">' + esc(s.stopDistPer(money(distPrice), unitOne)) + '</div>';
+        var distPips = distPrice / pipSize;
+        // broker-aware sizing: raw size from USD risk, then round DOWN to the broker's lot step
+        var rawSize = riskUSD / (distPips * pipVal);
+        var tradable = lotStep > 0 ? Math.floor(rawSize / lotStep + 1e-9) * lotStep : rawSize;
+        tradable = Math.round(tradable * 1000000) / 1000000;
+        if(tradable <= 0 || (minLot > 0 && tradable < minLot)){
+          out.innerHTML = '<p style="margin:0;font-weight:700;">'+esc(s.tooSmall(trimNum(minLot,4)))+'</p>'
+            + '<p class="small muted" style="margin:8px 0 0;">'+esc(s.rawLine(trimNum(rawSize,3), trimNum(tradable,4)))+'</p>';
+          return;
         }
-        sentence = s.lotSentence(money(riskDollars), trimNum(riskPct,2));
-        out.innerHTML = sizeText + '<div class="statgrid">'
-          + '<div class="stat"><div class="v">'+money(riskDollars)+'</div><div class="k">'+s.youRisk+'</div></div>'
-          + '<div class="stat"><div class="v num">'+trimNum(inst==="forex"?distPips:distPrice, inst==="forex"?1:2)+'</div><div class="k">'+(inst==="forex"?s.stopPipsK:s.stopDistanceK)+'</div></div>'
+        var lossUSD = tradable * distPips * pipVal;
+        var lossAcct = lossUSD / conv;
+        var rewardDist = tp ? Math.abs(tp - entry) : 0;
+        var rewardPips = rewardDist / pipSize;
+        var rewardUSD = rewardPips * pipVal * tradable;
+        var rewardAcct = rewardUSD / conv;
+        var rr = distPrice>0 && rewardDist>0 ? (rewardDist/distPrice) : 0;
+        var dollarsPerPip = pipVal * tradable;
+        var acctMoney = function(n){ var sign = n<0 ? "-"+sym : sym; return sign + Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); };
+        var sizeText = '<span class="big num">' + trimNum(tradable,4) + ' ' + s.unitLots + '</span>';
+        var rawHtml = Math.abs(tradable - rawSize) > 1e-9 ? '<p class="small muted" style="margin:6px 0 0;">'+esc(s.rawLine(trimNum(rawSize,3), trimNum(tradable,4)))+'</p>' : '';
+        var sentence = s.lotSentenceFull(trimNum(tradable,4), acctMoney(lossAcct), acctMoney(rewardAcct), trimNum(rr,2));
+        out.innerHTML = sizeText + rawHtml + '<div class="statgrid">'
+          + '<div class="stat"><div class="v">'+acctMoney(lossAcct)+'</div><div class="k">'+s.youRisk+'</div></div>'
+          + '<div class="stat"><div class="v num">'+trimNum(distPips,1)+'</div><div class="k">'+s.stopPipsK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(dollarsPerPip)+'</div><div class="k">'+s.dollarsPerPipK+'</div></div>'
+          + '<div class="stat"><div class="v">1 : '+trimNum(rr,2)+'</div><div class="k">'+s.rrLabel+'</div></div>'
           + '</div><p class="sentence">'+sentence+'</p>';
       }
-      ["c-acct","c-risk","c-entry","c-stop","c-pipval","c-inst"].forEach(function(id){
+      ["c-acct","c-risk","c-cur","c-conv","c-entry","c-stop","c-tp","c-pipval","c-minlot","c-lotstep","c-inst","c-preset"].forEach(function(id){
         $("#"+id).addEventListener("input", calcLot);
         $("#"+id).addEventListener("change", calcLot);
+      });
+      $("#c-preset").addEventListener("change", function(){
+        var pr = PRESETS[this.value]; if(!pr) return;
+        $("#c-pipval").value = pr.val; $("#c-entry").value = pr.entry; $("#c-stop").value = pr.stop; $("#c-tp").value = pr.tp; $("#c-inst").value = pr.inst;
+        calcLot();
       });
       $("#c-inst").addEventListener("change", function(){
         var inst = this.value;
@@ -1382,17 +1481,27 @@
         var comm = parseFloat($("#f-comm").value)||0;
         var size = parseFloat($("#f-size").value)||0;
         var target = parseFloat($("#f-target").value)||0;
+        var swapPerDay = parseFloat($("#f-swap").value)||0;
+        var days = parseFloat($("#f-days").value)||0;
+        var budget = parseFloat($("#f-budget").value)||0;
         var spreadCost = spread * pipVal * size;
         var commRT = comm * 2;
         var total = spreadCost + commRT;
-        var pctOfTarget = target>0 ? (total/target*100) : 0;
+        var swapTotal = swapPerDay * days * size;
+        var grand = total + swapTotal;
+        var trueRisk = budget + swapTotal;
+        var over = budget>0 && trueRisk > budget;
+        // warning when swaps push true risk over budget (budget is stop risk, so true>budget whenever swap>0; show stronger if >1.5x)
+        var warnHtml = swapTotal>0 ? '<p class="sentence" style="color:var(--red);font-weight:700;">'+esc(s.trueRiskWarn(money(trueRisk), money(budget)))+'</p>' : '<p class="sentence">'+esc(s.trueRiskOk(money(trueRisk)))+'</p>';
         $("#f-out").innerHTML = '<div class="statgrid" style="margin-top:0;">'
           + '<div class="stat"><div class="v">'+money(spreadCost)+'</div><div class="k">'+s.spreadCostK+'</div></div>'
           + '<div class="stat"><div class="v">'+money(commRT)+'</div><div class="k">'+s.commK+'</div></div>'
-          + '<div class="stat"><div class="v">'+money(total)+'</div><div class="k">'+s.roundTripK+'</div></div></div>'
-          + '<p class="sentence">'+s.feeSentence(money(total), trimNum(pctOfTarget,1), money(target), pctOfTarget>10)+'</p>';
+          + '<div class="stat"><div class="v">'+money(total)+'</div><div class="k">'+s.roundTripK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(swapTotal)+'</div><div class="k">'+s.swapCostK+'</div></div>'
+          + '<div class="stat"><div class="v">'+money(trueRisk)+'</div><div class="k">'+s.trueRiskK+'</div></div></div>'
+          + '<p class="sentence">'+s.feeSentenceFull(money(total), money(swapTotal), money(grand))+'</p>' + warnHtml;
       }
-      ["f-spread","f-pipval","f-comm","f-size","f-target"].forEach(function(id){
+      ["f-spread","f-pipval","f-comm","f-size","f-target","f-swap","f-days","f-budget"].forEach(function(id){
         $("#"+id).addEventListener("input", calcFees);
       });
 
@@ -1402,6 +1511,10 @@
     /* ============ practice desk (simulator) ============ */
     var INSTRUMENTS = {
       "eurusd":{name:"EUR/USD (forex)",nameDe:"EUR/USD (Forex)",unit:"lots",startPrice:1.0850,pipSize:0.0001,pipValuePerLot:10,spreadPips:1.2,decimals:4,vol:0.00045,defaultStopPips:20},
+      "us30":{name:"US30 Dow Jones",nameDe:"US30 Dow Jones",unit:"lots",startPrice:39500,pipSize:1,pipValuePerLot:1,spreadPips:2,decimals:0,vol:18,defaultStopPips:40},
+      "gold":{name:"Gold XAUUSD",nameDe:"Gold XAUUSD",unit:"lots",startPrice:2350,pipSize:1,pipValuePerLot:100,spreadPips:0.3,decimals:2,vol:2.2,defaultStopPips:3},
+      "silver":{name:"Silver XAGUSD",nameDe:"Silber XAGUSD",unit:"lots",startPrice:28.50,pipSize:0.01,pipValuePerLot:50,spreadPips:2,decimals:2,vol:0.06,defaultStopPips:30},
+      "wti":{name:"WTI Oil",nameDe:"WTI Öl",unit:"lots",startPrice:78.00,pipSize:0.01,pipValuePerLot:10,spreadPips:3,decimals:2,vol:0.14,defaultStopPips:50},
       "aapl":{name:"Apple stock (shares)",nameDe:"Apple-Aktie (Aktien)",unit:"shares",startPrice:232.50,pipSize:1,pipValuePerLot:1,spreadDollars:0.02,decimals:2,vol:0.9,defaultStopPips:4},
       "btc":{name:"Bitcoin (coins)",nameDe:"Bitcoin (Coins)",unit:"coins",startPrice:67500,pipSize:1,pipValuePerLot:1,spreadDollars:15,decimals:0,vol:220,defaultStopPips:1200}
     };
@@ -1440,15 +1553,20 @@
         html += '<p class="lead">'+esc(s.simLead)+'</p>';
         html += '<div class="sim-layout"><div>';
         html += '<div class="field"><label for="s-inst">'+s.instrument+'</label><select id="s-inst">'
-          + '<option value="eurusd">'+esc(instName("eurusd"))+'</option><option value="aapl">'+esc(instName("aapl"))+'</option><option value="btc">'+esc(instName("btc"))+'</option></select></div>';
+          + '<option value="eurusd">'+esc(instName("eurusd"))+'</option><option value="us30">'+esc(instName("us30"))+'</option><option value="gold">'+esc(instName("gold"))+'</option><option value="silver">'+esc(instName("silver"))+'</option><option value="wti">'+esc(instName("wti"))+'</option><option value="aapl">'+esc(instName("aapl"))+'</option><option value="btc">'+esc(instName("btc"))+'</option></select></div>';
+        html += '<p class="small muted" style="margin:-8px 0 12px;">'+esc(s.simExampleNote)+'</p>';
         html += '<div class="chartwrap"><canvas id="simchart" width="640" height="320"></canvas><p class="chart-hint">'+esc(s.chartHint)+'</p></div>';
         html += '<div class="feedback" id="s-feedback"></div>';
         html += '<button class="btn" id="s-run" style="width:100%;">'+s.runTrade+'</button>';
         html += '<button class="btn secondary" id="s-reset" style="width:100%;margin-top:10px;">'+s.newChart+'</button>';
         html += '</div><div>';
         html += '<div class="card" style="margin-bottom:16px;"><h3 style="margin-bottom:12px;">'+s.planTitle+'</h3>';
-        html += '<div class="field"><label for="s-acct">'+s.acctLabel+'</label><input id="s-acct" type="number" min="0" step="any" value="1000"></div>';
+        html += '<div class="field"><label for="s-acct">'+s.simAcctLabel+'</label><input id="s-acct" type="number" min="0" step="any" value="1000"></div>';
         html += '<div class="field"><label for="s-risk">'+s.riskPerTradePct+'</label><input id="s-risk" type="number" min="0" step="any" value="1"></div>';
+        html += '<div class="field"><label for="s-cur">'+s.acctCurLabel+'</label><select id="s-cur"><option value="USD" selected>USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="CHF">CHF</option></select></div>';
+        html += '<div class="field"><label for="s-conv">'+s.convRateLabel+'</label><input id="s-conv" type="number" min="0" step="any" value="1.00"><span class="hint">'+esc(s.convRateHint)+'</span></div>';
+        html += '<div class="field"><label for="s-minlot">'+s.minLotLabel+'</label><input id="s-minlot" type="number" min="0" step="any" value="0.01"><span class="hint">'+esc(s.brokerSpecHint)+'</span></div>';
+        html += '<div class="field"><label for="s-lotstep">'+s.lotStepLabel+'</label><input id="s-lotstep" type="number" min="0" step="any" value="0.01"></div>';
         html += '<div class="resultbox" id="s-plan"></div></div>';
         html += '<div class="card"><h3 style="margin-bottom:6px;">'+s.trackTitle+'</h3><div class="statgrid" id="s-stats" style="margin-top:0;"></div></div>';
         html += '</div></div>';
@@ -1462,6 +1580,10 @@
         $("#s-inst").addEventListener("change", function(){ sim.instKey = this.value; resetSimChart(); });
         $("#s-acct").addEventListener("input", updatePlan);
         $("#s-risk").addEventListener("input", updatePlan);
+        ["s-cur","s-conv","s-minlot","s-lotstep"].forEach(function(id){
+          $("#"+id).addEventListener("input", updatePlan);
+          $("#"+id).addEventListener("change", updatePlan);
+        });
         $("#s-reset").addEventListener("click", function(){ resetSimChart(); setFeedback("info", T().fbFresh); });
         $("#s-run").addEventListener("click", runTrade);
       }
@@ -1596,34 +1718,58 @@
 
     function simFee(size){
       var inst = simInst();
-      if(sim.instKey === "eurusd") return inst.spreadPips * inst.pipValuePerLot * size;
-      return inst.spreadDollars * size;
+      if(inst.spreadPips) return inst.spreadPips * inst.pipValuePerLot * size;
+      return (inst.spreadDollars||0) * size;
     }
     function updatePlan(){
       var out = $("#s-plan"); if(!out || !sim) return;
+      var s = T();
       var inst = simInst();
       var acct = parseFloat($("#s-acct").value)||0;
       var riskPct = parseFloat($("#s-risk").value)||0;
-      var riskDollars = acct * riskPct / 100;
+      var cur = $("#s-cur") ? $("#s-cur").value : "USD";
+      var sym = {USD:"$",EUR:"€",GBP:"£",CHF:"CHF "}[cur] || "$";
+      var conv = parseFloat($("#s-conv") ? $("#s-conv").value : 1); if(!(conv>0)) conv = 1;
+      var minLot = parseFloat($("#s-minlot") ? $("#s-minlot").value : 0.01); if(!(minLot>0)) minLot = 0;
+      var lotStep = parseFloat($("#s-lotstep") ? $("#s-lotstep").value : 0.01); if(!(lotStep>0)) lotStep = 0;
+      var riskAcct = acct * riskPct / 100;
+      var riskUSD = riskAcct * conv;
       if(sim.entry===null || sim.stop===null || sim.target===null){
-        out.innerHTML = '<p style="margin:0;">'+esc(T().planEmpty)+'</p>'; return;
+        out.innerHTML = '<p style="margin:0;">'+esc(s.planEmpty)+'</p>'; return;
       }
       var distPrice = Math.abs(sim.entry - sim.stop);
       var distUnits = distPrice / inst.pipSize;
-      var size = distUnits>0 ? riskDollars / (distUnits * inst.pipValuePerLot) : 0;
+      var rawSize = distUnits>0 ? riskUSD / (distUnits * inst.pipValuePerLot) : 0;
+      var lotBased = inst.unit === "lots";
+      var tradable = rawSize;
+      if(lotBased && lotStep>0){
+        tradable = Math.floor(rawSize / lotStep + 1e-9) * lotStep;
+        tradable = Math.round(tradable * 1000000) / 1000000;
+      }
       var gainPrice = Math.abs(sim.target - sim.entry);
-      var gainUnits = gainPrice / inst.pipSize;
-      var gainDollars = gainUnits * inst.pipValuePerLot * size;
-      var fee = simFee(size);
       var rr = distPrice>0 ? gainPrice/distPrice : 0;
-      sim.plan = {size:size, riskDollars:riskDollars, gainDollars:gainDollars, fee:fee, rr:rr};
+      if(lotBased && (tradable<=0 || (minLot>0 && tradable<minLot))){
+        sim.plan = {size:0, riskDollars:0, gainDollars:0, fee:0, rr:rr};
+        out.innerHTML = '<p style="margin:0;font-weight:700;">'+esc(s.tooSmall(trimNum(minLot,4)))+'</p>'
+          + '<p class="small muted" style="margin:8px 0 0;">'+esc(s.rawLine(trimNum(rawSize,3), trimNum(tradable,4)))+'</p>';
+        return;
+      }
+      var size = tradable;
+      var gainUnits = gainPrice / inst.pipSize;
+      var lossUSD = distUnits * inst.pipValuePerLot * size;
+      var gainUSD = gainUnits * inst.pipValuePerLot * size;
+      var feeUSD = simFee(size);
+      var lossAcct = lossUSD / conv, gainAcct = gainUSD / conv, feeAcct = feeUSD / conv;
+      var acctMoney = function(n){ var sign = n<0 ? "-"+sym : sym; return sign + Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); };
+      sim.plan = {size:size, riskDollars:lossUSD, gainDollars:gainUSD, fee:feeUSD, rr:rr};
+      var rawHtml = lotBased && Math.abs(tradable-rawSize)>1e-9 ? '<p class="small muted" style="margin:8px 0 0;">'+esc(s.rawLine(trimNum(rawSize,3), trimNum(size,4)))+'</p>' : '';
       out.innerHTML = '<div class="statgrid" style="margin-top:0;">'
-        + '<div class="stat"><div class="v">'+trimNum(size, sim.instKey==="eurusd"?2:3)+' '+simUnit()+'</div><div class="k">'+T().tradeSizeK+'</div></div>'
-        + '<div class="stat"><div class="v">'+money(riskDollars)+'</div><div class="k">'+T().ifStopK+'</div></div>'
-        + '<div class="stat"><div class="v">'+money(gainDollars)+'</div><div class="k">'+T().ifTargetK+'</div></div>'
-        + '<div class="stat"><div class="v">1 : '+trimNum(rr,1)+'</div><div class="k">'+T().riskRewardK+'</div></div>'
-        + '<div class="stat"><div class="v">'+money(fee)+'</div><div class="k">'+T().feeEstK+'</div></div></div>'
-        + '<p class="sentence">'+T().planSentence(money(riskDollars + fee), money(gainDollars - fee))+'</p>';
+        + '<div class="stat"><div class="v">'+trimNum(size, 4)+' '+simUnit()+'</div><div class="k">'+s.tradeSizeK+'</div></div>'
+        + '<div class="stat"><div class="v">'+acctMoney(lossAcct)+'</div><div class="k">'+s.ifStopK+'</div></div>'
+        + '<div class="stat"><div class="v">'+acctMoney(gainAcct)+'</div><div class="k">'+s.ifTargetK+'</div></div>'
+        + '<div class="stat"><div class="v">1 : '+trimNum(rr,1)+'</div><div class="k">'+s.riskRewardK+'</div></div>'
+        + '<div class="stat"><div class="v">'+acctMoney(feeAcct)+'</div><div class="k">'+s.feeEstK+'</div></div></div>'
+        + '<p class="sentence">'+s.planSentence(acctMoney(lossAcct + feeAcct), acctMoney(gainAcct - feeAcct))+'</p>' + rawHtml;
     }
 
     function setFeedback(kind, text){
@@ -1747,7 +1893,7 @@
       var html = '<p class="kicker">'+s.progressKicker+'</p><h2 style="font-size:1.6rem;margin:4px 0 18px;">'+s.progressTitle+'</h2>';
       html += '<div class="calc-grid">';
       html += '<div class="card"><h3 style="margin-bottom:12px;">'+s.lessonsCardT+'</h3>'
-        + '<div class="progress-track" style="margin-bottom:10px;"><div class="progress-fill" style="width:'+Math.round(done/12*100)+'%"></div></div>'
+        + '<div class="progress-track" style="margin-bottom:10px;"><div class="progress-fill" style="width:'+Math.round(done/14*100)+'%"></div></div>'
         + '<p style="margin:0;"><span class="big num" style="font-size:1.4rem;font-weight:900;">'+done+' / 12</span> <span class="muted">'+s.ofLessonsWord+'</span></p>';
       LEVELS.forEach(function(lvRaw){
         var lv = locLevel(lvRaw);
